@@ -19,6 +19,16 @@ class JuezDB:
                         i=i+1
                 return listaUsers
 
+        #Metodo obtener entregas validas de un determinado usuario - Todo (Comprobar correcto funcionamiento)
+        def obtenerEntregasValidasDeUser(self, user):
+        		recs = self.cursor.execute('SELECT id FROM submission WHERE user_id = ' + str(user) + ' AND status = AC')
+        		listaProblemas = np.empty([recs])
+        		i=0
+        		for row in self.cursor.fetchall():
+        			listaProblemas[i] = row[0]
+        			i=i+1
+        		return listaProblemas
+
 #Programa principal (Main)
 conector = JuezDB()
 conector.obtenerUsuarios()

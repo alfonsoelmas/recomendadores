@@ -1,22 +1,20 @@
 #Acceso a bbdd
 #Instalar MySQLdb para acceder a bases de datos
-import MySQLdb
+import pymysql.cursors
 
 
-#Creamos un cursor para navegar por la bbdd a la que nos hemos conectado
-cur = db.cursor()
 
-class JuezBD:
+class JuezDB:
 	def __init__(self):
-		db = MySQLdb.connect(host = "localhost",
-					 user = "root",
-					 passwd = "root",
-					 db = "aceptaelreto")
-
+		db = pymysql.connect('localhost', 'root', '', 'aceptaelreto')
 		self.cursor = db.cursor()
 
 	#Metodo obtener usuarios. Devuelve un array con id de usuarios
-	def obtenerUsuarios(self)
-		self.cursor.execute("SELECT * FROM TU_TABLA *TODO")
-		for row in self.cursor.fetchall():
-			print row[0]
+	def obtenerUsuarios(self):
+		recs = self.cursor.execute('SELECT id, gender FROM users')
+
+		for row in self.cursor.fetchone():
+			print("UserId: "+ row[id] + "have gender: " + row[gender])
+
+conector = JuezDB()
+conector.obtenerUsuarios()

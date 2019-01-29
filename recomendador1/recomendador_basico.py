@@ -1,4 +1,5 @@
 import conect
+import numpy as np
 
 class RecomendadorBasico:
 
@@ -11,6 +12,7 @@ class RecomendadorBasico:
 	def correlacion(user1,user2):
 		#todo
 		usuarios = obtenerUsuarios()
+		#TODO: ver si se itera de esta manera con numpy
 		for user in usuarios:
 			prob_comunes = buscarProblemasComunes(user)
 			#todo
@@ -39,5 +41,29 @@ class RecomendadorBasico:
 		#todo
 
 	#Devuelve una lista de problemas comunes entre user2 y user
-	def buscarProblemasComunes(user2):
+	def buscarProblemasComunes(self,user2):
 		#todo
+		problemasOwner = obtenerProblemas(self.userIDowner)
+		problemasUser2 = obtenerProblemas(user2)
+		tam = 0
+		#El tamaño máximo de nuestro array comun será el mínimo del nº de problemas de uno de los dos
+		#TODO: COMO OBTENER TAM DE ARRAY CON NUMPY
+		if problemasOwner.tam > problemasUser2.tam:	#TODO ESTO ESTA MAL MOSTRADO EL TAMAÑO
+			#El propietario tiene más problemas
+			listaComunes = np.empty([problemasUser2.tam]) #TODO LO MISMO QUE COMENTARIO DE ARRIBA
+		else:
+			#El propietario tiene menos problemas
+			listaProblemas = np.empty([problemasOwner.tam])
+
+		#TODO: ver si se itera de esta manera con numpy
+		#Itero de tal forma que para cada problema del propietario busco en el otro usuario sus problemas. Si está lo añado a la lista y dejo de buscar ese problema.
+		comp = false
+		for problemaOwner in problemasOwner:
+			for problema in problemasUser2 and !comp:
+				if problemaOwner == problema:
+					listaComunes[tam] = problema
+					tam++
+					comp = true
+			comp = false
+
+

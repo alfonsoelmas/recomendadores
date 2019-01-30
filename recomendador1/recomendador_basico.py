@@ -50,10 +50,10 @@ class RecomendadorBasico:
 		#El tamaño máximo de nuestro array comun será el mínimo del nº de problemas de uno de los dos
 		if problemasOwner.size > problemasUser2.size:
 			#El propietario tiene más problemas
-			listaComunes = np.empty([problemasUser2.size])
+			listaComunes = np.empty([problemasUser2.size],dtype=int)
 		else:
 			#El propietario tiene menos problemas
-			listaProblemas = np.empty([problemasOwner.size])
+			listaProblemas = np.empty([problemasOwner.size],dtype=int)
 			
 		#Itero de tal forma que para cada problema del propietario busco en el otro usuario sus problemas. Si está lo añado a la lista y dejo de buscar ese problema.
 		comp = false

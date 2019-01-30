@@ -47,15 +47,13 @@ class RecomendadorBasico:
 		problemasUser2 = obtenerProblemas(user2)
 		tam = 0
 		#El tamaño máximo de nuestro array comun será el mínimo del nº de problemas de uno de los dos
-		#TODO: COMO OBTENER TAM DE ARRAY CON NUMPY
-		if problemasOwner.tam > problemasUser2.tam:	#TODO ESTO ESTA MAL MOSTRADO EL TAMAÑO
+		if problemasOwner.size > problemasUser2.size:
 			#El propietario tiene más problemas
-			listaComunes = np.empty([problemasUser2.tam]) #TODO LO MISMO QUE COMENTARIO DE ARRIBA
+			listaComunes = np.empty([problemasUser2.size])
 		else:
 			#El propietario tiene menos problemas
-			listaProblemas = np.empty([problemasOwner.tam])
-
-		#TODO: ver si se itera de esta manera con numpy
+			listaProblemas = np.empty([problemasOwner.size])
+			
 		#Itero de tal forma que para cada problema del propietario busco en el otro usuario sus problemas. Si está lo añado a la lista y dejo de buscar ese problema.
 		comp = false
 		for problemaOwner in problemasOwner:

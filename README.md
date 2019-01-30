@@ -17,3 +17,7 @@ En un futuro el recomendador tendrá una BBDD propia (Pueda ser MONGODB o SQL se
 + Esto se puede trasnformar también a varias matrices, una de ellas estará ligada a la probabilidad de cada usuario por cada 	problema almacenado en una BBDD de filas=IDuser columnas=IDproblema y valor=prob. éxito (Grado de recomendación)
   + Esta idea viene ligada al recomendador bayesiano final que se realizará.
 + Leer sobre funcionamiento red neuronal para implementar en posible recomendador (Una vez se haya realizado el bayesiano)
+
+### Enlaces de interés
+  + https://docs.scipy.org/doc/numpy/reference/arrays.ndarray.html#array-methods > Documentación y uso numpy
+  + https://github.com/ricval/Documentacion/blob/master/Guias/GitHub/mastering-markdown.md > Guía formato README github

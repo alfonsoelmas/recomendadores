@@ -57,10 +57,10 @@ class RecomendadorBasico:
 		#Itero de tal forma que para cada problema del propietario busco en el otro usuario sus problemas. Si está lo añado a la lista y dejo de buscar ese problema.
 		comp = false
 		for problemaOwner in problemasOwner:
-			for problema in problemasUser2 and !comp:
+			for problema in problemasUser2 and not comp:
 				if problemaOwner == problema:
 					listaComunes[tam] = problema
-					tam++
+					tam = tam + 1
 					comp = true
 			comp = false
 

@@ -8,6 +8,8 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
   Recomendador simple que aplica el coeficiente de correlación entre usuarios en base a la cantidad de problemas similares y recomienda problemas que tengan otros usuarios con un coeficiente de correlación alto entre ambos.
   + Clase conect: Implementa conexión a bbdd > En java implementará una interfaz. En python no es necesario.
   + Clase recomendador: Implementa la clase que actúa de recomendador.
+  + Coeficiente de correlacion entre dos usuarios> coef(A,B):
+    + Sea pA el conjunto de problemas del usuario A a recomendar, pB el conjunto de problemas del usuario B sobre el que observar. (pA ∩ pB) los problemas en comun de pA y pB... Definimos el grado de relación sobre 1 como |pA|/|(pA ∩ pB)| && |pB| > |pA| (Ya que queremos que pB tenga problemas que pA no haya resuelto para añadir a posibles recomendaciones que nos fijaremos más adelante). 
 
 
 ## Comentarios e ideas a futuro:

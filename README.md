@@ -5,7 +5,7 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
 
 ## Estructura
   ### Recomendador simple con correlación entre usuarios
-    #### Subdirectorio "recomendador1"
+  #### Subdirectorio "recomendador1"
   Recomendador simple que aplica el coeficiente de correlación entre usuarios en base a la cantidad de problemas similares y recomienda problemas que tengan otros usuarios con un coeficiente de correlación alto entre ambos.
   + Clase conect: Implementa conexión a bbdd > En java implementará una interfaz. En python no es necesario.
   + Clase recomendador: Implementa la clase que actúa de recomendador.
@@ -13,7 +13,7 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
     + Sea pA el conjunto de problemas del usuario A a recomendar, pB el conjunto de problemas del usuario B sobre el que observar. (pA ∩ pB) los problemas en comun de pA y pB... Definimos el grado de relación de un usuario B respecto a A sobre 1 como |pA|/|(pA ∩ pB)| && |pB| > |pA| (Ya que queremos que pB tenga problemas que pA no haya resuelto para añadir a posibles recomendaciones que nos fijaremos más adelante). 
 
   ### Recomendador basado en redes neuronales
-    #### Subdirectorio "recomendadorNeuronal"
+  #### Subdirectorio "recomendadorNeuronal"
   
   + Por hacer y estructurar
   + Intenciones de crear subdirectorio con pruebas de redes neuronales antes de pasar a usarlas para recomendar.

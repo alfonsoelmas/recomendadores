@@ -67,33 +67,35 @@ class RecomendadorBasico:
 					comp = true
 			comp = false
 		tamListaFinal = 0
-		listaFinal = np.empty([tam]) #Creamos un listado final con el tamaño adecuado
-		while tamListaFinal != tam:
+		listaFinal = np.empty([tam+1]) #Creamos un listado final con el tamaño adecuado
+		while tamListaFinal <= tam:
 			listaFinal[tamListaFinal] = listaComunes[tamListaFinal]
 			tamListaFinal = tamListaFinal + 1
 		return listaFinal
 	
 	#Devuelve una lista de problemas que tiene user2 y no owner.
+	#todo: Testear
 	def buscarProblemasUser2MinusOwner(self, user2):
 		problemasOwner = self.listaProblemasOwner
 		problemasUser2 = self.obtenerProblemas(user2)
 		tam = 0
-		listaComunes = np.empty([0]) #Inicializamos listaComunes a 0
+		listaNoComunes = np.empty([0]) #Inicializamos listaNoComunes a 0
 		#El tamaño máximo de nuestro array comun será como mucho el numero de problemas de user2
-		listaComunes = np.empty([problemasUser2.size],dtype=int)
+		listaNoComunes = np.empty([problemasUser2.size],dtype=int)
 			
 		#Itero de tal forma que para cada problema del propietario busco en el otro usuario sus problemas. Si está lo añado a la lista y dejo de buscar ese problema.
 		comp = false
-		for problemaUser in problemasUser2: #TODO ITERAR PARA VER Q NO LO TIENE...
+		for problemaUser in problemasUser2:
 			for problemaOwner in problemasOwner:
-				if problemaOwner == problema:
-					listaComunes[tam] = problema
-					tam = tam + 1
+				if problemaOwner == problemaUser:
 					comp = true
+			if comp == false:
+				listaNoComunes[tam] = problemaUser
+				tam = tam + 1
 			comp = false
 		tamListaFinal = 0
-		listaFinal = np.empty([tam]) #Creamos un listado final con el tamaño adecuado
-		while tamListaFinal != tam:
+		listaFinal = np.empty([tam+1]) #Creamos un listado final con el tamaño adecuado
+		while tamListaFinal <= tam:
 			listaFinal[tamListaFinal] = listaComunes[tamListaFinal]
 			tamListaFinal = tamListaFinal + 1
 		return listaFinal

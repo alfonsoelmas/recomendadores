@@ -10,9 +10,19 @@ class RecomendadorBasico:
 		self.listaProblemasOwner = self.obtenerProblemas(self.userIDowner)
 
 	#Devuelve la correlacion entre 2 usuarios
+	#Todo: testear
 	def correlacion(self,user1):
-		prob_comunes = self.buscarProblemasComunes(user1)
-		#Todo: Completar.
+		
+		#todo: la siguiente busqueda puede darse como una consulta más compleja antes que de forma algoritmica. (comprobar mejora de rendimiento)
+		prob_comunes = self.buscarProblemasComunes(user1) #(pA)intersección(pB)
+		tam_comunes = prob_comunes.size #|(pA)intersección(pB)|
+		tam_pA = self.listaProblemasOwner.size #|pA|
+		#todo comprobar condiciones de tamaños 0, etc.
+		if tam_comunes!=0 and tam_pA!=0:
+			correl = tam_comunes/tam_pA
+			return correl
+		else:
+			return 0
 
 	#Obtencion de los problemas válidos de un usuario X
 	#Todo: Testear

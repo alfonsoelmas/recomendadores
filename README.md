@@ -12,7 +12,7 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
   + Coeficiente de correlacion entre dos usuarios> coef(A,B):
     + Sea pA el conjunto de problemas del usuario A a recomendar, pB el conjunto de problemas del usuario B sobre el que observar. (pA ∩ pB) los problemas en comun de pA y pB... Definimos el grado de relación de un usuario B respecto a A sobre 1 como |pA|/|(pA ∩ pB)| && pB-pA>0 (Ya que queremos que pB tenga problemas que pA no haya resuelto para añadir a posibles recomendaciones que nos fijaremos más adelante).
    + Problemas a recomendar:
-    + Dados N usuarios con coeficiente de correlación alto sobre el usuario a recomendar A. Sean pBi los problemas de un usuario Bi, y pA los problemas de pA. Los problemas a recomendar al usuario A vienen dados calculando coef. correl de Bi sobre A para cada problema t.q pBi-pA * coef.Correl. Obteniendo una tabla de id, n, listado coeficientes. para obtener una media de correlación de problemas y ordenarlas de mayor a menor.
+     + Dados N usuarios con coeficiente de correlación alto sobre el usuario a recomendar A. Sean pBi los problemas de un usuario Bi, y pA los problemas de pA. Los problemas a recomendar al usuario A vienen dados calculando coef. correl de Bi sobre A para cada problema t.q pBi-pA * coef.Correl. Obteniendo una tabla de id, n, listado coeficientes. para obtener una media de correlación de problemas y ordenarlas de mayor a menor.
 
   ### Recomendador basado en redes neuronales
   #### Subdirectorio "recomendadorNeuronal"

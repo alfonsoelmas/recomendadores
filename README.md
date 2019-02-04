@@ -10,9 +10,9 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
   + Clase conect: Implementa conexión a bbdd > En java implementará una interfaz. En python no es necesario.
   + Clase recomendador: Implementa la clase que actúa de recomendador.
   + Coeficiente de correlacion entre dos usuarios> coef(A,B):
-    + Sea pA el conjunto de problemas del usuario A a recomendar, pB el conjunto de problemas del usuario B sobre el que observar. (pA ∩ pB) los problemas en comun de pA y pB... Definimos el grado de relación de un usuario B respecto a A sobre 1 como |pA|/|(pA ∩ pB)| && pB-pA>0 (Ya que queremos que pB tenga problemas que pA no haya resuelto para añadir a posibles recomendaciones que nos fijaremos más adelante).
+    + Sea pA el conjunto de problemas del usuario A a recomendar, pB el conjunto de problemas del usuario B sobre el que observar. (pA ∩ pB) los problemas en comun de pA y pB... Definimos el grado de relación de un usuario B respecto a A sobre 1 como |(pA ∩ pB)|/|pA|.
    + Problemas a recomendar:
-     + Dados N usuarios con coeficiente de correlación alto sobre el usuario a recomendar A. Sean pBi los problemas de un usuario Bi, y pA los problemas de pA. Los problemas a recomendar al usuario A vienen dados calculando coef. correl de Bi sobre A para cada problema t.q pBi-pA * coef.Correl. Obteniendo una tabla de id, n, listado coeficientes. para obtener una media de correlación de problemas y ordenarlas de mayor a menor.
+     + Dados N usuarios con coeficiente de correlación alto sobre el usuario a recomendar A. Sean pBi los problemas de un usuario Bi, y pA los problemas de pA. Los problemas a recomendar al usuario A vienen dados calculando coef. correl de Bi sobre A para cada problema t.q (pBi-pA) * coef.Correl. Obteniendo una tabla de id, n, listado coeficientes (por problema). para obtener una media(En realidad no habría que aplicar una media como tal, seguramente) de correlación de problemas y ordenarlos de mayor a menor. Posteriormente, se podrán recomendar varios problemas con diferente grado de recomendación. Además tendrán diferentes recomendaciónes segun el conjunto N de usuarios a elegir. (Máximo toda la base de datos> Esto no es óptimo en rendimiento, pero si es mejor en precisión)
 
   ### Recomendador basado en redes neuronales
   #### Subdirectorio "recomendadorNeuronal"

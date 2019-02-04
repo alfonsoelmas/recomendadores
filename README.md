@@ -14,6 +14,7 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
    + Problemas a recomendar:
      + Dados N usuarios con coeficiente de correlación alto sobre el usuario a recomendar A. Sean pBi los problemas de un usuario Bi, y pA los problemas de pA. Los problemas a recomendar al usuario A vienen dados calculando coef. correl de Bi sobre A para cada problema t.q (pBi-pA) * coef.Correl. Obteniendo una tabla de id, n, listado coeficientes (por problema). para obtener una media(En realidad no habría que aplicar una media como tal, seguramente) de correlación de problemas y ordenarlos de mayor a menor. Posteriormente, se podrán recomendar varios problemas con diferente grado de recomendación. Además tendrán diferentes recomendaciónes segun el conjunto N de usuarios a elegir. (Máximo toda la base de datos> Esto no es óptimo en rendimiento, pero si es mejor en precisión)
    + Genera problemas de recomendacion si usuario nuevo, ya que recomendará los más realizados y seguirá un patrón tras ello probablemente.
+   > Solucionar haciendo un random correl muy ligero para dar un poco más de peso aleatorio a algunos problemas y que no siempre recomiende lo mismo dentro de una recomendación mínimamente acertada. (O si tengo N problemas con un grado de recomendación similar, hacer un random pa recomendar uno de ellos).
 
   ### Recomendador basado en redes neuronales
   #### Subdirectorio "recomendadorNeuronal"

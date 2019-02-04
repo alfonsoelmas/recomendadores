@@ -12,8 +12,7 @@ class RecomendadorBasico:
 	#Devuelve la correlacion entre 2 usuarios
 	#Todo: testear
 	def correlacion(self,user1):
-		
-		#todo: la siguiente busqueda puede darse como una consulta más compleja antes que de forma algoritmica. (comprobar mejora de rendimiento)
+		#Anotación: la siguiente busqueda puede darse como una consulta más compleja antes que de forma algoritmica. (comprobar mejora de rendimiento)
 		prob_comunes = self.buscarProblemasComunes(user1) #(pA)intersección(pB)
 		tam_comunes = prob_comunes.size #|(pA)intersección(pB)|
 		tam_pA = self.listaProblemasOwner.size #|pA|

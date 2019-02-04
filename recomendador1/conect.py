@@ -22,11 +22,11 @@ class JuezDB:
         #Metodo obtener entregas validas de un determinado usuario - Todo (Comprobar correcto funcionamiento)
         def obtenerEntregasValidasDeUser(self, user):
                         #Mi user ID es 847 (Para posibles pruebas)
-                        recs = self.cursor.execute('SELECT problem_id FROM submission WHERE user_id = 'str(user)' AND status = "AC" group by problem_id')
-        		listaProblemas = np.empty([recs],dtype=int)
-        		i=0
-        		for row in self.cursor.fetchall():
-        			listaProblemas[i] = row[0]
-        			i=i+1
-        		return listaProblemas
+                        recs = self.cursor.execute('SELECT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" group by problem_id')
+                        listaProblemas = np.empty([recs],dtype=int)
+                        i=0
+                        for row in self.cursor.fetchall():
+                                listaProblemas[i] = row[0]
+                                i=i+1
+                        return listaProblemas
 

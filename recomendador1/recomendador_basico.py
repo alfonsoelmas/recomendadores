@@ -36,8 +36,8 @@ class RecomendadorBasico:
 
 
         # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
+        # Todo: testear
         def recomendar(self,gradoSimilitud):
-                #todo: sin completar
                 #obtener N mas similares
                 self.grado = gradoSimilitud
                 matrizSimilares = self.filtrarNMasSimilartes(gradoSimilitud)
@@ -60,14 +60,9 @@ class RecomendadorBasico:
                                         else:
                                                 diccionario[idProblema] = correlProblema/self.grado + diccionario[idProblema]
                                 alterno = True
-                                
-                #Todo, ya tenemos un diccionario de IDs-peso(Media sobre 1)... ahora habría que transformar en matriz ordenando por peso, o ordenarlo por valor de mayor a menor.
-                #ordenarlo asi: l.sort(key=lambda x: x[1]           
-                                
-                #inicializar array de problemas de tamaño N
-                #para cada problema en concreto (id) su valor "peso" p[i] = p[i] + pesoCorrelUsuariomirando, siendo p[i] un problema concreto del array de problemas y mirando la lista de problemas disjuntos del usuario
-                #obtener problemas de cada usuario
-                #
+                
+                diccionario.sort(key=lambda x: x[1])
+                return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
         
         # Devuelve una lista de los usuarios más similares respecto al que se va a recomendar (De cantidad "cantidad")
@@ -77,6 +72,7 @@ class RecomendadorBasico:
                 listaUsuarios = self.obtenerUsuarios()
                 
                 # Generamos una lista de correlacion asociada a la lista de Usuarios.
+                #TODO> ALGORITMO POCO EFICAZ> DESCARTAR USUARIOS CULLA CORRELACION SEA 0...
                 usuariosCorrel = np.empty([listaUsuarios.size])
                 if cantidad > listaUsuarios.size:
                         cantidad = listaUsuarios.size
@@ -88,18 +84,22 @@ class RecomendadorBasico:
                         i = i + 1
                 # Ordenamos la lista de correlación y paralelamente el array de IDs de usuario. (Quizas poco óptimo el algoritmo.)
                 i=0
-                while i < usuariosCorrel.size:
-                        j = i
-                        while j < usuariosCorrel.size:
-                                if(usuariosCorrel[j] > usuariosCorrel[i]):
-                                        reserva = usuariosCorrel[i]
-                                        usuariosCorrel[i] = usuariosCorrel[j]
-                                        usuariosCorrel[j] = reserva
-                                        reserva = listaUsuarios[i]
-                                        listaUsuarios[i] = listaUsuarios[j]
-                                        listaUsuarios[j] = reserva
-                                j = j + 1
-                        i = i + 1
+                # while i < usuariosCorrel.size:
+                #         j = i
+                #         while j < usuariosCorrel.size:
+                #                 if(usuariosCorrel[j] > usuariosCorrel[i]):
+                #                         reserva = usuariosCorrel[i]
+                #                         usuariosCorrel[i] = usuariosCorrel[j]
+                #                         usuariosCorrel[j] = reserva
+                #                         reserva = listaUsuarios[i]
+                #                         listaUsuarios[i] = listaUsuarios[j]
+                #                         listaUsuarios[j] = reserva
+                #                 j = j + 1
+                #         i = i + 1
+                matrizResultado = np.array(listaUsuarios, usuariosCorrel)
+                # TODO > TENER EN CUENTA MATRIZ DEBE TENER TODO EL MISMO TIPO (FLOAT PARSEO EL ID)
+                # TODO > TRASPONER MATRIZ, LUEGO ORDENARLA POR SEGUNDA FILA> matriz.view('i8,i8,i8').sort(order=['f1'], axis=0) > quedarnos con las N primeras filas.
+                # TODO > SI TRAS ESTO SIGUE TARDANDO, HACER ALMACENAMIENTO "TEMPORAL" Y PERIODICO DE ESTE PASO PARA AGILIZAR > DESVENTAJA : RECOMENDADOR UN POCO MAS FLOJO.
                 #Queremos los N usuarios más similares.
                 usuariosCorrelCant = np.empty([cantidad])
                 listaUsuariosCant = np.empty([cantidad],dtype=int)
@@ -109,7 +109,7 @@ class RecomendadorBasico:
                         listaUsuariosCant[i] = listaUsuarios[i]
                         i = i + 1
                 #lo transformamos en una matriz de 2 columnas (Fusión de ambos arrays en 1 matriz) (Cada array es una columna)
-                matrizResultado = np.array(usuariosCorrelCant,listaUsuariosCant)
+                matrizResultado = np.array(listaUsuariosCant,usuariosCorrelCant)
                 matrizResultado.transpose() #Lo trasponemos para hacer que cada columna sea un array y no cada fila sea un array como se genera por defecto.
                 return matrizResultado
 
@@ -140,8 +140,8 @@ class RecomendadorBasico:
                                         comp = True
                         comp = False
                 tamListaFinal = 0
-                listaFinal = np.empty([tam+1],dtype=int) #Creamos un listado final con el tamaño adecuado
-                while tamListaFinal <= tam:
+                listaFinal = np.empty([tam],dtype=int) #Creamos un listado final con el tamaño adecuado
+                while tamListaFinal < tam:
                         listaFinal[tamListaFinal] = listaComunes[tamListaFinal]
                         tamListaFinal = tamListaFinal + 1
                 return listaFinal
@@ -176,4 +176,4 @@ class RecomendadorBasico:
 
 #Todo: pruebas que se quitarán.
 recomendador = RecomendadorBasico(847)
-recomendador.correlacion(2742)
+recomendador.filtrarNMasSimilares(10)

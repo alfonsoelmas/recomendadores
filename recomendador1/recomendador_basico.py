@@ -8,6 +8,7 @@ class RecomendadorBasico:
                 self.userIDowner = userIDowner
                 self.conexionDB = conect.JuezDB()
                 self.listaProblemasOwner = self.obtenerProblemas(self.userIDowner)
+                self.grado = 0 #El grado sera el grado de similitud o el máximo de usuarios posibles. Servira para calcular el peso del problema. (En recomendar). Se remodifica tanto en metodo filtrarNsimilares como en recomendar
 
         #Devuelve la correlacion entre 2 usuarios
         def correlacion(self,user1):
@@ -34,11 +35,35 @@ class RecomendadorBasico:
 
 
 
-        # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado.
-        def recomendar():
-                return
+        # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
+        def recomendar(self,gradoSimilitud):
                 #todo: sin completar
-                #obtener N mas similares.
+                #obtener N mas similares
+                self.grado = gradoSimilitud
+                matrizSimilares = self.filtrarNMasSimilartes(gradoSimilitud)
+                alterno = True #Si id = True, si correl = False
+                diccionario = 0
+                listaProblemas = None
+                #Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
+                for x in np.nditer(matrizSimilares):
+                        if alterno == True:
+                                #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
+                                listaProblemas = buscarProblemasUser2MinusOwner(x)
+                                alterno = False        
+                        else:
+                                #Le sumamoss el peso correspondiente (Sumar correlación del usar de referencia partido de N) al problema
+                                correlProblema = x
+                                for idProblema in listaProblemas:
+                                        #Añadimos a nuestro diccionario
+                                        if(diccionario.get(idProblema)==None):
+                                                diccionario[idProblema] = correlProblema/self.grado
+                                        else:
+                                                diccionario[idProblema] = correlProblema/self.grado + diccionario[idProblema]
+                                alterno = True
+                                
+                #Todo, ya tenemos un diccionario de IDs-peso(Media sobre 1)... ahora habría que transformar en matriz ordenando por peso, o ordenarlo por valor de mayor a menor.
+                                
+                                
                 #inicializar array de problemas de tamaño N
                 #para cada problema en concreto (id) su valor "peso" p[i] = p[i] + pesoCorrelUsuariomirando, siendo p[i] un problema concreto del array de problemas y mirando la lista de problemas disjuntos del usuario
                 #obtener problemas de cada usuario
@@ -50,10 +75,12 @@ class RecomendadorBasico:
         # Todo: Testear
         def filtrarNMasSimilares(self,cantidad):
                 listaUsuarios = self.obtenerUsuarios()
+                
                 # Generamos una lista de correlacion asociada a la lista de Usuarios.
                 usuariosCorrel = np.empty([listaUsuarios.size])
                 if cantidad > listaUsuarios.size:
                         cantidad = listaUsuarios.size
+                        self.grado = listaUsuarios.size
                 i = 0
                 for user in listaUsuarios:
                         correl = self.correlacion(user)
@@ -147,6 +174,6 @@ class RecomendadorBasico:
                         tamListaFinal = tamListaFinal + 1
                 return listaFinal
 
-
+#Todo: pruebas que se quitarán.
 recomendador = RecomendadorBasico(847)
 recomendador.correlacion(2742)

@@ -62,7 +62,7 @@ class RecomendadorBasico:
                                 alterno = True
                                 
                 #Todo, ya tenemos un diccionario de IDs-peso(Media sobre 1)... ahora habría que transformar en matriz ordenando por peso, o ordenarlo por valor de mayor a menor.
-                                
+                #ordenarlo asi: l.sort(key=lambda x: x[1]           
                                 
                 #inicializar array de problemas de tamaño N
                 #para cada problema en concreto (id) su valor "peso" p[i] = p[i] + pesoCorrelUsuariomirando, siendo p[i] un problema concreto del array de problemas y mirando la lista de problemas disjuntos del usuario

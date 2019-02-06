@@ -65,6 +65,31 @@ class RecomendadorBasico:
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
         
+
+        #Metodo privado para ordenar los arrays
+        #Todo, sin completar.
+		def __sort(arrayOrdenar,arrayParalelo):
+		    less = []
+		    equal = []
+		    greater = []
+
+		    if len(array) > 1:
+		        pivot = array[0]
+		        for x in array:
+		            if x < pivot:
+		                less.append(x)
+		            elif x == pivot:
+		                equal.append(x)
+		            else x > pivot:
+		                greater.append(x)
+		        # Don't forget to return something!
+		        return sort(less)+equal+sort(greater)  # Just use the + operator to join lists
+		    # Note that you want equal ^^^^^ not pivot
+		    else:  # You need to hande the part at the end of the recursion - when you only have one element in your array, just return the array.
+		        return array
+
+
+
         # Devuelve una lista de los usuarios más similares respecto al que se va a recomendar (De cantidad "cantidad")
         # Esta lista implicará la precisión a la hora de recomendar.
         # Todo: Testear
@@ -83,7 +108,9 @@ class RecomendadorBasico:
                         usuariosCorrel[i] = correl
                         i = i + 1
                 # Ordenamos la lista de correlación y paralelamente el array de IDs de usuario. (Quizas poco óptimo el algoritmo.)
-                i=0
+                
+                #Antiguo algoritmo de ordenacion (Complejidad cuadratica.)
+                #i=0
                 # while i < usuariosCorrel.size:
                 #         j = i
                 #         while j < usuariosCorrel.size:
@@ -96,7 +123,11 @@ class RecomendadorBasico:
                 #                         listaUsuarios[j] = reserva
                 #                 j = j + 1
                 #         i = i + 1
-                matrizResultado = np.array(listaUsuarios, usuariosCorrel)
+
+                #Probamos con QuickShort...
+
+
+
                 # TODO > TENER EN CUENTA MATRIZ DEBE TENER TODO EL MISMO TIPO (FLOAT PARSEO EL ID)
                 # TODO > TRASPONER MATRIZ, LUEGO ORDENARLA POR SEGUNDA FILA> matriz.view('i8,i8,i8').sort(order=['f1'], axis=0) > quedarnos con las N primeras filas.
                 # TODO > SI TRAS ESTO SIGUE TARDANDO, HACER ALMACENAMIENTO "TEMPORAL" Y PERIODICO DE ESTE PASO PARA AGILIZAR > DESVENTAJA : RECOMENDADOR UN POCO MAS FLOJO.

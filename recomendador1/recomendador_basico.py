@@ -68,25 +68,47 @@ class RecomendadorBasico:
 
         #Metodo privado para ordenar los arrays
         #Todo, sin completar.
-		def __sort(arrayOrdenar,arrayParalelo):
-		    less = []
-		    equal = []
-		    greater = []
+		def __partition(arr, arrp, low,high): 
+		    i = ( low-1 )         # index of smaller element 
+		    pivot = arr[high]     # pivot 
+		  
+		    for j in range(low , high): 
+		  
+		        # If current element is smaller than or 
+		        # equal to pivot 
+		        if   arr[j] <= pivot: 
+		          
+		            # increment index of smaller element 
+		            i = i+1 
+		            arr[i],arr[j] = arr[j],arr[i]
+		            arrp[i],arrp[j] = arrp[j],arrp[i]
+		  
+		    arr[i+1],arr[high] = arr[high],arr[i+1]
+		    arrp[i+1],arrp[high] = arrp[high],arrp[i+1] 
+		    return ( i+1 ) 
+		  
+		# The main function that implements QuickSort 
+		# arr[] --> Array to be sorted, 
+		# low  --> Starting index, 
+		# high  --> Ending index 
+		  
+		# Function to do Quick sort 
+		def __quickSort(arr,arrp,low,high): 
+		    if low < high: 
+		  
+		        # pi is partitioning index, arr[p] is now 
+		        # at right place 
+		        pi = __partition(arr, arrp,low,high) 
+		  
+		        # Separately sort elements before 
+		        # partition and after partition 
+		        __quickSort(arr, arrp, low, pi-1) 
+		        __quickSort(arr, arrp, pi+1, high)
 
-		    if len(array) > 1:
-		        pivot = array[0]
-		        for x in array:
-		            if x < pivot:
-		                less.append(x)
-		            elif x == pivot:
-		                equal.append(x)
-		            else x > pivot:
-		                greater.append(x)
-		        # Don't forget to return something!
-		        return sort(less)+equal+sort(greater)  # Just use the + operator to join lists
-		    # Note that you want equal ^^^^^ not pivot
-		    else:  # You need to hande the part at the end of the recursion - when you only have one element in your array, just return the array.
-		        return array
+		def __sortArrays(array,arrayp):
+			__quickSort(array,arrayp,0,array.size-1)
+
+		# ===========================================================
 
 
 
@@ -125,6 +147,7 @@ class RecomendadorBasico:
                 #         i = i + 1
 
                 #Probamos con QuickShort...
+                __sortArrays(usuariosCorrel, listaUsuarios)
 
 
 

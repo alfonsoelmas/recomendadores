@@ -41,3 +41,4 @@ En un futuro el recomendador tendrá una BBDD propia (Pueda ser MONGODB o SQL se
   + https://github.com/ricval/Documentacion/blob/master/Guias/GitHub/mastering-markdown.md > Guía formato README github
   + https://docs.scipy.org/doc/numpy-1.10.1/reference/arrays.nditer.html > Iteraciones con matrices
   + Resto enlaces de interés en documentos de google docs (Apuntes y cuaderno bitácoras)
+  + http://webs.ucm.es/info/aocg/python/modulos_cientificos/numpy/index.html > Pequeña guía básica sobre numpy

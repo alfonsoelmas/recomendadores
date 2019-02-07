@@ -1,5 +1,6 @@
 import conect
 import numpy as np
+import sys
 
 class RecomendadorBasico:
 
@@ -9,6 +10,12 @@ class RecomendadorBasico:
                 self.conexionDB = conect.JuezDB()
                 self.listaProblemasOwner = self.obtenerProblemas(self.userIDowner)
                 self.grado = 0 #El grado sera el grado de similitud o el máximo de usuarios posibles. Servira para calcular el peso del problema. (En recomendar). Se remodifica tanto en metodo filtrarNsimilares como en recomendar
+
+        #TODO
+        def periodico(self):
+                #Todo: Esta funciona cargara periodicamente en memoria los problemas de cada usuario para agilizar hacer constantes consultas que pierden eficiencia.
+                #Las funciones problemas comunes, problemasNocomunes, etc dejaran de hacer consultas para obtenerlo de memoria en caso de que sea posible. (if no existe en memoria, consulta, sino, de memoria).
+                return None
 
         #Devuelve la correlacion entre 2 usuarios
         def correlacion(self,user1):
@@ -24,6 +31,7 @@ class RecomendadorBasico:
                         return 0
 
         # Obtencion de los problemas válidos de un usuario X
+        # Llamar a esta funcion periodicamente y dejarla en memoria cada T tiempo actualizarla. (para agilizar calculo obtener correlacion de cada usuario, etc)
         def obtenerProblemas(self, user):
                 #Obener Array de problemas.
                 return self.conexionDB.obtenerEntregasValidasDeUser(user)
@@ -64,51 +72,51 @@ class RecomendadorBasico:
                 diccionario.sort(key=lambda x: x[1])
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
-        
+
 
         #Metodo privado para ordenar los arrays
         #Todo, sin completar.
-		def __partition(arr, arrp, low,high): 
-		    i = ( low-1 )         # index of smaller element 
-		    pivot = arr[high]     # pivot 
-		  
-		    for j in range(low , high): 
-		  
-		        # If current element is smaller than or 
-		        # equal to pivot 
-		        if   arr[j] <= pivot: 
-		          
-		            # increment index of smaller element 
-		            i = i+1 
-		            arr[i],arr[j] = arr[j],arr[i]
-		            arrp[i],arrp[j] = arrp[j],arrp[i]
-		  
-		    arr[i+1],arr[high] = arr[high],arr[i+1]
-		    arrp[i+1],arrp[high] = arrp[high],arrp[i+1] 
-		    return ( i+1 ) 
-		  
-		# The main function that implements QuickSort 
-		# arr[] --> Array to be sorted, 
-		# low  --> Starting index, 
-		# high  --> Ending index 
-		  
-		# Function to do Quick sort 
-		def __quickSort(arr,arrp,low,high): 
-		    if low < high: 
-		  
-		        # pi is partitioning index, arr[p] is now 
-		        # at right place 
-		        pi = __partition(arr, arrp,low,high) 
-		  
-		        # Separately sort elements before 
-		        # partition and after partition 
-		        __quickSort(arr, arrp, low, pi-1) 
-		        __quickSort(arr, arrp, pi+1, high)
+        def __partition(self,arr, arrp, low,high): 
+            i = ( low-1 )         # index of smaller element 
+            pivot = arr[high]     # pivot 
+          
+            for j in range(low , high): 
+          
+                # If current element is smaller than or 
+                # equal to pivot 
+                if   arr[j] >= pivot: 
+                  
+                        # increment index of smaller element 
+                        i = i+1 
+                        arr[i],arr[j] = arr[j],arr[i]
+                        arrp[i],arrp[j] = arrp[j],arrp[i]
+          
+            arr[i+1],arr[high] = arr[high],arr[i+1]
+            arrp[i+1],arrp[high] = arrp[high],arrp[i+1] 
+            return ( i+1 ) 
+          
+        # The main function that implements QuickSort 
+        # arr[] --> Array to be sorted, 
+        # low  --> Starting index, 
+        # high  --> Ending index 
+          
+        # Function to do Quick sort 
+        def __quickSort(self,arr,arrp,low,high): 
+                if low < high: 
+          
+                        # pi is partitioning index, arr[p] is now 
+                        # at right place 
+                        pi = self.__partition(arr, arrp,low,high) 
+          
+                        # Separately sort elements before 
+                        # partition and after partition 
+                        self.__quickSort(arr, arrp, low, pi-1) 
+                        self.__quickSort(arr, arrp, pi+1, high)
 
-		def __sortArrays(array,arrayp):
-			__quickSort(array,arrayp,0,array.size-1)
+        def __sortArrays(self,array,arrayp):
+                self.__quickSort(array,arrayp,0,array.size-1)
 
-		# ===========================================================
+        # ===========================================================
 
 
 
@@ -116,19 +124,28 @@ class RecomendadorBasico:
         # Esta lista implicará la precisión a la hora de recomendar.
         # Todo: Testear
         def filtrarNMasSimilares(self,cantidad):
-                listaUsuarios = self.obtenerUsuarios()
+                nlistaUsuarios = self.obtenerUsuarios()
                 
                 # Generamos una lista de correlacion asociada a la lista de Usuarios.
-                #TODO> ALGORITMO POCO EFICAZ> DESCARTAR USUARIOS CULLA CORRELACION SEA 0...
-                usuariosCorrel = np.empty([listaUsuarios.size])
-                if cantidad > listaUsuarios.size:
-                        cantidad = listaUsuarios.size
-                        self.grado = listaUsuarios.size
+
+                if cantidad > nlistaUsuarios.size:
+                        cantidad = nlistaUsuarios.size
+                        self.grado = nlistaUsuarios.size
                 i = 0
-                for user in listaUsuarios:
+
+                #TODO> ALGORITMO POCO EFICAZ> DESCARTAR USUARIOS CULLA CORRELACION SEA 0...
+                nusuariosCorrel = []
+                nusersValidos = []
+                #Para esto tarda casi un minuto... OPTIMIZAR ALGORITMO CORRELACION.
+                for user in nlistaUsuarios:
                         correl = self.correlacion(user)
-                        usuariosCorrel[i] = correl
-                        i = i + 1
+                        if correl > 0:
+                            nusuariosCorrel.append(correl)
+                            nusersValidos.append(user)
+                            i = i + 1
+                usuariosCorrel = np.array(nusuariosCorrel)
+                listaUsuarios = np.array(nusersValidos)
+
                 # Ordenamos la lista de correlación y paralelamente el array de IDs de usuario. (Quizas poco óptimo el algoritmo.)
                 
                 #Antiguo algoritmo de ordenacion (Complejidad cuadratica.)
@@ -147,23 +164,26 @@ class RecomendadorBasico:
                 #         i = i + 1
 
                 #Probamos con QuickShort...
-                __sortArrays(usuariosCorrel, listaUsuarios)
+                self.__sortArrays(usuariosCorrel, listaUsuarios)
 
 
 
                 # TODO > TENER EN CUENTA MATRIZ DEBE TENER TODO EL MISMO TIPO (FLOAT PARSEO EL ID)
                 # TODO > TRASPONER MATRIZ, LUEGO ORDENARLA POR SEGUNDA FILA> matriz.view('i8,i8,i8').sort(order=['f1'], axis=0) > quedarnos con las N primeras filas.
                 # TODO > SI TRAS ESTO SIGUE TARDANDO, HACER ALMACENAMIENTO "TEMPORAL" Y PERIODICO DE ESTE PASO PARA AGILIZAR > DESVENTAJA : RECOMENDADOR UN POCO MAS FLOJO.
-                #Queremos los N usuarios más similares.
+                #Queremos los N usuarios más similares y que tengan problemas que el propietario no.
                 usuariosCorrelCant = np.empty([cantidad])
                 listaUsuariosCant = np.empty([cantidad],dtype=int)
                 i=0
-                while i<cantidad:
-                        usuariosCorrelCant[i] = usuariosCorrel[i]
-                        listaUsuariosCant[i] = listaUsuarios[i]
-                        i = i + 1
+                j=0
+                while i < cantidad and j < listaUsuarios.size:
+                        if buscarProblemasUser2MinusOwner(listaUsuarios[j]).size > 0:
+                                usuariosCorrelCant[i] = usuariosCorrel[j]
+                                listaUsuariosCant[i] = listaUsuarios[j]
+                                i = i + 1
+                        j = j + 1
                 #lo transformamos en una matriz de 2 columnas (Fusión de ambos arrays en 1 matriz) (Cada array es una columna)
-                matrizResultado = np.array(listaUsuariosCant,usuariosCorrelCant)
+                matrizResultado = np.array(listaUsuariosCant,usuariosCorrelCant) #TODO esto no va bien.
                 matrizResultado.transpose() #Lo trasponemos para hacer que cada columna sea un array y no cada fila sea un array como se genera por defecto.
                 return matrizResultado
 
@@ -199,7 +219,7 @@ class RecomendadorBasico:
                         listaFinal[tamListaFinal] = listaComunes[tamListaFinal]
                         tamListaFinal = tamListaFinal + 1
                 return listaFinal
-        
+
         #Devuelve una lista de problemas que tiene user2 y no owner.
         def buscarProblemasUser2MinusOwner(self, user2):
                 problemasOwner = self.listaProblemasOwner
@@ -228,6 +248,8 @@ class RecomendadorBasico:
                         tamListaFinal = tamListaFinal + 1
                 return listaFinal
 
-#Todo: pruebas que se quitarán.
+# Todo: pruebas que se quitarán.
+sys.setrecursionlimit(50000)
 recomendador = RecomendadorBasico(847)
-recomendador.filtrarNMasSimilares(10)
+a = recomendador.filtrarNMasSimilares(10)
+a

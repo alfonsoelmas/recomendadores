@@ -11,7 +11,9 @@ class JuezDB:
 
         #Metodo obtener usuarios. Devuelve un array con id de usuarios
         def obtenerUsuarios(self):
-                recs = self.cursor.execute('SELECT id FROM users')
+                #Hacemos una consulta eficaz y descartamos aquellos usuarios que tengan 1 o menos entregas aceptadas.
+                #Hemos reducido a la mitad el numero de usuarios!
+                recs = self.cursor.execute('SELECT DISTINCT users.id from users INNER JOIN submission ON users.id = submission.user_id WHERE submission.status = "AC"')
                 listaUsers = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():

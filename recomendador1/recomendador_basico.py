@@ -1,6 +1,7 @@
 import conect
 import numpy as np
 import sys
+import operator
 
 class RecomendadorBasico:
 
@@ -48,29 +49,32 @@ class RecomendadorBasico:
         def recomendar(self,gradoSimilitud):
                 #obtener N mas similares
                 self.grado = gradoSimilitud
-                matrizSimilares = self.filtrarNMasSimilartes(gradoSimilitud)
+                matrizSimilares = self.filtrarNMasSimilares(gradoSimilitud)
                 alterno = True #Si id = True, si correl = False
-                diccionario = 0
+                diccionario = {}
                 listaProblemas = None
                 #Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
                 #Esperemos no tarde tanto...
                 for x in np.nditer(matrizSimilares):
                         if alterno == True:
                                 #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
-                                listaProblemas = self.buscarProblemasUser2MinusOwner(x)
+                                listaProblemas = self.buscarProblemasUser2MinusOwner(int(x))
                                 alterno = False        
                         else:
                                 #Le sumamoss el peso correspondiente (Sumar correlación del usar de referencia partido de N) al problema
                                 correlProblema = x
                                 for idProblema in listaProblemas:
-                                        #Añadimos a nuestro diccionario
-                                        if(diccionario.get(idProblema)==None):
-                                                diccionario[idProblema] = correlProblema/self.grado
+                                        #Añadimos a nuestro diccionario: TODO, CALCULAMOS MAL LA DIVISION. DEBERIA SER PARTIDO DEL TOTAL DE PROBLEMAS QUE VAMOS A BUSCAR O ALGO ASÍ.
+                                        if idProblema in diccionario:
+                                                diccionario.update({idProblema : correlProblema/self.grado + diccionario.get(idProblema)})                                                
                                         else:
-                                                diccionario[idProblema] = correlProblema/self.grado + diccionario[idProblema]
+                                                diccionario.update({idProblema : correlProblema/self.grado})
                                 alterno = True
                 
-                diccionario.sort(key=lambda x: x[1])
+                #todo: esto no ordena. BUSCAR FORMA DE ORDENARLO.
+                #diccionario.sort(key=lambda x: x[1])
+                diccionario = sorted(diccionario.items(), key=operator.itemgetter(1))
+                diccionario.reverse()
                 #Esperemos tampoco tarde...
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
@@ -116,7 +120,9 @@ class RecomendadorBasico:
                         self.__quickSort(arr, arrp, pi+1, high)
 
         def __sortArrays(self,array,arrayp):
+                sys.setrecursionlimit(50000)
                 self.__quickSort(array,arrayp,0,array.size-1)
+                sys.setrecursionlimit(1500)
 
         # ===========================================================
 
@@ -184,8 +190,7 @@ class RecomendadorBasico:
 
                 #lo transformamos en una matriz de 2 columnas (Fusión de ambos arrays en 1 matriz) (Cada array es una columna)
                 matrizResultado = np.array([listaUsuariosCant,usuariosCorrelCant],dtype = float) #TODO esto no va bien, quizas porque necesito parsear el tipo int...
-                matrizResultado.transpose() #Lo trasponemos para hacer que cada columna sea un array y no cada fila sea un array como se genera por defecto.
-                return matrizResultado
+                return matrizResultado.transpose() #Lo trasponemos para hacer que cada columna sea un array y no cada fila sea un array como se genera por defecto.
 
 
         #Devuelve una lista de problemas comunes entre user2 y user
@@ -249,7 +254,7 @@ class RecomendadorBasico:
                 return listaFinal
 
 # Todo: pruebas que se quitarán.
-sys.setrecursionlimit(50000)
+
 recomendador = RecomendadorBasico(847)
-a = recomendador.filtrarNMasSimilares(10)
+a = recomendador.recomendar(10)
 a

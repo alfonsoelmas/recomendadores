@@ -53,10 +53,11 @@ class RecomendadorBasico:
                 diccionario = 0
                 listaProblemas = None
                 #Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
+                #Esperemos no tarde tanto...
                 for x in np.nditer(matrizSimilares):
                         if alterno == True:
                                 #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
-                                listaProblemas = buscarProblemasUser2MinusOwner(x)
+                                listaProblemas = self.buscarProblemasUser2MinusOwner(x)
                                 alterno = False        
                         else:
                                 #Le sumamoss el peso correspondiente (Sumar correlación del usar de referencia partido de N) al problema
@@ -70,6 +71,7 @@ class RecomendadorBasico:
                                 alterno = True
                 
                 diccionario.sort(key=lambda x: x[1])
+                #Esperemos tampoco tarde...
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
 
@@ -147,6 +149,7 @@ class RecomendadorBasico:
                 listaUsuarios = np.array(nusersValidos)
 
                 # Ordenamos la lista de correlación y paralelamente el array de IDs de usuario. (Quizas poco óptimo el algoritmo.)
+                # Hemos descartado usuarios no válidos previamente al realizar el ordenamiento.
                 
                 #Antiguo algoritmo de ordenacion (Complejidad cuadratica.)
                 #i=0
@@ -163,27 +166,24 @@ class RecomendadorBasico:
                 #                 j = j + 1
                 #         i = i + 1
 
-                #Probamos con QuickShort...
+                #Probamos con QuickShort... parece que mejora bastante el ordenamiento.
+                #Todo, comprobar que ordena de mayor a menor.
                 self.__sortArrays(usuariosCorrel, listaUsuarios)
 
-
-
-                # TODO > TENER EN CUENTA MATRIZ DEBE TENER TODO EL MISMO TIPO (FLOAT PARSEO EL ID)
-                # TODO > TRASPONER MATRIZ, LUEGO ORDENARLA POR SEGUNDA FILA> matriz.view('i8,i8,i8').sort(order=['f1'], axis=0) > quedarnos con las N primeras filas.
-                # TODO > SI TRAS ESTO SIGUE TARDANDO, HACER ALMACENAMIENTO "TEMPORAL" Y PERIODICO DE ESTE PASO PARA AGILIZAR > DESVENTAJA : RECOMENDADOR UN POCO MAS FLOJO.
                 #Queremos los N usuarios más similares y que tengan problemas que el propietario no.
                 usuariosCorrelCant = np.empty([cantidad])
                 listaUsuariosCant = np.empty([cantidad],dtype=int)
                 i=0
                 j=0
                 while i < cantidad and j < listaUsuarios.size:
-                        if buscarProblemasUser2MinusOwner(listaUsuarios[j]).size > 0:
+                        if self.buscarProblemasUser2MinusOwner(listaUsuarios[j]).size > 0:
                                 usuariosCorrelCant[i] = usuariosCorrel[j]
                                 listaUsuariosCant[i] = listaUsuarios[j]
                                 i = i + 1
                         j = j + 1
+
                 #lo transformamos en una matriz de 2 columnas (Fusión de ambos arrays en 1 matriz) (Cada array es una columna)
-                matrizResultado = np.array(listaUsuariosCant,usuariosCorrelCant) #TODO esto no va bien.
+                matrizResultado = np.array([listaUsuariosCant,usuariosCorrelCant],dtype = float) #TODO esto no va bien, quizas porque necesito parsear el tipo int...
                 matrizResultado.transpose() #Lo trasponemos para hacer que cada columna sea un array y no cada fila sea un array como se genera por defecto.
                 return matrizResultado
 

@@ -7,6 +7,8 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
   ### Recomendador simple con correlación entre usuarios
   #### Subdirectorio "recomendador1"
   Recomendador simple que aplica el coeficiente de correlación entre usuarios en base a la cantidad de problemas similares y recomienda problemas que tengan otros usuarios con un coeficiente de correlación alto entre ambos.
+  > Nearest Neighborhood modificado
+  > https://es.wikipedia.org/wiki/K_vecinos_m%C3%A1s_pr%C3%B3ximos
   + Clase conect: Implementa conexión a bbdd > En java implementará una interfaz. En python no es necesario.
   + Clase recomendador: Implementa la clase que actúa de recomendador.
   + Coeficiente de correlacion entre dos usuarios> coef(A,B):

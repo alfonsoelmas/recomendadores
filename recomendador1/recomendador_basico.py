@@ -55,6 +55,7 @@ class RecomendadorBasico:
                 listaProblemas = None
                 #Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
                 #Esperemos no tarde tanto...
+                cantidadProblemas = __obtenerCantidadProblemas(matrizSimilares)
                 for x in np.nditer(matrizSimilares):
                         if alterno == True:
                                 #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
@@ -66,9 +67,9 @@ class RecomendadorBasico:
                                 for idProblema in listaProblemas:
                                         #Añadimos a nuestro diccionario: TODO, CALCULAMOS MAL LA DIVISION. DEBERIA SER PARTIDO DEL TOTAL DE PROBLEMAS QUE VAMOS A BUSCAR O ALGO ASÍ.
                                         if idProblema in diccionario:
-                                                diccionario.update({idProblema : correlProblema/self.grado + diccionario.get(idProblema)})                                                
+                                                diccionario.update({idProblema : correlProblema/cantidadProblemas + diccionario.get(idProblema)})                                                
                                         else:
-                                                diccionario.update({idProblema : correlProblema/self.grado})
+                                                diccionario.update({idProblema : correlProblema/cantidadProblemas})
                                 alterno = True
                 
                 #todo: esto no ordena. BUSCAR FORMA DE ORDENARLO.
@@ -78,8 +79,20 @@ class RecomendadorBasico:
                 #Esperemos tampoco tarde...
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
-
-
+        #ObtenerTotalProblemasARecomendar
+        def __obtenerCantidadProblemas(self, matrizUsuarios):
+                alterno =True
+                cantidad = 0
+                for x in np.nditer(matrizUsuarios)
+                        if alterno==True:
+                                #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
+                                listaProblemas = self.buscarProblemasUser2MinusOwner(int(x))
+                                cantidad = cantidad + listaProblemas.size
+                                alterno = False
+                        else:
+                                #Obviamos esta iteración... (Iteramos 1 vez más de lo necesario... :S) 2n vs n (No importa para valores pequeños)
+                                #La obviamos porque es el "contenido" del
+                                alterno = True
         #Metodo privado para ordenar los arrays
         #Todo, sin completar.
         def __partition(self,arr, arrp, low,high): 

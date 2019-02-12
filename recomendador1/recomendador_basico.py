@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import operator
 
+
 class RecomendadorBasico:
 
         #Crea el recomendador con una conexión a la BBDD y el usuario a recomendar y los problemas del usuario
@@ -11,12 +12,6 @@ class RecomendadorBasico:
                 self.conexionDB = conect.JuezDB()
                 self.listaProblemasOwner = self.obtenerProblemas(self.userIDowner)
                 self.grado = 0 #El grado sera el grado de similitud o el máximo de usuarios posibles. Servira para calcular el peso del problema. (En recomendar). Se remodifica tanto en metodo filtrarNsimilares como en recomendar
-
-        #TODO
-        def periodico(self):
-                #Todo: Esta funciona cargara periodicamente en memoria los problemas de cada usuario para agilizar hacer constantes consultas que pierden eficiencia.
-                #Las funciones problemas comunes, problemasNocomunes, etc dejaran de hacer consultas para obtenerlo de memoria en caso de que sea posible. (if no existe en memoria, consulta, sino, de memoria).
-                return None
 
         #Devuelve la correlacion entre 2 usuarios
         def correlacion(self,user1):
@@ -43,7 +38,6 @@ class RecomendadorBasico:
                 return self.conexionDB.obtenerUsuarios()
 
 
-
         # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
         # Todo: testear
         def recomendar(self,gradoSimilitud):
@@ -55,8 +49,8 @@ class RecomendadorBasico:
                 listaProblemas = None
                 #Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
                 #Esperemos no tarde tanto...
-                cantidadProblemas = __obtenerCantidadProblemas(matrizSimilares)
-                for x in np.nditer(matrizSimilares):
+                #cantidadProblemas = self.__obtenerCantidadProblemas(matrizSimilares)
+                for x in np.nditer(matrizSimilares, order='C'):
                         if alterno == True:
                                 #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
                                 listaProblemas = self.buscarProblemasUser2MinusOwner(int(x))
@@ -67,9 +61,9 @@ class RecomendadorBasico:
                                 for idProblema in listaProblemas:
                                         #Añadimos a nuestro diccionario: TODO, CALCULAMOS MAL LA DIVISION. DEBERIA SER PARTIDO DEL TOTAL DE PROBLEMAS QUE VAMOS A BUSCAR O ALGO ASÍ.
                                         if idProblema in diccionario:
-                                                diccionario.update({idProblema : correlProblema/cantidadProblemas + diccionario.get(idProblema)})                                                
+                                                diccionario.update({idProblema : correlProblema/gradoSimilitud + diccionario.get(idProblema)})                                                
                                         else:
-                                                diccionario.update({idProblema : correlProblema/cantidadProblemas})
+                                                diccionario.update({idProblema : correlProblema/gradoSimilitud})
                                 alterno = True
                 
                 #todo: esto no ordena. BUSCAR FORMA DE ORDENARLO.
@@ -80,19 +74,22 @@ class RecomendadorBasico:
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
         #ObtenerTotalProblemasARecomendar
-        def __obtenerCantidadProblemas(self, matrizUsuarios):
-                alterno =True
-                cantidad = 0
-                for x in np.nditer(matrizUsuarios)
-                        if alterno==True:
-                                #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
-                                listaProblemas = self.buscarProblemasUser2MinusOwner(int(x))
-                                cantidad = cantidad + listaProblemas.size
-                                alterno = False
-                        else:
+        #No hace falta.
+        #def __obtenerCantidadProblemas(self, matrizUsuarios):
+        #        alterno =True
+        #        cantidad = 0
+        #        for x in np.nditer(matrizUsuarios):
+        #                if alterno==True:
+        #                        #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
+        #                        listaProblemas = self.buscarProblemasUser2MinusOwner(int(x))
+        #                        cantidad = cantidad + listaProblemas.size
+        #                        alterno = False
+        #                else:
                                 #Obviamos esta iteración... (Iteramos 1 vez más de lo necesario... :S) 2n vs n (No importa para valores pequeños)
                                 #La obviamos porque es el "contenido" del
-                                alterno = True
+        #                        alterno = True
+        #        return cantidad
+
         #Metodo privado para ordenar los arrays
         #Todo, sin completar.
         def __partition(self,arr, arrp, low,high): 
@@ -267,7 +264,53 @@ class RecomendadorBasico:
                 return listaFinal
 
 # Todo: pruebas que se quitarán.
+f = open("resultados.txt", "w")
 
-recomendador = RecomendadorBasico(847)
-a = recomendador.recomendar(10)
-a
+
+
+conexion = conect.JuezDB()
+listaTodosUsuarios = conexion.obtenerTodosUsuarios()
+
+for usuario in np.nditer(listaTodosUsuarios):
+        recomendador = RecomendadorBasico(usuario)
+        a = recomendador.recomendar(10000)
+        f.write('USUARIO: '+ str(usuario) +'\n')
+        f.write('===========================\n')
+        for idproblema, valor in a:
+                f.write(str(idproblema) +'-->'+ str(valor) +'\n')
+        f.write('===========================\n')
+
+f.close()
+
+
+
+
+"""
+
+tiempo de calculo
+discriminaria problemas con menos entregas quizas, y sería más costoso que recomendase esos problemas a no ser que el usuario a recomendar ya halla realizado problemas con muchas entregas...
+menos eficaz para aquellos usuarios que tengan menos problemas resueltos. (Ya que recomendaría problemas que mas AC tienen principalmente)...
+
+
+Para un N pequeño es poco preciso ya que hay bastantes usuarios cuya correlacion es casi 1 por haber resuelto casi todos los problemas. Para grandes precisiones... mejor un N casi del maximo.
+
+Probemos...
+
+si N = maximo usuarios que cumplen condicion de tener algun problema diferente...
+obtenemos un grado de fiabilidad alto, pero el tiempo de calculo empeora un poco
+
+para un N suficientemente fiable, podemos calcularlo estimando cuantos usuarios deberíamos observar sobre el total.
+
+Si N = 10 de 5000 > Muy poco fiable y valores similares
+Si N = 1000 de 5000, aumenta la fiabilidad pero nuestra "fuerza" de recomendacion sobre los problemas desciende bastante (Si antes teniamos valores de casi 1 sobre 1, ahora tenemos valores de 0.07 los mas altos)
+ (Todo esto bajo el usuario de prueba "alfonsoelmas" con un total de 122 problemas resueltos (Una cantidad medio-alta sobre el total)
+
+**TODO:
+	Y para un usuario con cantidad medio-baja?
+	como estimar un grado de recomendacion optimo?
+	Multiplicar por algo el resultado para que no tenga tantos decimales?...
+    
+    CREAR VERSION EN LA QUE CARGUEMOS UNA MATRIZ DE FILAS(USERS)COLUMNAS(PROBLEMAS) EN MEMORIA PARA REDUCIR LAS CONSULTAS Y POR ENDE LA SOBRECARGA DE LA BBDD Y POR ENDE EL TIEMPO.
+    CONSIDERAR QUE PARA UNA BBDD MUY GRANDE CARGAR TODO EN MEMORIA NOS SUPONDRÍA UN PROBLEMA DEBIDO A LA EXISTENCIA DE RECURSOS LIMITADOS DEL ORDENADOR.
+
+"""

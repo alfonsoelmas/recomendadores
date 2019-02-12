@@ -32,3 +32,8 @@ class JuezDB:
                                 i=i+1
                         return listaProblemas
 
+                    
+        #Obtiene una matriz de filas(usuarios) / columnas (problemas por usuario)
+        #La matriz será de tamaño NxM (N= total usuarios /M= total problemas)
+        def cargarMatriz(self):
+                        return

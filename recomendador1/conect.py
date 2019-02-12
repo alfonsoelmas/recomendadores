@@ -32,8 +32,12 @@ class JuezDB:
                                 i=i+1
                         return listaProblemas
 
-
-        #Obtiene una matriz de filas(usuarios) / columnas (problemas por usuario)
-        #La matriz será de tamaño NxM (N= total usuarios /M= total problemas)
-        def cargarMatriz(self):
-                        return
+        #Obtener todos los usuarios para testear recomendacion sobre cada uno
+        def obtenerTodosUsuarios(self):
+                recs = self.cursor.execute('SELECT id from users')
+                listaUsers = np.empty([recs],dtype=int)
+                i=0
+                for row in self.cursor.fetchall():
+                        listaUsers[i] = row[0]
+                        i=i+1
+                return listaUsers

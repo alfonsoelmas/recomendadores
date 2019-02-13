@@ -24,7 +24,7 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
    > Optimizar y replantearselo de otra forma.
    > Estudiar si para ciertos casos recomienda lo mismo
    
-   
+   > **IMPORTANTE: HAY RECOMENDACIONES SOBRE ALGUNOS USUARIOS QUE DAN VALORES BASTANTE MAYORES QUE 1, Y NO DEBERÍA... MIRAR ESOS USUARIOS EN BBDD Y DEPURAR RECOMENDADOR CON ESOS USUARIOS PARA VER COMO ACTUA** para aquellos usuarios que tenemos la lista vacía o a Cero o valores mayores que 1...
 
   ### Recomendador basado en redes neuronales
   #### Subdirectorio "recomendadorNeuronal"

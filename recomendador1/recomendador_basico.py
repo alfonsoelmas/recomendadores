@@ -264,21 +264,25 @@ class RecomendadorBasico:
                 return listaFinal
 
 # Todo: pruebas que se quitarán.
-f = open("resultados.txt", "w")
+f = open("resultados2.txt", "w")
 
 
 
 conexion = conect.JuezDB()
 listaTodosUsuarios = conexion.obtenerTodosUsuarios()
 
+salto = 100
 for usuario in np.nditer(listaTodosUsuarios):
-        recomendador = RecomendadorBasico(usuario)
-        a = recomendador.recomendar(10000)
-        f.write('USUARIO: '+ str(usuario) +'\n')
-        f.write('===========================\n')
-        for idproblema, valor in a:
-                f.write(str(idproblema) +'-->'+ str(valor) +'\n')
-        f.write('===========================\n')
+        if(salto>0): #Nos saltamos los 100 primeros usuarios ya que hemos recomendado varios
+                salto = salto - 1
+        else:
+                recomendador = RecomendadorBasico(usuario)
+                a = recomendador.recomendar(10000)
+                f.write('USUARIO: '+ str(usuario) +'\n')
+                f.write('===========================\n')
+                for idproblema, valor in a:
+                        f.write(str(idproblema) +'-->'+ str(valor) +'\n')
+                f.write('===========================\n')
 
 f.close()
 

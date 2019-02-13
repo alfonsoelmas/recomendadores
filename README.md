@@ -22,6 +22,7 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
    > Mejorar y ver como meter aprendizaje en base a aciertos de recomendación¿?
    > Comentar ventajas e inconvenientes
    > Optimizar y replantearselo de otra forma.
+   > Estudiar si para ciertos casos recomienda lo mismo
    
    
 

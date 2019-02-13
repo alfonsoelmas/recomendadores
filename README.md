@@ -6,7 +6,7 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
 ## Estructura
   ### Recomendador simple con correlación entre usuarios
   #### Subdirectorio "recomendador1"
-  Recomendador simple que aplica el coeficiente de correlación entre usuarios en base a la cantidad de problemas similares y recomienda problemas que tengan otros usuarios con un coeficiente de correlación alto entre ambos.
+  Recomendador simple sin aprendizaje aplica el coeficiente de correlación entre usuarios en base a la cantidad de problemas similares y recomienda problemas que tengan otros usuarios con un coeficiente de correlación alto entre ambos.
   > Nearest Neighborhood modificado
   > https://es.wikipedia.org/wiki/K_vecinos_m%C3%A1s_pr%C3%B3ximos
   + Clase conect: Implementa conexión a bbdd > En java implementará una interfaz. En python no es necesario.
@@ -14,11 +14,16 @@ El proyecto contiene varios recomendadores hasta llegar a un recomendador defini
   + Coeficiente de correlacion entre dos usuarios> coef(A,B):
     + Sea pA el conjunto de problemas del usuario A a recomendar, pB el conjunto de problemas del usuario B sobre el que observar. (pA ∩ pB) los problemas en comun de pA y pB... Definimos el grado de relación de un usuario B respecto a A sobre 1 como |(pA ∩ pB)|/|pA|.
    + Grado o N:
-     + Definimos el grado de recomendación (o N) como el número de usuarios sobre el que vamos a referenciar la recomendación siendo este el máximo posible el total de usuarios de la Base de datos. El grado 
+     + Definimos el grado de recomendación (o N) como el número de usuarios sobre el que vamos a referenciar la recomendación siendo este el máximo posible el total de usuarios de la Base de datos. Estos N usuarios serán los que tengan mayor correlación respecto al usuario a recomendar.
    + Problemas a recomendar:
      + Dados N usuarios con coeficiente de correlación alto sobre el usuario a recomendar A. Sean pBi los problemas de un usuario Bi, y pA los problemas de pA. Los problemas a recomendar al usuario A vienen dados calculando coef. correl de Bi sobre A para cada problema t.q (pBi-pA) * coef.Correl/(grado). Obteniendo una tabla de id, n, listado coeficientes (por problema). para obtener una media(En realidad no habría que aplicar una media como tal, seguramente) de correlación de problemas y ordenarlos de mayor a menor. Posteriormente, se podrán recomendar varios problemas con diferente grado de recomendación. Además tendrán diferentes recomendaciónes segun el conjunto N de usuarios a elegir. (Máximo toda la base de datos> Esto no es óptimo en rendimiento, pero si es mejor en precisión)
    + Genera problemas de recomendacion si usuario nuevo, ya que recomendará los más realizados y seguirá un patrón tras ello probablemente.
    > Solucionar haciendo un random correl muy ligero para dar un poco más de peso aleatorio a algunos problemas y que no siempre recomiende lo mismo dentro de una recomendación mínimamente acertada. (O si tengo N problemas con un grado de recomendación similar, hacer un random pa recomendar uno de ellos).
+   > Mejorar y ver como meter aprendizaje en base a aciertos de recomendación¿?
+   > Comentar ventajas e inconvenientes
+   > Optimizar y replantearselo de otra forma.
+   
+   
 
   ### Recomendador basado en redes neuronales
   #### Subdirectorio "recomendadorNeuronal"

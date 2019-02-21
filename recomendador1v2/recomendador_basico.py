@@ -42,12 +42,15 @@ class RecomendadorBasico:
                 # self.listaProblemasOwner = self.obtenerProblemas(self.userIDowner)
 
         #Devuelve la correlacion entre 2 usuarios
-        def correlacion(self,user1):
+        def correlacion(self,posUser1):
                 #Anotación: la siguiente busqueda puede darse como una consulta más compleja antes que de forma algoritmica. (comprobar mejora de rendimiento)
                 #AHORA ESTAMOS TRABAJANDO CON POSICIONES DE USUARIOS !!!
-                prob_comunes    = self.buscarProblemasComunes(user1) #(pA)intersección(pB)
-                tam_comunes     = prob_comunes.size #|(pA)intersección(pB)|
-                tam_pA          = self.listaProblemasOwner.size #|pA|
+                posOwner = self.userPosOwner
+                posUser  = posUser1
+
+                tam_comunes    = self.tamProblemasComunes(posUser) #(pA)intersección(pB)
+                self.ownerSizeCant =  calcularTamProblemasUser(posOwner)
+                tam_pA = self.ownerSizeCant
                 #todo comprobar condiciones de tamaños 0, etc.
                 if tam_comunes!=0 and tam_pA!=0:
                         correl = tam_comunes/tam_pA
@@ -55,6 +58,13 @@ class RecomendadorBasico:
                 else:
                         return 0
 
+        def calcularTamProblemasUser(self, posUser):
+            i = 0
+            j = 0
+            while i < self.matrizDatos.shape[1]
+                if self.matrizDatos[posUser][i] == 1:
+                    j = j + 1
+            return j
         # Obtencion de los problemas válidos de un usuario X
         # Llamar a esta funcion periodicamente y dejarla en memoria cada T tiempo actualizarla. (para agilizar calculo obtener correlacion de cada usuario, etc)
         def obtenerProblemas(self, user):
@@ -106,22 +116,6 @@ class RecomendadorBasico:
                 #Esperemos tampoco tarde...
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
-        #ObtenerTotalProblemasARecomendar
-        #No hace falta.
-        #def __obtenerCantidadProblemas(self, matrizUsuarios):
-        #        alterno =True
-        #        cantidad = 0
-        #        for x in np.nditer(matrizUsuarios):
-        #                if alterno==True:
-        #                        #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
-        #                        listaProblemas = self.buscarProblemasUser2MinusOwner(int(x))
-        #                        cantidad = cantidad + listaProblemas.size
-        #                        alterno = False
-        #                else:
-                                #Obviamos esta iteración... (Iteramos 1 vez más de lo necesario... :S) 2n vs n (No importa para valores pequeños)
-                                #La obviamos porque es el "contenido" del
-        #                        alterno = True
-        #        return cantidad
 
         # Devuelve una lista de los usuarios más similares respecto al que se va a recomendar (De cantidad "cantidad")
         # Esta lista implicará la precisión a la hora de recomendar.
@@ -134,28 +128,11 @@ class RecomendadorBasico:
                         self.grado  = self.matrizDatos.shape[0]
                 i = 0
 
-                #TODO> ALGORITMO POCO EFICAZ> DESCARTAR USUARIOS CULLA CORRELACION SEA 0...
-                nusuariosCorrel = []
-                nusersValidos = []
-                #Para esto tarda casi un minuto... OPTIMIZAR ALGORITMO CORRELACION.
-                for user in nlistaUsuarios:
-                        correl = self.correlacion(user)
-                        if correl > 0:
-                            nusuariosCorrel.append(correl)
-                            nusersValidos.append(user)
-                            i = i + 1
-                usuariosCorrel = np.array(nusuariosCorrel)
-                listaUsuarios = np.array(nusersValidos)
-
-                # Ordenamos la lista de correlación y paralelamente el array de IDs de usuario. (Quizas poco óptimo el algoritmo.)
-                # Hemos descartado usuarios no válidos previamente al realizar el ordenamiento
-
-                # Probamos con QuickShort... parece que mejora bastante el ordenamiento.
-                # Todo, comprobar que ordena de mayor a menor.
-		# https://docs.scipy.org/doc/numpy-1.15.1/reference/generated/numpy.sort.html ARREGLAR TAMBIEN LO DE ARRIBA
-		
-		# ESTO SERA UNA MATRIZ DE POSICIONES/CORRELACION y se ordenara con numpy por posiciones
-		# TODO: Cambiar
+                while i < self.matrizDatos.shape[0]:
+                    correl = self.correlacion(i)
+                    # TODO aqui me he quedado
+                    i = i + 1
+               
                 self.__sortArrays(usuariosCorrel, listaUsuarios)
 
                 #Queremos los N usuarios más similares y que tengan problemas que el propietario no.
@@ -175,37 +152,43 @@ class RecomendadorBasico:
                 return matrizResultado.transpose() #Lo trasponemos para hacer que cada columna sea un array y no cada fila sea un array como se genera por defecto.
 
 
-        #Devuelve una lista de problemas comunes entre user2 y user
+        #Devuelve array de posiciones comunes
         def buscarProblemasComunes(self,user2):
-                problemasOwner = self.listaProblemasOwner
-                problemasUser2 = self.obtenerProblemas(user2)
-                tam = 0
-                listaComunes = np.empty([0]) #Inicializamos listaComunes a 0
-                #El tamaño máximo de nuestro array comun será el mínimo del nº de problemas de uno de los dos
-                if problemasOwner.size > problemasUser2.size:
-                        #El propietario tiene más problemas
-                        listaComunes = np.empty([problemasUser2.size],dtype=int)
-                else:
-                        #El propietario tiene menos problemas
-                        listaComunes = np.empty([problemasOwner.size],dtype=int)
-                        
-                #Itero de tal forma que para cada problema del propietario busco en el otro usuario sus problemas. Si está lo añado a la lista y dejo de buscar ese problema.
-                comp = False
-                for problemaOwner in problemasOwner:
-                        for problema in problemasUser2:
-                                if comp == True:
-                                        break
-                                if problemaOwner == problema:
-                                        listaComunes[tam] = problema
-                                        tam = tam + 1
-                                        comp = True
-                        comp = False
-                tamListaFinal = 0
-                listaFinal = np.empty([tam],dtype=int) #Creamos un listado final con el tamaño adecuado
-                while tamListaFinal < tam:
-                        listaFinal[tamListaFinal] = listaComunes[tamListaFinal]
-                        tamListaFinal = tamListaFinal + 1
-                return listaFinal
+                posOwner = self.userPosOwner
+                posUser  = user2
+
+                i = 0
+                j = 0
+                arrayProvisionalPos = np.empty([self.matrizDatos.size],dtype=int)
+                while i < self.matrizDatos.shape[1]
+                    if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
+                        arrayProvisionalPos[j] = i
+                        j = j + 1
+                    i = i + 1
+
+                arrayPosComun = np.empty([j],dtype=int)
+                i = 0
+                while i < j:
+                    arrayPosComun[i] = arrayProvisionalPos[i]
+                    i = i + 1
+
+                return arrayPosComun
+
+        #Devuelve el tamaño de problemas comunes. Se ha creado para ser un poco mas eficientes que obtener el listado como
+        #La funcion previa a esta
+        def tamProblemasComunes(self,user2):
+                posOwner = self.userPosOwner
+                posUser  = user2
+
+                i = 0
+                j = 0
+                while i < self.matrizDatos.shape[1]
+                    if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
+                        j = j + 1
+                    i = i + 1
+
+                return j
+
 
         #Devuelve una lista de problemas que tiene user2 y no owner.
         def buscarProblemasUser2MinusOwner(self, user2):

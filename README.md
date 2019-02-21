@@ -4,10 +4,11 @@ Código fuente de los estudios sobre los recomendadores.
 El proyecto contiene varios recomendadores hasta llegar a un recomendador definitivo y complejo, que se retroalimenta y mejora.
 
 ## Estructura
-  ### Recomendador simple con correlación entre usuarios
-  #### Subdirectorio "recomendador1"
-  Recomendador simple sin aprendizaje aplica el coeficiente de correlación entre usuarios en base a la cantidad de problemas similares y recomienda problemas que tengan otros usuarios con un coeficiente de correlación alto entre ambos.
-  > Nearest Neighborhood modificado
+  ### Recomendador de k-vecinos más similares / correlación entre usuarios
+  #### Subdirectorios "recomendador1" y "recomendador1-v2"
+  Recomendador que aplica el coeficiente de correlación entre usuarios en base a la cantidad de problemas similares y recomienda problemas que tengan otros usuarios con un coeficiente de correlación alto entre ambos.
+  El recomendador1-v2 tiene modificaciones al tratar los datos para optimizar la recomendación. Obtenemos todos los datos y lo cargamos en una matriz de filas=usuarios / columnas = problemas, contenido = problema hecho o no hecho por un usuario (1 y 0). Con esta matriz realizamos todas las operaciones necesarias de manera eficiente.
+  > Nearest Neighborhood modificado - Se basa en ideas de este método de recomendación, pero adaptado y modificado.
   > https://es.wikipedia.org/wiki/K_vecinos_m%C3%A1s_pr%C3%B3ximos
   + Clase conect: Implementa conexión a bbdd > En java implementará una interfaz. En python no es necesario.
   + Clase recomendador: Implementa la clase que actúa de recomendador.

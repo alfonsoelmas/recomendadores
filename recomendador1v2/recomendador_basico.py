@@ -128,12 +128,15 @@ class RecomendadorBasico:
                         self.grado  = self.matrizDatos.shape[0]
                 i = 0
 
+                #Creamos matriz de posicionUser-correlacion y posteriormente la ordenaremos
+                matrizCorrelPos = np.empty([self.matrizDatos.shape[0],2])
                 while i < self.matrizDatos.shape[0]:
                     correl = self.correlacion(i)
-                    # TODO aqui me he quedado
+                    matrizCorrelPos[i][0] = i
+                    matrizCorrelPos[i][1] = correl
                     i = i + 1
-               
-                self.__sortArrays(usuariosCorrel, listaUsuarios)
+                #Todo: ver si esto funciona               
+                matrizCorrelPos = sorted(matrizCorrelPos, key=lambda a_entry: a_entry[1])
 
                 #Queremos los N usuarios más similares y que tengan problemas que el propietario no.
                 usuariosCorrelCant = np.empty([cantidad])

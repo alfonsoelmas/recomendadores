@@ -3,7 +3,32 @@ import numpy as np
 import sys
 import operator
 
+"""
+Recomendador k-vecinos fijandonos en correlación entre usuarios
+El recomendador realiza el siguiente algoritmo para recomendar:
 
+- usuario a recomendar: Owner > O:
+para un O, obtenemos una lista de los K usuarios más similares con su correlación correspondiente.
+Esta lista se obtiene calculando la correlación para cada usuario Bi de la BBDD, con O.
+    El cálculo de la correlación entre Bi y O se basa en:
+    - pO  = conjunto problemas de Owner
+    - pBi = conjunto de problemas de usuario Bi
+    - X[*operacion*]Y = *operacion* realizada entre elemento de la izquierda X, elemento de la derecha Y
+    - [*operacion*]X  = *operacion* realizada sobre elemento X
+    correlacion = ([*tam*](pBi[*intersección*]pO))[*division*]([*tam*]pO) Sii [*tam*]pO > 0 ^ [*tam*](pBi[*intersección*]pO) > 0
+- peso de recomendación: pesoDeRecomendación > pdR
+Tras este cálculo, creamos un diccionario (D) de Clave=idProblema / Valor=pesoDeRecomendación.
+De esta forma, obtenemos para cada Bi el resultado de restar los conjuntos pBi con pO. (Los problemas que tiene Bi y no Owner)
+- rpBi = pBi[*resta-conjuntos*]pO = problemas que Bi tiene y no Owner
+para cada elemento de rpBi le sumamos el peso correspondiente a la correlación de ese usuario, en el diccionario tal que:
+- (rpBi)j  = elemento del conjunto rpBi
+D[(rpBi)j] = D[(rpBi)j][*suma*]((Bi[*correlacion*]O)[*division*]K)
+Si no existía el problema en el diccionario, se inicializa a cero y se realiza la suma.
+Al dividir por K, nos aseguramos el resultado nunca sea mayor que 1.
+Tras realizar la operación para cada elemento, ordenamos el diccionario por su valor de mayor a menor se devolvuelve esta lista ordenada y lo más ámplia posible.
+a recomendar con un peso de recomendación, con su clave/valor.
+Cuanto más grande sea K más precisa será la recomendación, pero al peso le costará más alcanzar el valor máximo (1).
+"""
 class RecomendadorBasico:
 
         # Crea el recomendador con la matriz de datos el id del owner y su posicion de la matriz (Su fila es su correspondiente)
@@ -20,9 +45,9 @@ class RecomendadorBasico:
         def correlacion(self,user1):
                 #Anotación: la siguiente busqueda puede darse como una consulta más compleja antes que de forma algoritmica. (comprobar mejora de rendimiento)
                 #AHORA ESTAMOS TRABAJANDO CON POSICIONES DE USUARIOS !!!
-                prob_comunes = self.buscarProblemasComunes(user1) #(pA)intersección(pB)
-                tam_comunes = prob_comunes.size #|(pA)intersección(pB)|
-                tam_pA = self.listaProblemasOwner.size #|pA|
+                prob_comunes    = self.buscarProblemasComunes(user1) #(pA)intersección(pB)
+                tam_comunes     = prob_comunes.size #|(pA)intersección(pB)|
+                tam_pA          = self.listaProblemasOwner.size #|pA|
                 #todo comprobar condiciones de tamaños 0, etc.
                 if tam_comunes!=0 and tam_pA!=0:
                         correl = tam_comunes/tam_pA

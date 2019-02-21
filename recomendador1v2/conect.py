@@ -105,8 +105,10 @@ class JuezDB:
                                 self.matrizDatos[i,pos] = 1
                         i = i + 1
 
+        # Devuelve a matriz de datos
         def obtenerMatriz(self):
                 return self.matrizDatos
 
+        # Devuelve la posición en la matriz de un ID de usuario dado
         def obtenerPosUser(self, idUser):
                 return self._obtenerPos(idUser,"users")

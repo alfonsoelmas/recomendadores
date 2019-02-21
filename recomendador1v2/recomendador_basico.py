@@ -123,65 +123,15 @@ class RecomendadorBasico:
         #                        alterno = True
         #        return cantidad
 
-        #Metodo privado para ordenar los arrays
-        #Todo, sin completar.
-        def __partition(self,arr, arrp, low,high): 
-            i = ( low-1 )         # index of smaller element 
-            pivot = arr[high]     # pivot 
-          
-            for j in range(low , high): 
-          
-                # If current element is smaller than or 
-                # equal to pivot 
-                if   arr[j] >= pivot: 
-                  
-                        # increment index of smaller element 
-                        i = i+1 
-                        arr[i],arr[j] = arr[j],arr[i]
-                        arrp[i],arrp[j] = arrp[j],arrp[i]
-          
-            arr[i+1],arr[high] = arr[high],arr[i+1]
-            arrp[i+1],arrp[high] = arrp[high],arrp[i+1] 
-            return ( i+1 ) 
-          
-        # The main function that implements QuickSort 
-        # arr[] --> Array to be sorted, 
-        # low  --> Starting index, 
-        # high  --> Ending index 
-          
-        # Function to do Quick sort 
-        def __quickSort(self,arr,arrp,low,high): 
-                if low < high: 
-          
-                        # pi is partitioning index, arr[p] is now 
-                        # at right place 
-                        pi = self.__partition(arr, arrp,low,high) 
-          
-                        # Separately sort elements before 
-                        # partition and after partition 
-                        self.__quickSort(arr, arrp, low, pi-1) 
-                        self.__quickSort(arr, arrp, pi+1, high)
-
-        def __sortArrays(self,array,arrayp):
-                sys.setrecursionlimit(50000)
-                self.__quickSort(array,arrayp,0,array.size-1)
-                sys.setrecursionlimit(1500)
-
-        # ===========================================================
-
-
-
         # Devuelve una lista de los usuarios más similares respecto al que se va a recomendar (De cantidad "cantidad")
         # Esta lista implicará la precisión a la hora de recomendar.
         # Todo: Testear
         def filtrarNMasSimilares(self,cantidad):
-                nlistaUsuarios = self.obtenerUsuarios()
-                
-                # Generamos una lista de correlacion asociada a la lista de Usuarios.
 
-                if cantidad > nlistaUsuarios.size:
-                        cantidad = nlistaUsuarios.size
-                        self.grado = nlistaUsuarios.size
+                # Generamos una lista de correlacion asociada a la lista de Usuarios.
+                if cantidad > self.matrizDatos.shape[0]:
+                        cantidad    = self.matrizDatos.shape[0]
+                        self.grado  = self.matrizDatos.shape[0]
                 i = 0
 
                 #TODO> ALGORITMO POCO EFICAZ> DESCARTAR USUARIOS CULLA CORRELACION SEA 0...
@@ -199,20 +149,6 @@ class RecomendadorBasico:
 
                 # Ordenamos la lista de correlación y paralelamente el array de IDs de usuario. (Quizas poco óptimo el algoritmo.)
                 # Hemos descartado usuarios no válidos previamente al realizar el ordenamiento
-                #Antiguo algoritmo de ordenacion (Complejidad cuadratica.)
-                #i=0
-                # while i < usuariosCorrel.size:
-                #         j = i
-                #         while j < usuariosCorrel.size:
-                #                 if(usuariosCorrel[j] > usuariosCorrel[i]):
-                #                         reserva = usuariosCorrel[i]
-                #                         usuariosCorrel[i] = usuariosCorrel[j]
-                #                         usuariosCorrel[j] = reserva
-                #                         reserva = listaUsuarios[i]
-                #                         listaUsuarios[i] = listaUsuarios[j]
-                #                         listaUsuarios[j] = reserva
-                #                 j = j + 1
-                #         i = i + 1
 
                 # Probamos con QuickShort... parece que mejora bastante el ordenamiento.
                 # Todo, comprobar que ordena de mayor a menor.

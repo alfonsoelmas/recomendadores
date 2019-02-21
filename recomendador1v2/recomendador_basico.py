@@ -192,6 +192,9 @@ class RecomendadorBasico:
 
                 #Probamos con QuickShort... parece que mejora bastante el ordenamiento.
                 #Todo, comprobar que ordena de mayor a menor.
+		
+		# ESTO SERA UNA MATRIZ DE POSICIONES/CORRELACION y se ordenara con numpy por posiciones
+		# TODO: Cambiar
                 self.__sortArrays(usuariosCorrel, listaUsuarios)
 
                 #Queremos los N usuarios más similares y que tengan problemas que el propietario no.

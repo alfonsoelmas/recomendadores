@@ -135,7 +135,12 @@ class RecomendadorBasico:
                     matrizCorrelPos[i][0] = i
                     matrizCorrelPos[i][1] = correl
                     i = i + 1
-                #Todo: ver si esto funciona               
+                #Todo: ver si esto funciona
+                """
+                ver como ordeno las filas de la matriz fijandome en la primera columna
+                -----
+                ver como obtener submatriz de todas las columnas y las N primeras filas
+                """               
                 matrizCorrelPos = sorted(matrizCorrelPos, key=lambda a_entry: a_entry[1])
 
                 #Queremos los N usuarios más similares y que tengan problemas que el propietario no.

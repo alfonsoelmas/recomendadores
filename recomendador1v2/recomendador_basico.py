@@ -173,8 +173,7 @@ class RecomendadorBasico:
                 listaUsuarios = np.array(nusersValidos)
 
                 # Ordenamos la lista de correlación y paralelamente el array de IDs de usuario. (Quizas poco óptimo el algoritmo.)
-                # Hemos descartado usuarios no válidos previamente al realizar el ordenamiento.
-                
+                # Hemos descartado usuarios no válidos previamente al realizar el ordenamiento
                 #Antiguo algoritmo de ordenacion (Complejidad cuadratica.)
                 #i=0
                 # while i < usuariosCorrel.size:
@@ -190,8 +189,9 @@ class RecomendadorBasico:
                 #                 j = j + 1
                 #         i = i + 1
 
-                #Probamos con QuickShort... parece que mejora bastante el ordenamiento.
-                #Todo, comprobar que ordena de mayor a menor.
+                # Probamos con QuickShort... parece que mejora bastante el ordenamiento.
+                # Todo, comprobar que ordena de mayor a menor.
+		# https://docs.scipy.org/doc/numpy-1.15.1/reference/generated/numpy.sort.html ARREGLAR TAMBIEN LO DE ARRIBA
 		
 		# ESTO SERA UNA MATRIZ DE POSICIONES/CORRELACION y se ordenara con numpy por posiciones
 		# TODO: Cambiar

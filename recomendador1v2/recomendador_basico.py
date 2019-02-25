@@ -25,7 +25,7 @@ para cada elemento de rpBi le sumamos el peso correspondiente a la correlación 
 D[(rpBi)j] = D[(rpBi)j][*suma*]((Bi[*correlacion*]O)[*division*]K)
 Si no existía el problema en el diccionario, se inicializa a cero y se realiza la suma.
 Al dividir por K, nos aseguramos el resultado nunca sea mayor que 1.
-Tras realizar la operación para cada elemento, ordenamos el diccionario por su valor de mayor a menor se devolvuelve esta lista ordenada y lo más ámplia posible.
+Tras realizar la operación para cada elemento, ordenamos el diccionario por su valor de mayor a menor se devuelve esta lista ordenada y lo más ámplia posible.
 a recomendar con un peso de recomendación, con su clave/valor.
 Cuanto más grande sea K más precisa será la recomendación, pero al peso le costará más alcanzar el valor máximo (1).
 """
@@ -48,7 +48,7 @@ class RecomendadorBasico:
                 posOwner = self.userPosOwner
                 posUser  = posUser1
 
-                tam_comunes    = self.tamProblemasComunes(posUser) #(pA)intersección(pB)
+                tam_comunes    	= self.tamProblemasComunes(posUser) #(pA)intersección(pB)
                 self.ownerSizeCant =  calcularTamProblemasUser(posOwner)
                 tam_pA = self.ownerSizeCant
                 #todo comprobar condiciones de tamaños 0, etc.
@@ -80,13 +80,10 @@ class RecomendadorBasico:
         # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
         # Todo: testear
         def recomendar(self,gradoSimilitud):
-
-
-
-
                 #obtener N mas similares
                 self.grado = gradoSimilitud
                 matrizSimilares = self.filtrarNMasSimilares(gradoSimilitud)
+		
                 alterno = True #Si id = True, si correl = False
                 diccionario = {}
                 listaProblemas = None

@@ -67,15 +67,17 @@ class RecomendadorBasico:
             return j
         # Obtencion de los problemas válidos de un usuario X
         # Llamar a esta funcion periodicamente y dejarla en memoria cada T tiempo actualizarla. (para agilizar calculo obtener correlacion de cada usuario, etc)
-        def obtenerProblemas(self, user):
+        """
+	def obtenerProblemas(self, user):
                 #Obener Array de problemas.
                 return self.conexionDB.obtenerEntregasValidasDeUser(user)
-
+	"""
 
         # Obtiene el listado actual de usuarios
-        def obtenerUsuarios(self):
+        """
+	def obtenerUsuarios(self):
                 return self.conexionDB.obtenerUsuarios()
-
+	"""
 
         # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
         # Todo: testear
@@ -189,7 +191,15 @@ class RecomendadorBasico:
 
 
         #Devuelve una lista de problemas que tiene user2 y no owner.
+	#TODO VOY AQUI
         def buscarProblemasUser2MinusOwner(self, user2):
+		posOwner = self.userPosOwner
+		posUser2 = user2
+		tam = 0
+		listaNoComunes = np.empty(self.matrizDatos.shape[1], dtype=int) #Inicializamos listaNoComunes al tamaño máximo de problemas en total
+		
+		#ahora deberia empezar a iterar: TODO
+		"""
                 problemasOwner = self.listaProblemasOwner
                 problemasUser2 = self.obtenerProblemas(user2)
                 tam = 0
@@ -214,6 +224,7 @@ class RecomendadorBasico:
                 while tamListaFinal < tam:
                         listaFinal[tamListaFinal] = listaNoComunes[tamListaFinal]
                         tamListaFinal = tamListaFinal + 1
+		"""
                 return listaFinal
 
 # Todo: pruebas que se quitarán.
@@ -222,7 +233,11 @@ f = open("resultados2.txt", "w")
 
 
 conexion = conect.JuezDB()
-listaTodosUsuarios = conexion.obtenerTodosUsuarios()
+
+
+"""
+# Entorno de pruebas: Resultados recomendador optimizado en formato txt para los primeros N usuarios de la BBDD
+listaTodosUsuarios = conexion._obtenerTodosUsuarios()
 
 salto = 100
 for usuario in np.nditer(listaTodosUsuarios):
@@ -238,9 +253,7 @@ for usuario in np.nditer(listaTodosUsuarios):
                 f.write('===========================\n')
 
 f.close()
-
-
-
+"""
 
 """
 

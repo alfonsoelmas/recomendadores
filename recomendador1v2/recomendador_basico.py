@@ -124,38 +124,31 @@ class RecomendadorBasico:
                         cantidad    = self.matrizDatos.shape[0]
                         self.grado  = self.matrizDatos.shape[0]
                 i = 0
-
-                #Creamos matriz de posicionUser-correlacion y posteriormente la ordenaremos
+		j = 0
+		
+                # Creamos matriz de posicionUser-correlacion y posteriormente la ordenaremos, la creamos teniendo encuenta que
+		# los usuarios tienen problemas disjuntos
                 matrizCorrelPos = np.empty([self.matrizDatos.shape[0],2])
                 while i < self.matrizDatos.shape[0]:
-                    correl = self.correlacion(i)
-                    matrizCorrelPos[i][0] = i
-                    matrizCorrelPos[i][1] = correl
-                    i = i + 1
-                #Todo: ver si esto funciona
-                """
-                ver como ordeno las filas de la matriz fijandome en la primera columna
-                -----
-                ver como obtener submatriz de todas las columnas y las N primeras filas
-                """               
-                matrizCorrelPos = sorted(matrizCorrelPos, key=lambda a_entry: a_entry[1])
-
-                #Queremos los N usuarios más similares y que tengan problemas que el propietario no.
-                usuariosCorrelCant = np.empty([cantidad])
-                listaUsuariosCant = np.empty([cantidad],dtype=int)
-                i=0
-                j=0
-                while i < cantidad and j < listaUsuarios.size:
-                        if self.buscarProblemasUser2MinusOwner(listaUsuarios[j]).size > 0:
-                                usuariosCorrelCant[i] = usuariosCorrel[j]
-                                listaUsuariosCant[i] = listaUsuarios[j]
-                                i = i + 1
-                        j = j + 1
-
-                #lo transformamos en una matriz de 2 columnas (Fusión de ambos arrays en 1 matriz) (Cada array es una columna)
-                matrizResultado = np.array([listaUsuariosCant,usuariosCorrelCant],dtype = float) #TODO esto no va bien, quizas porque necesito parsear el tipo int...
-                return matrizResultado.transpose() #Lo trasponemos para hacer que cada columna sea un array y no cada fila sea un array como se genera por defecto.
-
+			if self.buscarProblemasUser2MinusOwner(listaUsuarios[j]).size > 0:
+			    	correl = self.correlacion(i)
+			    	matrizCorrelPos[j][0] = i
+			    	matrizCorrelPos[j][1] = correl
+				j = j + 1
+		    	i = i + 1
+		
+		if cantidad > matrizCorrelPos.shape[0]:
+                        cantidad    = matrizCorrelPos.shape[0]
+                        self.grado  = matrizCorrelPos.shape[0]
+		
+		#Ordenamos la matriz por nuestra segunda columna y obtenemos la submatriz de N elementos mas similares.
+                matrizCorrelPos 	= matrizCorrelPos[matrizCorrelPos[:,1].argsort()]
+		_cantidad 		= np.arange(cantidad)
+		defSubMatrix 		= np.ix_(_cantidad,[0,1])
+		matrizCorrelPos      	= matrizCorrelPos[defSubMatrix]
+		#Devolvemos los N usuarios mas similares en una matriz de dos columnas
+		#Columna 0 = posicion usuario en matriz de datos, Columna 1 = correlación del usuario respecto nuestro Owner.
+		return matrizCorrelPos
 
         #Devuelve array de posiciones comunes
         def buscarProblemasComunes(self,user2):

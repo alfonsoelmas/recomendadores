@@ -4,6 +4,10 @@ import sys
 import operator
 
 """
+TODO:
+	Cambiar muchas iteraciones por iteraciones en numpy
+	Todo lo que se pueda hacer a traves de numpy cambiarlo, ya que mejora la eficiencia de la operación.
+
 Recomendador k-vecinos fijandonos en correlación entre usuarios
 El recomendador realiza el siguiente algoritmo para recomendar:
 
@@ -191,7 +195,7 @@ class RecomendadorBasico:
 
 
         #Devuelve una lista de problemas que tiene user2 y no owner.
-	#TODO VOY AQUI
+	#TODO: Testear
         def buscarProblemasUser2MinusOwner(self, user2):
 		posOwner = self.userPosOwner
 		posUser2 = user2
@@ -199,6 +203,23 @@ class RecomendadorBasico:
 		listaNoComunes = np.empty(self.matrizDatos.shape[1], dtype=int) #Inicializamos listaNoComunes al tamaño máximo de problemas en total
 		
 		#ahora deberia empezar a iterar: TODO
+		
+		maxSize = self.matrizDatos.shape[1]
+		i = 0
+		j = 0
+		
+		while i <= maxSize:
+			if(self.matrizDatos[posUser2][i] == 1 and self.matrizDatos[posOwner][i] == 0):
+				listaNoComunes[j] = i
+				j = j + 1
+			i = i + 1
+		listaFinal = np.empty(j,dtype=int)
+		listaFinal = np.split(listaNoComunes, [j,maxSize])[0]
+		"""with np.nditer(listaFinal,op_flags=['readwrite']) as it:
+			for x in it:
+				x[...] = 
+		"""
+		
 		"""
                 problemasOwner = self.listaProblemasOwner
                 problemasUser2 = self.obtenerProblemas(user2)

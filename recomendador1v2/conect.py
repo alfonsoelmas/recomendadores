@@ -2,6 +2,9 @@
 #Instalar MySQLdb para acceder a bases de datos
 import pymysql
 import numpy as np
+#Importamos la libreria time para medir cuanto tarda cada función que llamamos y calcular eficiencias
+from time import time
+import sys
 
 
 class JuezDB:
@@ -95,13 +98,13 @@ class JuezDB:
                 tamProblemas = self._obtenerTodosProblemas()
                 tamUsers = listaUsers.size
                 #Creamos la matriz de tamUsers x tamProblemas y la inicializamos a cero
-                self.matrizDatos = np.zeros((tamUsers,tamProblemas), dtype=uint8)
+                self.matrizDatos = np.zeros((tamUsers,tamProblemas), dtype=np.uint8)
                 #para cada usuario, le ponemos a 1 los problemas resueltos
                 i=0
                 for user in listaUsers:
-                        entregas = self._obtenerEntregasValidasDeUser()
+                        entregas = self._obtenerEntregasValidasDeUser(user)
                         for idProblema in entregas:
-                                pos = _obtenerPos(idProblema,"problems")
+                                pos = self._obtenerPos(idProblema,"problems")
                                 self.matrizDatos[i,pos] = 1
                         i = i + 1
 
@@ -112,3 +115,12 @@ class JuezDB:
         # Devuelve la posición en la matriz de un ID de usuario dado
         def obtenerPosUser(self, idUser):
                 return self._obtenerPos(idUser,"users")
+
+
+"""
+Pruebas funcionamiento clase conect
+Tarda 37 segundos en crear la clase conect y cargar en memoria la matriz
+La matriz en memoria ocupa 3.5Mb siendo uint8, y 14Mb siendo int.
+Todo:
+    Por hacer un metodo que guarde matriz en txt por si es necesario
+"""

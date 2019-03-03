@@ -5,8 +5,8 @@ import operator
 
 """
 TODO:
-	Cambiar muchas iteraciones por iteraciones en numpy
-	Todo lo que se pueda hacer a traves de numpy cambiarlo, ya que mejora la eficiencia de la operación.
+        Cambiar muchas iteraciones por iteraciones en numpy
+        Todo lo que se pueda hacer a traves de numpy cambiarlo, ya que mejora la eficiencia de la operación.
 
 Recomendador k-vecinos fijandonos en correlación entre usuarios
 El recomendador realiza el siguiente algoritmo para recomendar:
@@ -36,10 +36,8 @@ Cuanto más grande sea K más precisa será la recomendación, pero al peso le c
 class RecomendadorBasico:
 
         # Crea el recomendador con la matriz de datos el id del owner y su posicion de la matriz (Su fila es su correspondiente)
-        def __init__(self, userIDowner):
-                self.userIDowner    = userIDowner
-                self.userPosOwner   = self.conexionDB.obtenerPosUser()
-                self.conexionDB     = conect.JuezDB()
+        def __init__(self, db):
+                self.conexionDB     = db		
                 self.matrizDatos    = self.conexionDB.obtenerMatriz()
                 self.grado          = 0 
                 # El grado sera el grado de similitud o el máximo de usuarios posibles. Servira para calcular el peso del problema. (En recomendar). Se remodifica tanto en metodo filtrarNsimilares como en recomendar
@@ -52,8 +50,8 @@ class RecomendadorBasico:
                 posOwner = self.userPosOwner
                 posUser  = posUser1
 
-                tam_comunes    	= self.tamProblemasComunes(posUser) #(pA)intersección(pB)
-                self.ownerSizeCant =  calcularTamProblemasUser(posOwner)
+                tam_comunes     = self.tamProblemasComunes(posUser) #(pA)intersección(pB)
+                self.ownerSizeCant =  self.calcularTamProblemasUser(posOwner)
                 tam_pA = self.ownerSizeCant
                 #todo comprobar condiciones de tamaños 0, etc.
                 if tam_comunes!=0 and tam_pA!=0:
@@ -62,34 +60,41 @@ class RecomendadorBasico:
                 else:
                         return 0
 
+        #Calcula el tamaño de los problemas de un usuario. TODO: Mejorar iteración para que sea más rápida.
         def calcularTamProblemasUser(self, posUser):
-            i = 0
-            j = 0
-            while i < self.matrizDatos.shape[1]
-                if self.matrizDatos[posUser][i] == 1:
-                    j = j + 1
-            return j
+                i = 0
+                j = 0
+                while i < self.matrizDatos.shape[1]:
+                        if self.matrizDatos[posUser][i] == 1:
+                                j = j + 1
+                        i = i + 1
+                return j
+
+
         # Obtencion de los problemas válidos de un usuario X
         # Llamar a esta funcion periodicamente y dejarla en memoria cada T tiempo actualizarla. (para agilizar calculo obtener correlacion de cada usuario, etc)
         """
-	def obtenerProblemas(self, user):
+        def obtenerProblemas(self, user):
                 #Obener Array de problemas.
                 return self.conexionDB.obtenerEntregasValidasDeUser(user)
-	"""
+        """
+
 
         # Obtiene el listado actual de usuarios
         """
-	def obtenerUsuarios(self):
+        def obtenerUsuarios(self):
                 return self.conexionDB.obtenerUsuarios()
-	"""
+        """
 
         # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
         # Todo: testear
-        def recomendar(self,gradoSimilitud):
+        def recomendar(self,userIDowner,gradoSimilitud):
                 #obtener N mas similares
+                self.userIDowner    = userIDowner
+                self.userPosOwner   = self.conexionDB.obtenerPosUser(self.userIDowner)
                 self.grado = gradoSimilitud
                 matrizSimilares = self.filtrarNMasSimilares(gradoSimilitud)
-		
+                        
                 alterno = True #Si id = True, si correl = False
                 diccionario = {}
                 listaProblemas = None
@@ -130,31 +135,32 @@ class RecomendadorBasico:
                         cantidad    = self.matrizDatos.shape[0]
                         self.grado  = self.matrizDatos.shape[0]
                 i = 0
-		j = 0
-		
+                j = 0
+                
                 # Creamos matriz de posicionUser-correlacion y posteriormente la ordenaremos, la creamos teniendo encuenta que
-		# los usuarios tienen problemas disjuntos
+                # los usuarios tienen problemas disjuntos
                 matrizCorrelPos = np.empty([self.matrizDatos.shape[0],2])
                 while i < self.matrizDatos.shape[0]:
-			if self.buscarProblemasUser2MinusOwner(listaUsuarios[j]).size > 0:
-			    	correl = self.correlacion(i)
-			    	matrizCorrelPos[j][0] = i
-			    	matrizCorrelPos[j][1] = correl
-				j = j + 1
-		    	i = i + 1
-		
-		if cantidad > matrizCorrelPos.shape[0]:
-                        cantidad    = matrizCorrelPos.shape[0]
-                        self.grado  = matrizCorrelPos.shape[0]
-		
-		#Ordenamos la matriz por nuestra segunda columna y obtenemos la submatriz de N elementos mas similares.
-                matrizCorrelPos 	= matrizCorrelPos[matrizCorrelPos[:,1].argsort()]
-		_cantidad 		= np.arange(cantidad)
-		defSubMatrix 		= np.ix_(_cantidad,[0,1])
-		matrizCorrelPos      	= matrizCorrelPos[defSubMatrix]
-		#Devolvemos los N usuarios mas similares en una matriz de dos columnas
-		#Columna 0 = posicion usuario en matriz de datos, Columna 1 = correlación del usuario respecto nuestro Owner.
-		return matrizCorrelPos
+                        if self.buscarProblemasUser2MinusOwner(i).size > 0:
+                                correl = self.correlacion(i)
+                                matrizCorrelPos[j][0] = i
+                                matrizCorrelPos[j][1] = correl
+                                j = j + 1
+                        i = i + 1
+                        if cantidad > matrizCorrelPos.shape[0]:
+                                cantidad    = matrizCorrelPos.shape[0]
+                                self.grado  = matrizCorrelPos.shape[0]
+                
+                #Ordenamos la matriz por nuestra segunda columna y obtenemos la submatriz de N elementos mas similares.
+                matrizCorrelPos         = matrizCorrelPos[matrizCorrelPos[:,1].argsort()]
+                _cantidad               = np.arange(cantidad)
+                defSubMatrix            = np.ix_(_cantidad,[0,1])
+                matrizCorrelPos         = matrizCorrelPos[defSubMatrix]
+                #Devolvemos los N usuarios mas similares en una matriz de dos columnas
+                #Columna 0 = posicion usuario en matriz de datos, Columna 1 = correlación del usuario respecto nuestro Owner.
+                return matrizCorrelPos
+
+
 
         #Devuelve array de posiciones comunes
         def buscarProblemasComunes(self,user2):
@@ -164,17 +170,18 @@ class RecomendadorBasico:
                 i = 0
                 j = 0
                 arrayProvisionalPos = np.empty([self.matrizDatos.size],dtype=int)
-                while i < self.matrizDatos.shape[1]
-                    if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
-                        arrayProvisionalPos[j] = i
-                        j = j + 1
-                    i = i + 1
+
+                while i < self.matrizDatos.shape[1]:
+                        if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
+                                arrayProvisionalPos[j] = i
+                                j = j + 1
+                        i = i + 1
 
                 arrayPosComun = np.empty([j],dtype=int)
                 i = 0
                 while i < j:
-                    arrayPosComun[i] = arrayProvisionalPos[i]
-                    i = i + 1
+                        arrayPosComun[i] = arrayProvisionalPos[i]
+                        i = i + 1
 
                 return arrayPosComun
 
@@ -186,41 +193,41 @@ class RecomendadorBasico:
 
                 i = 0
                 j = 0
-                while i < self.matrizDatos.shape[1]
-                    if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
-                        j = j + 1
-                    i = i + 1
+                while i < self.matrizDatos.shape[1]:
+                        if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
+                                j = j + 1
+                        i = i + 1
 
                 return j
 
 
         #Devuelve una lista de problemas que tiene user2 y no owner.
-	#TODO: Testear
+        #TODO: Testear
         def buscarProblemasUser2MinusOwner(self, user2):
-		posOwner = self.userPosOwner
-		posUser2 = user2
-		tam = 0
-		listaNoComunes = np.empty(self.matrizDatos.shape[1], dtype=int) #Inicializamos listaNoComunes al tamaño máximo de problemas en total
-		
-		#ahora deberia empezar a iterar: TODO
-		
-		maxSize = self.matrizDatos.shape[1]
-		i = 0
-		j = 0
-		
-		while i <= maxSize:
-			if(self.matrizDatos[posUser2][i] == 1 and self.matrizDatos[posOwner][i] == 0):
-				listaNoComunes[j] = i
-				j = j + 1
-			i = i + 1
-		listaFinal = np.empty(j,dtype=int)
-		listaFinal = np.split(listaNoComunes, [j,maxSize])[0]
-		"""with np.nditer(listaFinal,op_flags=['readwrite']) as it:
-			for x in it:
-				x[...] = 
-		"""
-		
-		"""
+                posOwner = self.userPosOwner
+                posUser2 = user2
+                tam = 0
+                listaNoComunes = np.empty(self.matrizDatos.shape[1], dtype=int) #Inicializamos listaNoComunes al tamaño máximo de problemas en total
+                
+                #ahora deberia empezar a iterar: TODO
+                
+                maxSize = self.matrizDatos.shape[1]
+                i = 0
+                j = 0
+                
+                while i < maxSize:
+                        if(self.matrizDatos[posUser2][i] == 1 and self.matrizDatos[posOwner][i] == 0):
+                                listaNoComunes[j] = i
+                                j = j + 1
+                        i = i + 1
+                listaFinal = np.empty(j,dtype=int)
+                listaFinal = np.split(listaNoComunes, [j,maxSize])[0]
+                """with np.nditer(listaFinal,op_flags=['readwrite']) as it:
+                        for x in it:
+                                x[...] = 
+                """
+                
+                """
                 problemasOwner = self.listaProblemasOwner
                 problemasUser2 = self.obtenerProblemas(user2)
                 tam = 0
@@ -245,21 +252,32 @@ class RecomendadorBasico:
                 while tamListaFinal < tam:
                         listaFinal[tamListaFinal] = listaNoComunes[tamListaFinal]
                         tamListaFinal = tamListaFinal + 1
-		"""
+                """
                 return listaFinal
 
+
+
+"""
+Prueba funcionamiento y tiempo de funciones recomendador v2
+"""
+db = conect.JuezDB()
+recomendador  = RecomendadorBasico(db)
+listaUsuarios = db._obtenerTodosUsuarios()
+for i in listaUsuarios:     
+        diccionarioRec = recomendador.recomendar(i,1000)
+        print(diccionarioRec)
+        print("\n")
+
+
+"""
+# Entorno de pruebas: Resultados recomendador optimizado en formato txt para los primeros N usuarios de la BBDD
+listaTodosUsuarios = conexion._obtenerTodosUsuarios()
 # Todo: pruebas que se quitarán.
 f = open("resultados2.txt", "w")
 
 
 
 conexion = conect.JuezDB()
-
-
-"""
-# Entorno de pruebas: Resultados recomendador optimizado en formato txt para los primeros N usuarios de la BBDD
-listaTodosUsuarios = conexion._obtenerTodosUsuarios()
-
 salto = 100
 for usuario in np.nditer(listaTodosUsuarios):
         if(salto>0): #Nos saltamos los 100 primeros usuarios ya que hemos recomendado varios
@@ -297,9 +315,9 @@ Si N = 1000 de 5000, aumenta la fiabilidad pero nuestra "fuerza" de recomendacio
  (Todo esto bajo el usuario de prueba "alfonsoelmas" con un total de 122 problemas resueltos (Una cantidad medio-alta sobre el total)
 
 **TODO:
-	Y para un usuario con cantidad medio-baja?
-	como estimar un grado de recomendacion optimo?
-	Multiplicar por algo el resultado para que no tenga tantos decimales?...
+        Y para un usuario con cantidad medio-baja?
+        como estimar un grado de recomendacion optimo?
+        Multiplicar por algo el resultado para que no tenga tantos decimales?...
     
     CREAR VERSION EN LA QUE CARGUEMOS UNA MATRIZ DE FILAS(USERS)COLUMNAS(PROBLEMAS) EN MEMORIA PARA REDUCIR LAS CONSULTAS Y POR ENDE LA SOBRECARGA DE LA BBDD Y POR ENDE EL TIEMPO.
     CONSIDERAR QUE PARA UNA BBDD MUY GRANDE CARGAR TODO EN MEMORIA NOS SUPONDRÍA UN PROBLEMA DEBIDO A LA EXISTENCIA DE RECURSOS LIMITADOS DEL ORDENADOR.

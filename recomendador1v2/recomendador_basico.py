@@ -112,6 +112,7 @@ class RecomendadorBasico:
                                 for idProblema in listaProblemas:
                                         #Añadimos a nuestro diccionario: TODO, CALCULAMOS MAL LA DIVISION. DEBERIA SER PARTIDO DEL TOTAL DE PROBLEMAS QUE VAMOS A BUSCAR O ALGO ASÍ.
                                         if idProblema in diccionario:
+                                                #TODO: aquí debería parsear la posDelProblema en el Id del problema. Porque no la parseo...
                                                 diccionario.update({idProblema : correlProblema/gradoSimilitud + diccionario.get(idProblema)})                                                
                                         else:
                                                 diccionario.update({idProblema : correlProblema/gradoSimilitud})
@@ -123,6 +124,7 @@ class RecomendadorBasico:
                 diccionario.reverse()
                 #Esperemos tampoco tarde...
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
+                #TODO: CREO QUE EN VEZ DE OBTENER EL ID DE PROBLEMAS OBTENEMOS LA POSICION DE LA MATRIZ, QUE NO TIENE POR QUÉ CORRESPONDERSE CON EL ID REAL, HABRIA QUE TRADUCIR EL ID.
 
 
         # Devuelve una lista de los usuarios más similares respecto al que se va a recomendar (De cantidad "cantidad")

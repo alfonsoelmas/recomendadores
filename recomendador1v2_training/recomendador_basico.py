@@ -262,33 +262,24 @@ class RecomendadorBasico:
 """
 Prueba funcionamiento y tiempo de funciones recomendador v2
 """
-f = open("resultadosV2_2.txt", "w")
+f = open("resultadosV2_entrenamiento.txt", "w")
 s_t = time()
 db = conect.JuezDB()
 e_t = time() - s_t
 
-print("[tiempo de carga de matriz: ",e_t,"]")
-f.write("[tiempo de carga de matriz: "+ str(e_t)+"]\n")
 recomendador  = RecomendadorBasico(db)
 listaUsuarios = db._obtenerTodosUsuarios()
-print("[Comenzamos a iterar]")
-f.write("[Comenzamos a iterar]\n")
+
 for usuario in np.nditer(listaUsuarios):
         s_t = time()
         a = recomendador.recomendar(usuario,10000)
         e_t = time() - s_t
 
-        f.write('USUARIO: '+ str(usuario) +'\n')
-        print('USUARIO: '+ str(usuario) +'\n')
-        f.write('===========================\n')
-        print('===========================\n')
+        f.write('U: '+ str(usuario) +'\n')
         for idproblema, valor in a:
-                f.write(str(idproblema) +'-->'+ str(valor) +'\n')
-                print(str(idproblema) +'-->'+ str(valor) +'\n')
-        f.write("[tiempo recomendacion: "+ str(e_t) +"]\n")
-        print("[tiempo recomendacion: "+ str(e_t)+"]")
-        f.write('===========================\n')
-        print('===========================\n')
+                #parseamos la pos del problema en su id con db.problems[pos]
+                f.write(str(db._problems[idproblema]) +'='+ str(valor) +'\n')
+        f.write("[time: "+ str(e_t) +"]\n")
 
 """
 # Entorno de pruebas: Resultados recomendador optimizado en formato txt para los primeros N usuarios de la BBDD

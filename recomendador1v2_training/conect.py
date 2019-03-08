@@ -28,7 +28,7 @@ class JuezDB:
         #Metodo obtener entregas validas de un determinado usuario - Todo (Comprobar correcto funcionamiento)
         def _obtenerEntregasValidasDeUser(self, user):
                         #Mi user ID es 847 (Para posibles pruebas)
-                        recs = self.cursor.execute('SELECT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" group by problem_id')
+                        recs = self.cursor.execute('SELECT DISTINCT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" AND submissionDate <= "2017-10-23 08:00:00" group by problem_id')
                         listaProblemas = np.empty([recs],dtype=int)
                         i=0
                         for row in self.cursor.fetchall():
@@ -44,7 +44,7 @@ class JuezDB:
         #Obtener todos los usuarios de la BBDD
         #Almacena el listado de posicion/id para parsear la posicion por el ID correspondiente
         def _obtenerTodosUsuarios(self):
-                recs = self.cursor.execute('SELECT id from users ORDER BY id ASC')
+                recs = self.cursor.execute('SELECT id from users WHERE registrationDate <= "2017-10-23 08:00:00" ORDER BY id ASC')
                 listaUsers = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():
@@ -56,7 +56,7 @@ class JuezDB:
         #Obtiene la lista de problemas con su ID. Devolvemos el tamaño de la lista
         #Guardamos en un atributo el listado para usarlo como parseador de posicion a ID en la matriz de datos
         def _obtenerTodosProblemas(self):
-                recs = self.cursor.execute('SELECT internalId from problem ORDER BY internalId ASC')
+                recs = self.cursor.execute('SELECT internalId from problem WHERE publicationDate <= "2017-10-23 08:00:00" ORDER BY internalId ASC')
                 listaProblems = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():

@@ -36,6 +36,15 @@ class JuezDB:
                                 i=i+1
                         return listaProblemas
 
+        def _obtenerEntregasValidasDeUserPostTraining(self, user):
+                        #Mi user ID es 847 (Para posibles pruebas)
+                        recs = self.cursor.execute('SELECT DISTINCT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" AND submissionDate > "2017-10-23 08:00:00" group by problem_id')
+                        listaProblemas = np.empty([recs],dtype=int)
+                        i=0
+                        for row in self.cursor.fetchall():
+                                listaProblemas[i] = row[0]
+                                i=i+1
+                        return listaProblemas
         """
         LO QUE HAY SOBRE ESTE COMENTARIO DEBE DUPLICARSE
         PERO TRABAJANDO SOBRE LA MATRIZ Y NO SOBRE CONSULTAS

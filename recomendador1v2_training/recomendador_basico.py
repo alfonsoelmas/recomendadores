@@ -62,13 +62,18 @@ class RecomendadorBasico:
 
         #Calcula el tamaño de los problemas de un usuario. TODO: Mejorar iteración para que sea más rápida.
         def calcularTamProblemasUser(self, posUser):
-                i = 0
-                j = 0
+                # MODIFIED
+                # i = 0
+                # j = 0
+                """
                 while i < self.matrizDatos.shape[1]:
                         if self.matrizDatos[posUser][i] == 1:
                                 j = j + 1
                         i = i + 1
-                return j
+                """
+                booleanos = (self.matrizDatos[self.userPosOwner] == 1)
+                return np.where(booleanos)[0].size
+                # return j
 
 
         # Obtencion de los problemas válidos de un usuario X
@@ -168,7 +173,8 @@ class RecomendadorBasico:
         def buscarProblemasComunes(self,user2):
                 posOwner = self.userPosOwner
                 posUser  = user2
-
+                """
+                # MODIFIED
                 i = 0
                 j = 0
                 arrayProvisionalPos = np.empty([self.matrizDatos.size],dtype=int)
@@ -184,23 +190,30 @@ class RecomendadorBasico:
                 while i < j:
                         arrayPosComun[i] = arrayProvisionalPos[i]
                         i = i + 1
-
-                return arrayPosComun
+                """
+                booleanos = (self.matrizDatos[posOwner] == 1) & (self.matrizDatos[posUser] == 1)
+                return np.where(booleanos)[0]
+                # return arrayPosComun
 
         #Devuelve el tamaño de problemas comunes. Se ha creado para ser un poco mas eficientes que obtener el listado como
         #La funcion previa a esta
         def tamProblemasComunes(self,user2):
                 posOwner = self.userPosOwner
                 posUser  = user2
-
+                """
                 i = 0
                 j = 0
+
+        
                 while i < self.matrizDatos.shape[1]:
                         if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
                                 j = j + 1
                         i = i + 1
 
                 return j
+                """
+                booleanos = (self.matrizDatos[posOwner] == 1) & (self.matrizDatos[posUser] == 1)
+                return np.where(booleanos)[0].size
 
 
         #Devuelve una lista de problemas que tiene user2 y no owner.
@@ -208,6 +221,8 @@ class RecomendadorBasico:
         def buscarProblemasUser2MinusOwner(self, user2):
                 posOwner = self.userPosOwner
                 posUser2 = user2
+                return np.where(self.matrizDatos[self.userPosOwner] & ~self.matrizDatos[user2])[0]
+                """
                 tam = 0
                 listaNoComunes = np.empty(self.matrizDatos.shape[1], dtype=int) #Inicializamos listaNoComunes al tamaño máximo de problemas en total
                 
@@ -224,6 +239,7 @@ class RecomendadorBasico:
                         i = i + 1
                 listaFinal = np.empty(j,dtype=int)
                 listaFinal = np.split(listaNoComunes, [j,maxSize])[0]
+                """
                 """with np.nditer(listaFinal,op_flags=['readwrite']) as it:
                         for x in it:
                                 x[...] = 
@@ -255,7 +271,7 @@ class RecomendadorBasico:
                         listaFinal[tamListaFinal] = listaNoComunes[tamListaFinal]
                         tamListaFinal = tamListaFinal + 1
                 """
-                return listaFinal
+                # return listaFinal
 
 
 

@@ -278,7 +278,9 @@ class RecomendadorBasico:
 """
 Prueba funcionamiento y tiempo de funciones recomendador v2
 """
-f = open("resultadosV2_entrenamiento.txt", "w")
+
+# np.count_nonzero(y == 1) >> ESTA FUNCION CUENTA CUANTAS VECES SE REPITE EL VALOR UNO EN EL ARRAY Y
+f = open("resultadosV3_entrenamientoMaxUsers.txt", "w")
 s_t = time()
 db = conect.JuezDB()
 e_t = time() - s_t
@@ -287,15 +289,17 @@ recomendador  = RecomendadorBasico(db)
 listaUsuarios = db._obtenerTodosUsuarios()
 
 for usuario in np.nditer(listaUsuarios):
-        s_t = time()
-        a = recomendador.recomendar(usuario,10000)
-        e_t = time() - s_t
+        #Descartamos los usuarios que no han resuelto problemas.
+        if(np.count_nonzero(recomendador.matrizDatos[db.obtenerPosUser(usuario)]==1)>=1):
+            s_t = time()
+            a = recomendador.recomendar(usuario,10000)
+            e_t = time() - s_t
 
-        f.write('U: '+ str(usuario) +'\n')
-        for idproblema, valor in a:
-                #parseamos la pos del problema en su id con db.problems[pos]
-                f.write(str(db._problems[idproblema]) +'='+ str(valor) +'\n')
-        f.write("[time: "+ str(e_t) +"]\n")
+            f.write('U: '+ str(usuario) +'\n')
+            for idproblema, valor in a:
+                    #parseamos la pos del problema en su id con db.problems[pos]
+                    f.write(str(db._problems[idproblema]) +'='+ str(valor) +'\n')
+            f.write("[time: "+ str(e_t) +"]\n")
 
 """
 # Entorno de pruebas: Resultados recomendador optimizado en formato txt para los primeros N usuarios de la BBDD

@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\recomendador1v2"
+    "\\recomendador1v2",
+    "\\recomendador1v2_training"
   ],
-  "SelectedNode": "\\recomendador1v2\\analizador.py",
+  "SelectedNode": "\\recomendador1v2_training\\recomendador_basico.py",
   "PreviewInSolutionExplorer": false
 }

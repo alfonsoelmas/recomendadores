@@ -1,0 +1,11 @@
+Total Users: 6533
+Aceptados:   486
+Descartados: 6047
+====================
+Precision: 0.2222222222222222
+Recall: 1.0
+f1 score: 0.3636363636363636
+====================
+True positive: 108
+False positive: 378
+False negative: 0

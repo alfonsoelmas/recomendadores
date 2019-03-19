@@ -1,0 +1,144 @@
+======TOP 1 ============
+Total Users: 6533
+Aceptados:   901
+Descartados: 5632
+====================
+Precision: 0.15316315205327413
+Recall: 0.1377245508982036
+f1 score: 0.14503415659485025
+====================
+True positive: 138
+False positive: 763
+False negative: 864
+======TOP 2 ============
+Total Users: 6533
+Aceptados:   732
+Descartados: 5801
+====================
+Precision: 0.18169398907103826
+Recall: 0.16419753086419753
+f1 score: 0.17250324254215305
+====================
+True positive: 133
+False positive: 599
+False negative: 677
+======TOP 3 ============
+Total Users: 6533
+Aceptados:   623
+Descartados: 5910
+====================
+Precision: 0.1958266452648475
+Recall: 0.17941176470588235
+f1 score: 0.18726016884113583
+====================
+True positive: 122
+False positive: 501
+False negative: 558
+======TOP 4 ============
+Total Users: 6533
+Aceptados:   538
+Descartados: 5995
+====================
+Precision: 0.20446096654275092
+Recall: 0.19298245614035087
+f1 score: 0.19855595667870038
+====================
+True positive: 110
+False positive: 428
+False negative: 460
+======TOP 5 ============
+Total Users: 6533
+Aceptados:   486
+Descartados: 6047
+====================
+Precision: 0.2222222222222222
+Recall: 0.21218074656188604
+f1 score: 0.21708542713567838
+====================
+True positive: 108
+False positive: 378
+False negative: 401
+======TOP 6 ============
+Total Users: 6533
+Aceptados:   447
+Descartados: 6086
+====================
+Precision: 0.232662192393736
+Recall: 0.22510822510822512
+f1 score: 0.22882288228822883
+====================
+True positive: 104
+False positive: 343
+False negative: 358
+======TOP 7 ============
+Total Users: 6533
+Aceptados:   407
+Descartados: 6126
+====================
+Precision: 0.24815724815724816
+Recall: 0.24396135265700483
+f1 score: 0.24604141291108406
+====================
+True positive: 101
+False positive: 306
+False negative: 313
+======TOP 8 ============
+Total Users: 6533
+Aceptados:   375
+Descartados: 6158
+====================
+Precision: 0.25066666666666665
+Recall: 0.25066666666666665
+f1 score: 0.25066666666666665
+====================
+True positive: 94
+False positive: 281
+False negative: 281
+======TOP 9 ============
+Total Users: 6533
+Aceptados:   339
+Descartados: 6194
+====================
+Precision: 0.26253687315634217
+Recall: 0.2672672672672673
+f1 score: 0.2648809523809524
+====================
+True positive: 89
+False positive: 250
+False negative: 244
+======TOP 10 ============
+Total Users: 6533
+Aceptados:   319
+Descartados: 6214
+====================
+Precision: 0.26332288401253917
+Recall: 0.2692307692307692
+f1 score: 0.2662440570522979
+====================
+True positive: 84
+False positive: 235
+False negative: 228
+======TOP 11 ============
+Total Users: 6533
+Aceptados:   300
+Descartados: 6233
+====================
+Precision: 0.27
+Recall: 0.28027681660899656
+f1 score: 0.27504244482173174
+====================
+True positive: 81
+False positive: 219
+False negative: 208
+======TOP 12 ============
+Total Users: 6533
+Aceptados:   282
+Descartados: 6251
+====================
+Precision: 0.2765957446808511
+Recall: 0.28888888888888886
+f1 score: 0.2826086956521739
+====================
+True positive: 78
+False positive: 204
+False negative: 192

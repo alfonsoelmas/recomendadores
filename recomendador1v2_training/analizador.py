@@ -1,5 +1,6 @@
 import numpy as np
 import conect
+import os
 import sys
 import operator
 from time import time
@@ -27,12 +28,15 @@ from time import time
 """
 
 TopN            = 1
+#TODO: ver como guardo estos datos en memoria
+fguardo = "resultados_TOP1-12_optimized_100.txt"
+guardo = open(fguardo, "w")
 # Conectamos la BBDD
 db = conect.JuezDB()
 
 while TopN <= 12:
 
-
+    guardo.write("======TOP "+str(TopN)+" ============\n")
     #   Variables globales
     #   ==================
     TP              = 0
@@ -42,6 +46,7 @@ while TopN <= 12:
     totalUsers      = 0
     descartados     = 0
     aceptados       = 0
+    hits            = 0
     #   =================
 
     fichero         = "resultadosV3_entrenamiento100.txt"
@@ -55,9 +60,7 @@ while TopN <= 12:
 
 
 
-    #TODO: ver como guardo estos datos en memoria
-    fguardo = "resultados_TOP"+str(TopN)+"_optimized_100.txt"
-    guardo = open(fguardo, "w")
+
 
     #while no lleguemos a fin de documento
     usuarioString   = leo.readline()
@@ -100,23 +103,29 @@ while TopN <= 12:
                     posPosterioriList = posPosterioriList + 1
                 
                 posRecomendados = posRecomendados + 1
+
+            #Calulo false negative cases...
+            posRecomendados = 0
+            posPosterioriList = 0
             while posPosterioriList < problemasPosteriori.size:
                 enc = False
                 while posRecomendados < len(listaProblemas):
                     if listaProblemas[posRecomendados] == problemasPosteriori[posPosterioriList]:
                         enc = True
-                    if posPosterioriList == problemasPosteriori.size-1 and enc == False:
+                    if posRecomendados == len(listaProblemas)-1 and enc == False:
                         # Incrementamos false negative
                         FN = FN + 1
-                    posPosterioriList = posPosterioriList + 1
+                    posRecomendados = posRecomendados + 1
                 
-                posRecomendados = posRecomendados + 1
+                posPosterioriList = posPosterioriList + 1
             aceptados = aceptados + 1
+            
 
         else:
             descartados = descartados + 1
         totalUsers = totalUsers + 1
-        print(totalUsers)
+        cteUsers = 6533
+        print("TOP "+str(TopN)+": "+str((totalUsers/cteUsers)*100)+"%")
         
         #Vuelvo a iterar
         usuarioString   = linea
@@ -125,7 +134,7 @@ while TopN <= 12:
     precision = TP / (TP + FP)
     recall = TP / (TP + FN)
     f1Score = 2*(recall*precision)/(recall + precision)
-
+    
     guardo.write("Total Users: "+ str(totalUsers) +"\n")
     guardo.write("Aceptados:   "+ str(aceptados) +"\n")
     guardo.write("Descartados: "+ str(descartados) +"\n")
@@ -137,7 +146,7 @@ while TopN <= 12:
     guardo.write("True positive: "+ str(TP) +"\n")
     guardo.write("False positive: "+ str(FP) +"\n")
     guardo.write("False negative: "+ str(FN) +"\n")
-    guardo.close()
     leo.close()
     TopN = TopN+1
+guardo.close()
 

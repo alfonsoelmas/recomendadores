@@ -29,7 +29,7 @@ from time import time
 
 TopN            = 1
 #TODO: ver como guardo estos datos en memoria
-fguardo = "resultados_TOP1-12_optimized_100.txt"
+fguardo = "resultados_TOP1-12_optimized_20.txt"
 guardo = open(fguardo, "w")
 # Conectamos la BBDD
 db = conect.JuezDB()
@@ -49,7 +49,7 @@ while TopN <= 12:
     hits            = 0
     #   =================
 
-    fichero         = "resultadosV3_entrenamiento100.txt"
+    fichero         = "resultadosV3_entrenamiento20.txt"
     #   =================
 
 

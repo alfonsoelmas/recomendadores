@@ -3,93 +3,80 @@ import numpy as np
 import sys
 import operator
 from time import time
+
 """
-TODO:
-        Cambiar muchas iteraciones por iteraciones en numpy
-        Todo lo que se pueda hacer a traves de numpy cambiarlo, ya que mejora la eficiencia de la operación.
-
-Recomendador k-vecinos fijandonos en correlación entre usuarios
-El recomendador realiza el siguiente algoritmo para recomendar:
-
-- usuario a recomendar: Owner > O:
-para un O, obtenemos una lista de los K usuarios más similares con su correlación correspondiente.
-Esta lista se obtiene calculando la correlación para cada usuario Bi de la BBDD, con O.
-    El cálculo de la correlación entre Bi y O se basa en:
-    - pO  = conjunto problemas de Owner
-    - pBi = conjunto de problemas de usuario Bi
-    - X[*operacion*]Y = *operacion* realizada entre elemento de la izquierda X, elemento de la derecha Y
-    - [*operacion*]X  = *operacion* realizada sobre elemento X
-    correlacion = ([*tam*](pBi[*intersección*]pO))[*division*]([*tam*]pO) Sii [*tam*]pO > 0 ^ [*tam*](pBi[*intersección*]pO) > 0
-- peso de recomendación: pesoDeRecomendación > pdR
-Tras este cálculo, creamos un diccionario (D) de Clave=idProblema / Valor=pesoDeRecomendación.
-De esta forma, obtenemos para cada Bi el resultado de restar los conjuntos pBi con pO. (Los problemas que tiene Bi y no Owner)
-- rpBi = pBi[*resta-conjuntos*]pO = problemas que Bi tiene y no Owner
-para cada elemento de rpBi le sumamos el peso correspondiente a la correlación de ese usuario, en el diccionario tal que:
-- (rpBi)j  = elemento del conjunto rpBi
-D[(rpBi)j] = D[(rpBi)j][*suma*]((Bi[*correlacion*]O)[*division*]K)
-Si no existía el problema en el diccionario, se inicializa a cero y se realiza la suma.
-Al dividir por K, nos aseguramos el resultado nunca sea mayor que 1.
-Tras realizar la operación para cada elemento, ordenamos el diccionario por su valor de mayor a menor se devuelve esta lista ordenada y lo más ámplia posible.
-a recomendar con un peso de recomendación, con su clave/valor.
-Cuanto más grande sea K más precisa será la recomendación, pero al peso le costará más alcanzar el valor máximo (1).
+Recomendador k-vecinos fijandonos en correlación entre usuarios.
+Realizado por Alfonso Soria Muñoz y Pedro Domenech.
 """
 class RecomendadorBasico:
 
-        # Crea el recomendador con la matriz de datos el id del owner y su posicion de la matriz (Su fila es su correspondiente)
+        """
+        Constructora del recomendador
+                - Crea el recomendador cargando la matriz de datos de DB.
+        Params:
+                - db: Objeto BBDD que contiene la matriz y el parseo de posiciones/IDs de problemas. Además de otros métodos útiles sobre la BBDD
+        Returns:
+                - Nothing
+        """
         def __init__(self, db):
                 self.conexionDB     = db		
                 self.matrizDatos    = self.conexionDB.obtenerMatriz()
                 self.grado          = 0 
                 # El grado sera el grado de similitud o el máximo de usuarios posibles. Servira para calcular el peso del problema. (En recomendar). Se remodifica tanto en metodo filtrarNsimilares como en recomendar
-                # self.listaProblemasOwner = self.obtenerProblemas(self.userIDowner)
 
-        #Devuelve la correlacion entre 2 usuarios
+        """
+        Método correlación
+                - Calcula la correlación entre posUser1, y el usuario al que se está recomendando.
+                - Tiene en cuenta que existan problemas en User1 y Owner, en otro caso devuelve correlación = 0.
+        Params:
+                - posUser1: posición de usuario con quien Owner va a calcular su correlación, en la matriz de datos. (Fila=información de 1 usuario)
+        Returns:
+                - type-double: valor entre 0 y 1 que representa la correlación entre los dos usuarios.
+        """
         def correlacion(self,posUser1):
-                #Anotación: la siguiente busqueda puede darse como una consulta más compleja antes que de forma algoritmica. (comprobar mejora de rendimiento)
-                #AHORA ESTAMOS TRABAJANDO CON POSICIONES DE USUARIOS !!!
+                # Obtenemos las posiciones de ambos usuarios
                 posOwner = self.userPosOwner
                 posUser  = posUser1
-
+                # Calculamos el tamaño de la cantidad de problemas comunes
                 tam_comunes     = self.tamProblemasComunes(posUser) #(pA)intersección(pB)
+                # Obtenemos la cantidad de problemas resueltos por Owner
                 self.ownerSizeCant =  self.calcularTamProblemasUser(posOwner)
                 tam_pA = self.ownerSizeCant
-                #todo comprobar condiciones de tamaños 0, etc.
+                # Si los tamaños son mayores que 0, calculamos y devolvemos la correlación
                 if tam_comunes!=0 and tam_pA!=0:
                         correl = tam_comunes/tam_pA
                         return correl
+                # En otro caso, la correlación siempre será 0
                 else:
                         return 0
 
-        #Calcula el tamaño de los problemas de un usuario. TODO: Mejorar iteración para que sea más rápida.
+        """
+        Método calcularTamProblemasUser
+                - Calcula el tamaño de los problemas a 1(Resueltos) de un usuario.
+        Params:
+                - posUser: posición de usuario en la matriz de datos sobre la que hacer el cálculo
+        Returns:
+                - type-int: valor del conjunto de los Naturales que indica la cantidad de problemas resueltos por un usuario.
+        """
         def calcularTamProblemasUser(self, posUser):
-                # MODIFIED
-                # i = 0
-                # j = 0
-                """
+                #Código previo a la optimización:
+                """ 
+                i = 0
+                j = 0
+                
                 while i < self.matrizDatos.shape[1]:
                         if self.matrizDatos[posUser][i] == 1:
                                 j = j + 1
                         i = i + 1
+                return j
                 """
+                #Código optimizado usando mejor NumPy:
                 booleanos = (self.matrizDatos[self.userPosOwner] == 1)
                 return np.where(booleanos)[0].size
-                # return j
 
-
-        # Obtencion de los problemas válidos de un usuario X
-        # Llamar a esta funcion periodicamente y dejarla en memoria cada T tiempo actualizarla. (para agilizar calculo obtener correlacion de cada usuario, etc)
-        """
-        def obtenerProblemas(self, user):
-                #Obener Array de problemas.
-                return self.conexionDB.obtenerEntregasValidasDeUser(user)
-        """
-
-
-        # Obtiene el listado actual de usuarios
-        """
-        def obtenerUsuarios(self):
-                return self.conexionDB.obtenerUsuarios()
-        """
+"""
+TODO AQUI ME HE QUEDADO HACIENDO LA "LIMPIEZA"
+"""
 
         # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
         # Todo: testear
@@ -273,7 +260,22 @@ class RecomendadorBasico:
                         tamListaFinal = tamListaFinal + 1
                 """
                 # return listaFinal
+                
+        # Métodos de la V1
+        # Obtencion de los problemas válidos de un usuario X
+        # Llamar a esta funcion periodicamente y dejarla en memoria cada T tiempo actualizarla. (para agilizar calculo obtener correlacion de cada usuario, etc)
+        """
+        def obtenerProblemas(self, user):
+                #Obener Array de problemas.
+                return self.conexionDB.obtenerEntregasValidasDeUser(user)
+        """
 
+
+        # Obtiene el listado actual de usuarios
+        """
+        def obtenerUsuarios(self):
+                return self.conexionDB.obtenerUsuarios()
+        """
 
 
 """

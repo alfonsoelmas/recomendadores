@@ -24,12 +24,13 @@ from time import time
     #Calcular con TOP - 1, 3, 5, 10... N
     #calcular con filtrar N mas similares de todos, todos/2 todos/3...
 
-    ESTO ES SUPER RANDOM, O SEA, SI CAMBIAMOS EL CORTE A OTRAS FECHAS, ETC, ETC, ETC, LAS METRICAS VARIAN MAZO...
+    ESTO ES SUPER RANDOM, O SEA, SI CAMBIAMOS EL CORTE A OTRAS FECHAS, ETC, ETC, ETC, LAS METRICAS VARIAN MAZO...:
+        Añadir en el tfg esto, y por lo tanto determinar que sirva solo para comparar entre recomendadores.
 """
 
 TopN            = 1
 #TODO: ver como guardo estos datos en memoria
-fguardo = "resultados_TOP1-12_optimized_20.txt"
+fguardo = "resultados_TOP1-12_optimized_pedro_500.txt"
 guardo = open(fguardo, "w")
 # Conectamos la BBDD
 db = conect.JuezDB()
@@ -49,7 +50,7 @@ while TopN <= 12:
     hits            = 0
     #   =================
 
-    fichero         = "resultadosV3_entrenamiento20.txt"
+    fichero         = "resultadosV3_entrenamiento500.txt"
     #   =================
 
 

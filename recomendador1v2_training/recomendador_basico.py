@@ -80,6 +80,15 @@ TODO AQUI ME HE QUEDADO HACIENDO LA "LIMPIEZA"
 
         # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
         # Todo: testear
+        """
+        Método recomendar
+                - Recomienda un usuario userIDowner, con un grado de similitud, devolviendo un diccionario de problemas ordenado.
+        Params:
+                - userIDowner: ID del usuario a recomendar
+                - gradoSimilitud: con que grado de similitud calcular
+        Returns:
+                - diccionario: Diccionario ordenado de clave/valor = idProblema/pesoProblema.
+        """
         def recomendar(self,userIDowner,gradoSimilitud):
                 #obtener N mas similares
                 self.userIDowner    = userIDowner
@@ -89,35 +98,35 @@ TODO AQUI ME HE QUEDADO HACIENDO LA "LIMPIEZA"
                 alterno = True #Si id = True, si correl = False
                 diccionario = {}
                 listaProblemas = None
-                #Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
-                #Esperemos no tarde tanto...
-                #cantidadProblemas = self.__obtenerCantidadProblemas(matrizSimilares)
+                # Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
+                # Esperemos no tarde tanto...
+                # cantidadProblemas = self.__obtenerCantidadProblemas(matrizSimilares)
                 for x in np.nditer(matrizSimilares, order='C'):
                         if alterno == True:
-                                #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
+                                # Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
                                 listaProblemas = self.buscarProblemasUser2MinusOwner(int(x))
                                 alterno = False        
                         else:
-                                #Le sumamoss el peso correspondiente (Sumar correlación del usar de referencia partido de N) al problema
+                                # Le sumamoss el peso correspondiente (Sumar correlación del usar de referencia partido de N) al problema
                                 correlProblema = x
                                 for idProblema in listaProblemas:
-                                        #Añadimos a nuestro diccionario: TODO, CALCULAMOS MAL LA DIVISION. DEBERIA SER PARTIDO DEL TOTAL DE PROBLEMAS QUE VAMOS A BUSCAR O ALGO ASÍ.
+                                        # Añadimos a nuestro diccionario partiendo por N-similares
                                         if idProblema in diccionario:
-                                                #TODO: aquí debería parsear la posDelProblema en el Id del problema. Porque no la parseo...
+                                                #TODO: aquí debería parsear la posDelProblema en el Id del problema. Porque no la parseo...De momento trabajamos con posiciones en la matriz, no veo esencial lo otro.
                                                 diccionario.update({idProblema : correlProblema/gradoSimilitud + diccionario.get(idProblema)})                                                
                                         else:
                                                 diccionario.update({idProblema : correlProblema/gradoSimilitud})
                                 alterno = True
-                
-                #todo: esto no ordena. BUSCAR FORMA DE ORDENARLO.
-                #diccionario.sort(key=lambda x: x[1])
+                #Ordena de menor a mayor y se le da la vuelta.
                 diccionario = sorted(diccionario.items(), key=operator.itemgetter(1))
                 diccionario.reverse()
-                #Esperemos tampoco tarde...
+                #Esta parte puede quizás ahora se el mayor cuello de botella del algoritmo completo.
+                #Devuelve la posicion de la matriz, no su ID como tal. Habra que parsearlo con la clase conect para obtener el id correspondiente.
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
-                #TODO: CREO QUE EN VEZ DE OBTENER EL ID DE PROBLEMAS OBTENEMOS LA POSICION DE LA MATRIZ, QUE NO TIENE POR QUÉ CORRESPONDERSE CON EL ID REAL, HABRIA QUE TRADUCIR EL ID.
 
-
+"""
+TODO VOY POR AQUI
+"""
         # Devuelve una lista de los usuarios más similares respecto al que se va a recomendar (De cantidad "cantidad")
         # Esta lista implicará la precisión a la hora de recomendar.
         # Todo: Testear

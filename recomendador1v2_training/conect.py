@@ -5,6 +5,18 @@ import numpy as np
 #Importamos la libreria time para medir cuanto tarda cada función que llamamos y calcular eficiencias
 from time import time
 import sys
+import os.path as path
+
+"""
+VARIABLES GLOBALES PARA LA CLASE CONECT
+_______________________________________
+ESTARÍA BIEN ESTE TIPO DE "CONFIGURACIONES" QUE ACTUAN COMO CTES GLOBALES
+TENERLOS DESDE UN ARCHIVO PYTHON APARTE
+"""
+DATABASEDOMAIN = 'localhost'
+DATABASEUSER = 'root'
+DATABASEPASS = ''
+DATABASENAME = 'aceptaelreto'
 
 
 class JuezDB:
@@ -13,10 +25,15 @@ class JuezDB:
                 self.fechaCorteTraining = "2017-10-23 08:00:00"
                 #Nombre del fichero local que contiene la matriz de ACs de usuario guardada
                 self.matrizLocal = "matrizACs.dat"
-                self.isCreatedLocal = False
+                self.problemParserLocal = "problemParser.dat"
+                self.userParserLocal = "userParser.dat"
+                if path.exists(self.userParserLocal) and path.exists(self.problemParserLocal) and path.exists(self.matrizLocal):
+                        self.isCreatedLocal = True
+                else:
+                        self.isCreatedLocal = False
 
                 if not self.isCreatedLocal:
-                        db = pymysql.connect('localhost', 'root', '', 'aceptaelreto')
+                        db = pymysql.connect(DATABASEDOMAIN, DATABASEUSER, DATABASEPASS, DATABASENAME)
                         self.cursor = db.cursor()
 
                 #Carga la matriz de datos desde la BBDD o desde local según el atributo isCreatedLocal == false/true
@@ -110,21 +127,20 @@ class JuezDB:
 
         #Carga una matriz de filas = usuarios / columnas = problemas con valores binarios 1 si hecho 0 si no hecho para cada (fila,col)
         def cargarMatrizDatos(self):
-                # TODO: Dentro del IF y dentro de GUARDARMATRIZ EN LOCAL, CARGAR MATRIZ DESDE LOCAL...
-                listaUsers = self._obtenerTodosUsuarios()
-                tamProblemas = self._obtenerTodosProblemas()
-                tamUsers = listaUsers.size
-                #Creamos la matriz de tamUsers x tamProblemas y la inicializamos a cero
-                self.matrizDatos = np.zeros((tamUsers,tamProblemas), dtype=np.uint8)
                 #para cada usuario, le ponemos a 1 los problemas resueltos
                 if not self.isCreatedLocal:
+                        listaUsers = self._obtenerTodosUsuarios()
+                        tamProblemas = self._obtenerTodosProblemas()
+                        tamUsers = listaUsers.size
+                        #Creamos la matriz de tamUsers x tamProblemas y la inicializamos a cero
+                        self.matrizDatos = np.zeros((tamUsers,tamProblemas), dtype=np.uint8)
                         i=0
                         for user in listaUsers:
                                 entregas = self._obtenerEntregasValidasDeUser(user)
                                 for idProblema in entregas:
                                         pos = self._obtenerPos(idProblema,"problems")
                                         self.matrizDatos[i,pos] = 1
-                                        i = i + 1
+                                i = i + 1
                         self._guardarMatrizEnLocal()
                         return
                 else:
@@ -134,11 +150,17 @@ class JuezDB:
             # guardamos con 1 decimal ya que nuestros datos son UINT8
             # TODO: HAY QUE GUARDAR EL PARSEADOR DE POSICIONES
             np.savetxt(self.matrizLocal, self.matrizDatos, fmt='%.1e')
+            np.savetxt(self.problemParserLocal, self._problems)
+            np.savetxt(self.userParserLocal, self._users)
 
         def _cargarMatrizDesdeLocal(self):
             # Cargamos matriz desde archivo .dat local
-            # TODO HAY QUE CARGAR EL PARSEADOR DE POSICIONES
             self.matrizDatos = np.loadtxt(self.matrizLocal)
+            self.matrizDatos = self.matrizDatos.astype(np.uint8)
+            self._users = np.loadtxt(self.userParserLocal)
+            self._users = self._users.astype(int)
+            self._problems = np.loadtxt(self.problemParserLocal)
+            self._problems = self._problems.astype(int)
 
         # Devuelve a matriz de datos
         def obtenerMatriz(self):

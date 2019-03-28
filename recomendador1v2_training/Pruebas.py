@@ -7,7 +7,8 @@ Ejecutamos nueva clase conect para generar matriz en local y probar su carga des
 """
 db = conect.JuezDB()
 print(db.matrizDatos)
-
+print(db._users)
+print(db._problems)
 
 
 """

@@ -9,8 +9,17 @@ import sys
 
 class JuezDB:
         def __init__(self):
-                db = pymysql.connect('localhost', 'root', '', 'aceptaelreto')
-                self.cursor = db.cursor()
+                #Fecha de corte por si se quiere trabajar con un subconjunto de datos inferior al total acotado por fechas. (Para entrenamiento del recomendador)
+                self.fechaCorteTraining = "2017-10-23 08:00:00"
+                #Nombre del fichero local que contiene la matriz de ACs de usuario guardada
+                self.matrizLocal = "matrizACs.dat"
+                self.isCreatedLocal = False
+
+                if not self.isCreatedLocal:
+                        db = pymysql.connect('localhost', 'root', '', 'aceptaelreto')
+                        self.cursor = db.cursor()
+
+                #Carga la matriz de datos desde la BBDD o desde local según el atributo isCreatedLocal == false/true
                 self.cargarMatrizDatos()
 
         #Metodo privado obtener usuarios. Devuelve un array con id de usuarios obtenido de la BBDD
@@ -25,10 +34,10 @@ class JuezDB:
                         i=i+1
                 return listaUsers
 
-        #Metodo obtener entregas validas de un determinado usuario - Todo (Comprobar correcto funcionamiento)
+        #Metodo obtener entregas validas de un determinado usuario
         def _obtenerEntregasValidasDeUser(self, user):
                         #Mi user ID es 847 (Para posibles pruebas)
-                        recs = self.cursor.execute('SELECT DISTINCT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" AND submissionDate <= "2017-10-23 08:00:00" group by problem_id')
+                        recs = self.cursor.execute('SELECT DISTINCT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" AND submissionDate <= "'+self.fechaCorteTraining+'" group by problem_id')
                         listaProblemas = np.empty([recs],dtype=int)
                         i=0
                         for row in self.cursor.fetchall():
@@ -36,24 +45,22 @@ class JuezDB:
                                 i=i+1
                         return listaProblemas
 
+        #Metodo para obtener Entregas Válidas tras el entrenamiento.
         def _obtenerEntregasValidasDeUserPostTraining(self, user):
                         #Mi user ID es 847 (Para posibles pruebas)
-                        recs = self.cursor.execute('SELECT DISTINCT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" AND submissionDate > "2017-10-23 08:00:00" group by problem_id')
+                        recs = self.cursor.execute('SELECT DISTINCT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" AND submissionDate > "2'+self.fechaCorteTraining+'" group by problem_id')
                         listaProblemas = np.empty([recs],dtype=int)
                         i=0
                         for row in self.cursor.fetchall():
                                 listaProblemas[i] = row[0]
                                 i=i+1
                         return listaProblemas
-        """
-        LO QUE HAY SOBRE ESTE COMENTARIO DEBE DUPLICARSE
-        PERO TRABAJANDO SOBRE LA MATRIZ Y NO SOBRE CONSULTAS
-        """
+
 
         #Obtener todos los usuarios de la BBDD
         #Almacena el listado de posicion/id para parsear la posicion por el ID correspondiente
         def _obtenerTodosUsuarios(self):
-                recs = self.cursor.execute('SELECT id from users WHERE registrationDate <= "2017-10-23 08:00:00" ORDER BY id ASC')
+                recs = self.cursor.execute('SELECT id from users WHERE registrationDate <= "'+self.fechaCorteTraining+'" ORDER BY id ASC')
                 listaUsers = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():
@@ -65,7 +72,7 @@ class JuezDB:
         #Obtiene la lista de problemas con su ID. Devolvemos el tamaño de la lista
         #Guardamos en un atributo el listado para usarlo como parseador de posicion a ID en la matriz de datos
         def _obtenerTodosProblemas(self):
-                recs = self.cursor.execute('SELECT internalId from problem WHERE publicationDate <= "2017-10-23 08:00:00" ORDER BY internalId ASC')
+                recs = self.cursor.execute('SELECT internalId from problem WHERE publicationDate <= "'+self.fechaCorteTraining+'" ORDER BY internalId ASC')
                 listaProblems = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():
@@ -103,19 +110,35 @@ class JuezDB:
 
         #Carga una matriz de filas = usuarios / columnas = problemas con valores binarios 1 si hecho 0 si no hecho para cada (fila,col)
         def cargarMatrizDatos(self):
+                # TODO: Dentro del IF y dentro de GUARDARMATRIZ EN LOCAL, CARGAR MATRIZ DESDE LOCAL...
                 listaUsers = self._obtenerTodosUsuarios()
                 tamProblemas = self._obtenerTodosProblemas()
                 tamUsers = listaUsers.size
                 #Creamos la matriz de tamUsers x tamProblemas y la inicializamos a cero
                 self.matrizDatos = np.zeros((tamUsers,tamProblemas), dtype=np.uint8)
                 #para cada usuario, le ponemos a 1 los problemas resueltos
-                i=0
-                for user in listaUsers:
-                        entregas = self._obtenerEntregasValidasDeUser(user)
-                        for idProblema in entregas:
-                                pos = self._obtenerPos(idProblema,"problems")
-                                self.matrizDatos[i,pos] = 1
-                        i = i + 1
+                if not self.isCreatedLocal:
+                        i=0
+                        for user in listaUsers:
+                                entregas = self._obtenerEntregasValidasDeUser(user)
+                                for idProblema in entregas:
+                                        pos = self._obtenerPos(idProblema,"problems")
+                                        self.matrizDatos[i,pos] = 1
+                                        i = i + 1
+                        self._guardarMatrizEnLocal()
+                        return
+                else:
+                        self._cargarMatrizDesdeLocal()
+
+        def _guardarMatrizEnLocal(self):
+            # guardamos con 1 decimal ya que nuestros datos son UINT8
+            # TODO: HAY QUE GUARDAR EL PARSEADOR DE POSICIONES
+            np.savetxt(self.matrizLocal, self.matrizDatos, fmt='%.1e')
+
+        def _cargarMatrizDesdeLocal(self):
+            # Cargamos matriz desde archivo .dat local
+            # TODO HAY QUE CARGAR EL PARSEADOR DE POSICIONES
+            self.matrizDatos = np.loadtxt(self.matrizLocal)
 
         # Devuelve a matriz de datos
         def obtenerMatriz(self):
@@ -125,11 +148,17 @@ class JuezDB:
         def obtenerPosUser(self, idUser):
                 return self._obtenerPos(idUser,"users")
 
+        # Actualiza la matriz de datos con las nuevas entregas que recibe desde el juez en línea
+        def actualizarEntregas(self,nuevasEntregas):
+                return
+                #TODO
+
 
 """
 Pruebas funcionamiento clase conect
-Tarda 37 segundos en crear la clase conect y cargar en memoria la matriz
+Tarda 30 segundos en crear la clase conect y cargar en memoria la matriz
 La matriz en memoria ocupa 3.5Mb siendo uint8, y 14Mb siendo int.
 Todo:
     Por hacer un metodo que guarde matriz en txt por si es necesario
 """
+

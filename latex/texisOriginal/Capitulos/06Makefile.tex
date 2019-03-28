@@ -1,0 +1,454 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo 6
+%
+%---------------------------------------------------------------------
+%
+% 06Makefile.tex
+% Copyright 2009 Marco Antonio Gomez-Martin, Pedro Pablo Gomez-Martin
+%
+% This file belongs to the TeXiS manual, a LaTeX template for writting
+% Thesis and other documents. The complete last TeXiS package can
+% be obtained from http://gaia.fdi.ucm.es/projects/texis/
+%
+% Although the TeXiS template itself is distributed under the 
+% conditions of the LaTeX Project Public License
+% (http://www.latex-project.org/lppl.txt), the manual content
+% uses the CC-BY-SA license that stays that you are free:
+%
+%    - to share & to copy, distribute and transmit the work
+%    - to remix and to adapt the work
+%
+% under the following conditions:
+%
+%    - Attribution: you must attribute the work in the manner
+%      specified by the author or licensor (but not in any way that
+%      suggests that they endorse you or your use of the work).
+%    - Share Alike: if you alter, transform, or build upon this
+%      work, you may distribute the resulting work only under the
+%      same, similar or a compatible license.
+%
+% The complete license is available in
+% http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+%---------------------------------------------------------------------
+
+\chapter{Makefile}
+\label{cap6}
+\label{cap:makefile}
+
+\begin{FraseCelebre}
+\begin{Frase}
+A fuerza de construir bien, se llega a buen arquitecto.
+\end{Frase}
+\begin{Fuente}
+Aristóteles
+\end{Fuente}
+\end{FraseCelebre}
+
+\begin{resumen}
+Este capítulo describe la infraestructura de creación del
+documento final, apoyada en la herramienta \texttt{make}
+de GNU.
+\end{resumen}
+
+%-------------------------------------------------------------------
+\section{Introducción}
+%-------------------------------------------------------------------
+\label{cap6:sec:intro}
+
+Ya se ha esbozado a lo largo de este manual que la generación del
+documento final requiere varias etapas, algo que es de hecho inherente
+al propio \LaTeX\ (o Pdf\LaTeX). En la
+sección~\ref{cap2:sec:compilacion} vimos que era necesario la
+invocación a \texttt{pdflatex} tres veces, junto con el uso de
+\texttt{bibtex}. En la sección~\ref{cap5:sec:glosstex} se añadió la
+necesidad de invocar a \texttt{glosstex} y a \texttt{makeindex} para
+añadir el listado de acrónimos. El resultado es una generación
+bastante laboriosa que requiere dar varios pasos en un orden concreto.
+
+El mundo del desarrollo del software ha lidiado con un problema
+similar (más complejo, de hecho) desde hace décadas, y que se ha ido
+resolviendo con diferentes herramientas, siendo \texttt{make} una de
+las más extendidas. \texis\ proporciona un fichero \texttt{Makefile}
+para ser utilizado con ella, y simplificar la generación del
+documento, así como otras labores rutinarias. Dado que la
+infraestructura \texttt{make} no está disponible nativamente en
+plataformas Windows, sólo podrá utilizarse sobre GNU/Linux y otras
+variantes de Unix\footnote{Windows dispone de Cygwin que proporciona
+  muchas de las herramientas habituales en Unix. \emph{No} hemos
+  probado \texis\ sobre él; si lo haces, ¡no dudes en contarnos la
+  experiencia!}. Incluso aunque se utilizara \texttt{nmake}, una
+herramienta similar a \texttt{make} proporcionada con Visual Studio,
+el \texttt{Makefile} de \texis\ no funcionaría dado que hace uso de
+comandos que sólo están disponibles en Unix/Linux. Es por ello que en
+el primer capítulo recomendábamos el uso de dicho sistema.
+
+En la sección siguiente, se describen los diferentes \emph{objetivos}
+que este \texttt{Makefile} proporciona. La
+sección~\ref{cap6:sec:funcionamiento} describe brevemente el
+funcionamiento de algunas de sus partes.
+
+%-------------------------------------------------------------------
+\section{Objetivos del \texttt{Makefile}}
+%-------------------------------------------------------------------
+\label{cap6:sec:objetivos}
+
+En la terminología de \texttt{make}, un objetivo es un \emph{grupo de
+  tareas} que se ejecutan en conjunto. En el entorno del desarrollo
+del software, esas tareas suelen estar enfocadas a la compilación del
+proyecto, aunque también se incluyen objetivos para, por ejemplo,
+borrar los ficheros intermedios, o instalar el programa recién
+compilado.
+
+El \texttt{Makefile} de \texis\ sigue esa misma filosofía,
+proporcionando los siguientes objetivos:
+
+\begin{itemize}
+\item \texttt{pdflatex}: es el objetivo por defecto. Genera el
+  documento utilizando Pdf\LaTeX. Se encarga de generar la
+  bibliografía, los acrónimos, y de compilar varias veces el documento
+  para que se actualicen correctamente las referencias.
+
+\item \texttt{latex}: genera el documento utilizando \LaTeX, y
+  convierte el \texttt{.dvi} resultante en \texttt{.pdf}. Tiene en
+  cuenta las necesidades en cuanto al formato de las imágenes
+  descritas en la sección~\ref{cap4:solTeXiS}, por lo que se
+  convierten automáticamente a formato \texttt{.eps}.
+
+\item \texttt{imagenes}: se encarga de convertir las imágenes (tanto
+  vectoriales como de mapas de bits) a formato
+  \texttt{.eps}. Normalmente este objetivo no necesitará ser lanzado
+  manualmente nunca; el objetivo \texttt{latex} anterior lo hace por
+  nosotros.
+
+\item \texttt{imagenesvectoriales} e \texttt{imagenesbitmap}:
+  convierte o bien las imágenes vectoriales, o bien las de mapas de
+  bits a formato \texttt{.eps}. Igual que antes, normalmente no se
+  necesitan invocar manualmente.
+
+\item \texttt{fast}: genera el documento de manera rápida utilizando
+  Pdf\LaTeX. Se limita a generarlo una única vez, sin invocar a
+  Bib\TeX\ ni a Gloss\TeX. Está pensada para la compilación ``del día
+  a día'' cuando se añade algo de texto y se quiere ver rápidamente el
+  resultado, sin preocuparnos de que las referencias queden
+  correctamente actualizadas. Si este objetivo se combina con el
+  comando \verb+\compilaCapitulo+ descrito en la sección
+  \ref{cap3:sec:compilacion-rapida}, la compilación puede resultar muy
+  rápida.
+
+\item \texttt{fastlatex}: similar al anterior, pero realiza la
+  generación utilizando \LaTeX. En este caso, el \texttt{.dvi} sigue
+  convirtiéndose a \texttt{.pdf}.
+
+\item \texttt{clean}: elimina todos los ficheros intermedios creados
+  durante la generación del documento. Este objetivo resulta
+  interesante cuando se quiere reconstruir el documento completamente,
+  sin basarse en información previa. Es, de hecho, necesario lanzarlo
+  cuando se compila el documento con la lista de acrónimos por primera
+  vez (o cuando deja de hacerse). Si no se ha modificado la definición
+  de la constante \verb+\acronimosEnRelease+ (consulta la
+  sección~\ref{cap5:subsec:acronimosEnTeXiS} para información sobre
+  ella), esto ocurrirá siempre que se cambie el modo de configuración
+  de borrador a versión final
+  (sección~\ref{cap3:sec:modos-compilacion}). Ten en cuenta que este
+  objetivo \emph{borra también} los ficheros \texttt{.eps}, por lo que
+  si has modificado el modelo de gestión de imágenes (para que los
+  originales sean \texttt{.eps} que se convierten a \texttt{.pdf} si
+  se usa Pdf\LaTeX, consulta la
+  sección~\ref{cap6:subsec:compilacionImagenes} para más información)
+  entonces tendrás que modificar también este objetivo.
+
+\item \texttt{distclean}: similar a la anterior, pero también borra el
+  fichero \texttt{.pdf} generado, y los ficheros de copia de seguridad
+  de los \texttt{.tex} creados por los editores de texto más
+  habituales (con extensiones \verb+.tex~+ y \texttt{.backup}).
+
+\item \texttt{crearZip}: genera el documento (con Pdf\LaTeX) y crea un
+  fichero \texttt{.zip} con él y todos los fuentes (incluído
+  imágenes). El fichero es útil para distribuirlo a revisores que
+  tengan intención de cambiar y regenerar el documento.
+
+\item \texttt{crearVersion}: similar al anterior, pero copia el .zip
+  en el subdirectorio \texttt{VersionesPrevias} incluyendo en el
+  nombre la fecha y hora actuales. Es útil para realizar copias de
+  seguridad locales o para ``congelar versiones'' en ``hitos''
+  concretos de la escritura.
+
+\item \texttt{crearBackup}: genera el documento, y hace una copia de
+  \emph{todo} el directorio (incluyendo el subdirectorio
+  \texttt{VersionesPrevias} mencionado antes) comprimiéndola en un
+  fichero \texttt{.zip} que copia en el \emph{directorio padre} del
+  actual. Está pensado para hacer una copia de seguridad completa que
+  luego sea guardada en algún otro lugar.
+
+\item \texttt{ayuda} o \texttt{help}: muestra una descripción de todos
+  los objetivos anteriores.
+
+\end{itemize}
+
+En el día a día, los más útiles son \texttt{pdflatex}, \texttt{fast} y
+\texttt{clean}. Para invocar a cualquiera de ellos en un entorno
+GNU/Linux donde \texttt{make} esté disponible bastará con:
+
+\begin{verbatim}
+$ make <objetivo>
+\end{verbatim}
+% AucTeX (en emacs) cree hemos abierto una ecuación en el verbatim
+% por el signo dolar, y las teclas rápidas se vuelven un poco locas.
+% La "cerramos" con otro $
+
+En el caso de que se quiera realizar la generación usando Pdf\LaTeX,
+al ser el objetivo por defecto (el primero que aparece en el
+\texttt{Makefile}) no es necesario especificar nada:
+
+\begin{verbatim}
+$ make
+pdflatex Tesis
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6)
+[...]
+\end{verbatim}
+% $
+
+Si decides que tu herramienta de generación por defecto sea \LaTeX,
+seguramente quieras colocar el objetivo \texttt{latex} delante para
+convertirlo en el que se ejecute por defecto.
+
+
+%-------------------------------------------------------------------
+\section{Funcionamiento interno}
+%-------------------------------------------------------------------
+\label{cap6:sec:funcionamiento}
+
+En principio, el fichero \texttt{Makefile} debería funcionar por sí
+solo si se siguen los convenios de \texis\ descritos en los capítulos
+previos, por lo que la sección anterior debería ser suficiente para un
+usuario normal. Aquí describiremos algunos detalles internos que
+pueden ser útiles en algunos (idealmente pocos) casos.
+
+
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{La compilación de las imágenes}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\label{cap6:subsec:compilacionImagenes}
+
+En el capítulo~\ref{cap:imagenes} se mencionaba que \texis\ es capaz
+de independizarse de la diferencia entre los formatos de imágenes
+aceptados por Pdf\LaTeX\ y \LaTeX\ siempre que el autor siga un
+determinado convenio en el modo de gestionarlas y utilice la
+infraestructura de generación, es decir el fichero \texttt{Makefile}
+al que se refiere este capítulo.
+
+Dado que nosotros hacemos normalmente uso de Pdf\LaTeX, \texis\ asume
+que de manera nativa se querrá utilizar éste en lugar de \LaTeX, por
+lo que muestra una clara tendencia hacia el formato de imágenes que
+\texttt{pdflatex} soporta de manera nativa.
+
+En concreto, el \texttt{Makefile} asume que las imágenes se
+proporcionan en formato \texttt{.pdf} para el caso de las vectoriales,
+y en formato \texttt{.jpg} o \texttt{.png} para los mapas de bits. Si
+las imágenes se desarrollaron originalmente con Kivio, Corel, Visio,
+Gimp o Photoshop, es responsabilidad del propio autor convertirlas a
+los formatos soportados por Pdf\LaTeX. De esa manera, el
+\texttt{Makefile} \emph{no} necesitará realizar ningún tipo de
+transformación de imágenes en el objetivo por defecto
+\texttt{pdflatex}.
+
+En el caso de que se desee utilizar \LaTeX, la situación es más
+complicada. El \texttt{Makefile} tendrá que buscar las imágenes (tanto
+vectoriales como de mapas de bits) y convertirlas a \texttt{.eps}. De
+eso se encargan los objetivos \texttt{imagenesbitmap} y
+\texttt{imagenesvectoriales} respectivamente.
+
+Ambos se apoyan en el convenio de directorios propuesto por \texis, en
+el que se asume que las imágenes vectoriales estarán en el directorio
+\texttt{Imagenes/Vectorial}, y las de mapas de bits en
+\texttt{Imagenes/Bitmap}, con un subdirectorio dentro por
+capítulo\footnote{\emph{No} se soportan subdirectorios adicionales
+  dentro de los directorios de cada capítulo. Esta restricción se debe
+  al modo en el que los \emph{scripts} buscan los ficheros de imágenes
+  que hay que convertir. Consulta cualquiera de los ficheros
+  \texttt{updateAll.sh} dentro de \texttt{Imagenes/Vectorial} o
+  \texttt{Imagenes/Bitmap} para ver los detalles.}. El
+\texttt{Makefile} encadena una serie de invocaciones a otros
+\texttt{Makefile} y algunas llamadas a \emph{scripts} del \emph{shell}
+(\texttt{bash}) para realizar la conversión. En última instancia, el
+responsable de dicha conversión es un \emph{script} llamado
+\texttt{update-eps.sh}, del que, en realidad, existen dos versiones,
+uno dentro de \texttt{Imagenes/Vectorial} y otro en
+\texttt{Imagenes/Bitmap}, específicos para cada uno de los dos tipos
+de imágenes. Para convertir los \texttt{.pdf} vectoriales a
+\texttt{.eps}, se hace uso de la aplicación \texttt{pdftops}, que
+deberá estar instalada. Por su parte, para convertir las imágenes de
+mapas de bits \texttt{.jpg} o \texttt{.png} se usa \texttt{sam2p}. Los
+scripts terminan con error (deteniendo por tanto la generación del
+documento) si estas herramientas no están disponibles. Se han
+desarrollado de tal manera que el error únicamente se lance si
+realmente se necesita convertir alguna imagen. Además, se evita
+regenerar los ficheros \texttt{.eps} si los originales (\texttt{.pdf},
+\texttt{.jpg} o \texttt{.png}) no han sufrido cambios desde la última
+generación. Como ya se dijo previamente, se debe tener en cuenta que
+el \texttt{Makefile} considera a esos ficheros \texttt{.eps} como
+\emph{ficheros generados}, por lo que son eliminados por el objetivo
+\texttt{clean}, y se anima a que se configure el control de versiones
+(CVS, SVN, etcétera) para que \emph{los ignore}.
+
+\medskip
+
+Si por alguna razón se prefiere \LaTeX\ a Pdf\LaTeX, entonces
+resultará más cómodo utilizar el formato \texttt{.eps} como
+predefinido, de manera que a partir de las imágenes originales
+(creadas con cualquier programa de dibujo) se generen los
+\texttt{.eps} en lugar de los \texttt{.pdf} mencionados antes. Si,
+además, se quiere mantener la posibilidad de generar el documento con
+\texttt{pdflatex} (aunque sea a costa de trabajar más convirtiendo las
+imágenes), deberá adaptarse la infraestructura de generación en varios
+puntos:
+
+\begin{itemize}
+\item Modificar los ficheros \texttt{update-eps.sh} que se encuentran
+  en los directorios \texttt{Imagenes/Bitmap} y
+  \texttt{Imagenes/Vectorial} para que conviertan los \texttt{.eps}
+  ``fuente'' en \texttt{.pdf}. En este caso no merece la pena
+  convertir a \texttt{.jpg} o \texttt{.png} las imágenes vectoriales;
+  resulta más cómodo convertir todo a \texttt{.pdf}. Para eso, se
+  puede utilizar \texttt{epstopdf} (que deberá estar instalado). Una
+  ventaja extra es que ambas versiones de \texttt{update-eps.sh} serán
+  iguales, no como en el caso anterior en el que había que diferenciar
+  entre vectoriales y de imágenes de bits.
+
+  Por mantener la coherencia, los ficheros deberían renombrarse a algo
+  como \texttt{update-pdf.sh}, en cuyo caso habrá que ajustar los
+  \emph{scripts} \texttt{updateAll.sh} para modificar su invocación.
+
+\item Modificar el fichero \texttt{Makefile} principal (en el
+  directorio ``raíz'' de \texis) en varios puntos:
+    \begin{itemize}
+    \item Poner como objetivo por defecto a \texttt{latex} en lugar de
+      a \texttt{pdflatex}. Esto es una mera cuestión de comodidad, y
+      para llevarlo a cabo basta colocar en primer lugar el objetivo
+      de \texttt{latex}.
+    \item Renombrar \texttt{fast} a \texttt{fastpdflatex} y
+      \texttt{fastlatex} a \texttt{fast}. De nuevo, esto es una
+      cuestión de comodidad.
+    \end{itemize}
+
+  \item Modificar el guión (\emph{script}) \texttt{cleanAll.sh}
+    situado tanto en el directorio \texttt{Imagenes/Vectorial} como en
+    \texttt{Imagenes/Bitmap}. Ambos son invocados durante la ejecución
+    del objetivo \texttt{clean} del \texttt{Makefile} principal. En la
+    versión inicial de \texis, \emph{se borran} los ficheros
+    \texttt{.eps}, dado que son producto de la compilación. Al usar
+    \LaTeX, hay que conservarlos, y borrar los ficheros \texttt{.pdf}
+    generados en los directorios de las imágenes.
+
+  \item Modificar el fichero \texttt{.cvsignore} o el equivalente en
+    el sistema de control de versiones que se esté usando (si hay
+    alguno) para que se ignoren los nuevos tipos de ficheros generados
+    (\texttt{.pdf}) en lugar de los \texttt{.eps} que vienen
+    predefinidos en \texis. Consulta la sección~\ref{cap4:variaciones}
+    para más información.
+
+\end{itemize}
+
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Makefile, Gloss\TeX, y cambio de modo de generación}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\label{cap6:subsec:glosstexYCambioModo}
+
+
+En la sección \ref{cap5:subsec:acronimosEnTeXiS} se comentaba que al
+cambiar el modo de generación de documento desde ``depuración''
+(\emph{debug}) a versión final (\emph{release}) o viceversa, era
+necesario realizar un \texttt{make clean} previo debido al uso de
+Gloss\TeX. Aunque en la práctica es suficiente con recordar hacerlo,
+en esta sección se explican las causas de esta necesidad.
+
+\medskip
+
+Como se recordará de la sección~\ref{cap5:sec:glosstex}, cuando se
+utilizan acrónimos, tras varias etapas termina consiguiéndose un
+fichero con extensión \texttt{.glx} con la descripción de aquéllos que
+se usaron. En la siguiente compilación del documento, el comando
+\verb+\printglosstex+ se encargará de recoger el contenido de dicho
+fichero e incrustarlo en esa posición.
+
+Ten en cuenta que la primera vez que se compila el documento,
+\emph{no} existirá ningún fichero \texttt{.glx}; esto es perfectamente
+legal, dado que \verb+\printglosstex+ no se quejará si el fichero
+\emph{no} existe. Por desgracia, sí generará un error si existe
+\emph{pero está vacío}.
+
+Cuando en \texis\ el uso de acrónimos está desactivado (lo que ocurre
+en la generación de depuración), los comandos de Gloss\TeX\ como
+\verb+\acs+, \verb+\acl+ etcétera se puentean y no se tienen en
+cuenta, por lo que en los ficheros intermedios no se informará del uso
+de ningún acrónimo. Sin embargo, durante el proceso de compilación del
+documento, el \texttt{Makefile} insistirá en realizar los pasos
+necesarios para la generación de acrónimos (es decir, invocar al
+ejecutable \texttt{glosstex} y a \texttt{makeindex}). Éstos
+desembocarán en la creación de un fichero \texttt{.glx} vacío, al no
+haber ningún acrónimo usado. En principio, esto significa que
+\verb+\printglosstex+ fallará. Afortunadamente, \texis\ \emph{no}
+añade dicho comando \LaTeX\ al documento cuando los acrónimos están
+desactivados, lo que evita el problema.
+
+Sin embargo, cuando se activa su generación (al pasar a modo de
+compilación \emph{release}), \texis\ comienza a incluir el comando. En
+la primera compilación del documento, por tanto, \verb+\printglosstex+
+se encontrará que el fichero \texttt{.glx} está vacío (de la
+compilación en \emph{debug} anterior), y fallará. Para solucionarlo,
+basta en realidad con eliminar dicho fichero; sin embargo, resulta
+mucho más fácil de recordar (y por tanto práctico) limitarse a
+realizar un \texttt{make clean} que borra, entre otros, el
+\texttt{.glx} por nosotros.
+
+\medskip
+
+Por otro lado, cuando el documento se ha generado correctamente con
+los acrónimos (normalmente en modo \emph{release}) y se vuelve a
+generar sin ellos (en modo \emph{debug}), en la primera compilación
+\LaTeX\ (o Pdf\LaTeX) hará uso tanto de los fuentes del documento como
+de los ficheros auxiliares (\texttt{.aux}) generados en la compilación
+anterior para acelerar el proceso. En esos ficheros se encuentran
+entradas relativas a los acrónimos que se utilizaron en la última
+compilación (en \emph{release}). Al hacer ahora la compilación sin
+acrónimos, no se habrán incluído los paquetes \LaTeX\ que comprenden
+los comandos de Gloss\TeX, por lo que \LaTeX\ fallará al no
+comprenderlos. De nuevo, para solucionar este problema es suficiente
+con borrar los ficheros \texttt{.aux} generados en la compilación
+anterior; sin embargo resulta mucho más simple realizar un
+\texttt{make clean} con la infraestructura de generación proporcionada
+por \texis.
+
+
+%-------------------------------------------------------------------
+%\section*{\ProximoCapitulo}
+%-------------------------------------------------------------------
+%\TocProximoCapitulo
+
+
+%-------------------------------------------------------------------
+\section*{\NotasBibliograficas}
+%-------------------------------------------------------------------
+\TocNotasBibliograficas
+
+Sobre la utilidad \texttt{make} hay una gran cantidad de información
+en Internet. Quizá el lugar de referencia es la página oficial del
+proyecto de GNU (\url{http://www.gnu.org/software/make/}), aunque
+contiene mucha más información de la necesaria para comprender el
+\texttt{Makefile} proporcionado con \texis. Por el mero hecho de
+proporcionar también una referencia impresa, puede consultarse también
+\cite{libroMake}.
+
+
+
+% Variable local para emacs, para  que encuentre el fichero maestro de
+% compilación y funcionen mejor algunas teclas rápidas de AucTeX
+%%%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../ManualTeXiS.tex"
+%%% End:

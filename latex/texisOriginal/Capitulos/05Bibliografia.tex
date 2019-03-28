@@ -1,0 +1,593 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo 5
+%
+%---------------------------------------------------------------------
+%
+% 05Bibliografia.tex
+% Copyright 2009 Marco Antonio Gomez-Martin, Pedro Pablo Gomez-Martin
+%
+% This file belongs to the TeXiS manual, a LaTeX template for writting
+% Thesis and other documents. The complete last TeXiS package can
+% be obtained from http://gaia.fdi.ucm.es/projects/texis/
+%
+% Although the TeXiS template itself is distributed under the 
+% conditions of the LaTeX Project Public License
+% (http://www.latex-project.org/lppl.txt), the manual content
+% uses the CC-BY-SA license that stays that you are free:
+%
+%    - to share & to copy, distribute and transmit the work
+%    - to remix and to adapt the work
+%
+% under the following conditions:
+%
+%    - Attribution: you must attribute the work in the manner
+%      specified by the author or licensor (but not in any way that
+%      suggests that they endorse you or your use of the work).
+%    - Share Alike: if you alter, transform, or build upon this
+%      work, you may distribute the resulting work only under the
+%      same, similar or a compatible license.
+%
+% The complete license is available in
+% http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+%---------------------------------------------------------------------
+
+\chapter{Bibliografía y acrónimos}
+\label{cap5}
+\label{cap:bibliografia}
+
+
+\begin{FraseCelebre}
+\begin{Frase}
+Como un ganso desplumado y escuálido,\\
+me preguntaba a mí mismo con voz indecisa\\
+si de todo lo que estaba leyendo\\
+haría el menor uso alguna vez en la vida.
+\end{Frase}
+\begin{Fuente}
+James Clerk Maxwell, sobre su educación en Cambridge
+\end{Fuente}
+\end{FraseCelebre}
+
+\begin{resumen}
+Este capítulo aclara algunas cosas sobre la bibliografía
+utilizada en \texis, y sobre la infraestructura para
+la creación de una lista de acrónimos.
+\end{resumen}
+
+%-------------------------------------------------------------------
+\section{Bibliografía}
+%-------------------------------------------------------------------
+\label{cap5:sec:intro}
+
+Para hacer la bibliografía del documento, \texis\ hace uso, como no
+podía ser de otra forma, de Bib\TeX. Esto permite una generación
+bastante sencilla de la misma, utilizando las entradas \verb+@bibitem+
+correspondientes. El fichero \texttt{makefile} explicado en el
+capítulo siguiente se encarga de invocar a \texttt{bibtex}, la
+aplicación responsable de la correcta creación de la lista de
+referencias. Si utilizas cualquier otro sistema para generar el
+documento final (como por ejemplo las proporcionadas por el editor
+\LaTeX\ que estés utilizando), deberás encargarte de averiguar cómo
+debes hacerlo.
+
+La sección siguiente localiza el fichero más importante para la
+construcción de la bibliografía, e indica dónde cambiar los ficheros
+\texttt{.bib} utilizados.
+
+Por otro lado, para añadir en el texto las referencias,
+\texis\ (y este manual) hacen uso del formato utilizado por el
+paquete \texttt{natbib} que, como se ha podido comprobar a lo largo de
+estas páginas, se basa en indicar el nombre del autor y el año de la
+publicación en el propio texto. La sección~\ref{cap5:sec:natbib}
+explica brevemente las capacidades del paquete.
+
+\texis\ modifica ligeramente el formato de salida de cada
+una de las referencias para adecuarlas más a nuestros gustos. También
+hemos añadido algunas capacidades más que pueden añadirse a las
+mismas. La sección~\ref{cap5:sec:bibitem} las describe.
+
+%El capítulo
+La parte relativa a la bibliografía 
+termina con una breve sección útil si se quiere cambiar el
+tipo de bibliografía a utilizar.
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Ficheros involucrados}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\label{cap5:sec:ficheros}
+
+El fichero responsable de la generación de la bibliografía en \texis\
+es \texttt{Cascaras/bibliografia.tex}.  Es el responsable de crear el
+capítulo sin numerar, poner la cabecera especial para que en la parte
+superior de todas sus páginas aparezca el texto
+``\textsc{Bibliografía}'', etc. Para eso, al final del fichero aparece
+la invocación al comando \verb|\makeBib| definido en
+\texttt{TeXiS/TeXiS\_bib.tex}.
+
+Ya dijimos en la sección~\ref{cap3:ssec:frases} que para cambiar la
+cita célebre que aparece en el capítulo sin numerar de la bibliografía
+debemos editar el fichero \texttt{Cascaras/bibliografia.tex}. En
+ese mismo fichero es donde se configuran los archivos donde se deben
+buscar los \verb+@bibitem+ que se referencian en el texto. Para
+hacerlo, se utiliza el comando \verb|\setBibFiles|:
+
+\begin{verbatim}
+\setBibFiles{%
+nuestros,latex,otros%
+}
+\end{verbatim}
+
+Como se puede ver, en este manual las referencias están organizadas en
+tres ficheros distintos: referencias a trabajos propios
+(\texttt{nuestros.bib}), referencias relacionadas con \LaTeX\
+(\texttt{latex.bib}) y referencias varias que no entran en ninguna de
+las dos anteriores (\texttt{otros.bib}).
+
+Esos tres ficheros aparecen en el directorio raíz del manual y
+pueden/deben ser sustituidos por los utilizados en el nuevo documento.
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Referencias con \texttt{natbib}}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\label{cap5:sec:natbib}
+
+Aunque en este manual no se haya hecho un uso demasiado extenso de la
+bibliografía, es cierto que \texttt{natbib} proporciona opciones muy
+interesantes para utilizarse en textos donde las referencias tengan un
+peso importante (o al menos más importante que en este manual).
+
+Cuando se utiliza \texttt{natbib}\footnote{El paquete es incluido por
+  \texis\ en \texttt{TeXiS/TeXiS\_pream.tex}.} en vez de hacer uso de
+\verb+\cite+, se pueden utilizar otras dos versiones distintas del
+comando, en concreto \verb+\citet+ y \verb+\citep+. El primero está
+pensado para hacer referencias en el propio \texttt{t}exto y el último
+para que las referencias aparezcan entre \texttt{p}aréntesis.
+
+En vez de hacer una descripción de cada una de las variaciones, la
+tabla~\ref{cap5:tab:natbib} contiene las distintas posibilidades. Las
+opciones están cogidas directamente de la documentación del paquete y
+asume que existe un \texttt{@bibitem} con nombre \texttt{key} que
+describe una referencia escrita por los autores Jones, Baker y Smith
+en 1990. Notar que el resultado contiene la conjunción española ``y''
+en vez de la inglesa ``and'' para separar el último autor.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+Comando & Resultado \\
+\hline
+\hline
+\verb+\citet{key}+ & Jones et al. (1990) \\
+\hline
+\verb+\citet*{key}+ & Jones, Baker y Smith (1990) \\
+\hline
+\verb+\citep{key}+ & (Jones et al., 1990) \\
+\hline
+\verb+\citep*{key}+ & (Jones, Baker y Smith, 1990) \\
+\hline
+\verb+\citep[cap. 2]{key}+ & (Jones et al., 1990, cap. 2) \\
+\hline
+\verb+\citep[e.g.][]{key}+ & (e.g. Jones et al., 1990) \\
+\hline
+\verb+\citep[e.g.][p. 32]{key}+ & (e.g. Jones et al., p. 32) \\
+\hline
+\verb+\citeauthor{key}+ & Jones et al. \\
+\hline
+\verb+\citeauthor*{key}+ & Jones, Baker y Smith \\
+\hline
+\verb+\citeyear{key}+ & 1990 \\
+\hline
+\end{tabular}
+\caption{Distintas opciones de referencias con \texttt{natbib}%
+         \label{cap5:tab:natbib}}
+\end{table}
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Modificaciones en los \texttt{@bibitem}}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\label{cap5:sec:bibitem}
+
+En \texis\ hemos definido nuestro propio estilo de bibliografía,
+es decir, el formato de salida de las referencias en el listado que
+aparece al final del documento. No es demasiado distinto del estilo
+utilizado por defecto, pero sí tiene ligeras modificaciones.
+
+Las modificaciones más obvias es que se utiliza la versión española
+del formato, para que aparezca ``editor'', ``páginas'' o ``Informe
+Técnico'' entre otros.
+
+También hemos añadido ``constantes'' (o, en nomenclatura de Bib\TeX,
+``macros'') para una editorial y dos series muy utilizadas en nuestra
+área, ``Springer-Verlag'' (\texttt{SV}), ``Lecture Notes in Computer
+Science'' (\texttt{LNCS}) y ``Lecture Notes in Artificial Intelligence
+(subserie de LNCS)'' (\texttt{LNAI}). De esta forma, una entrada de la
+bibliografía puede ser:
+
+\begin{verbatim}
+@inproceedings{Ejemplo,
+   author = { ... },
+   title = { ... },
+   ...
+   publisher = SV,
+   series = LNCS,
+   ...
+   year = 2009,
+   month = jan
+}
+\end{verbatim}
+
+Como se puede ver se han hecho uso de las macros para indicar la
+editorial y la serie. También se ha utilizado la macro para indicar el
+mes (\texttt{jan} equivale a enero), de forma que la entrada sea
+independiente del lenguaje utilizado posteriormente en la referencia.
+
+\medskip
+
+Mucho más interesante es la creación de \emph{dos nuevos campos} que
+pueden añadirse en las entradas de Bib\TeX, y que permiten indicar la
+página Web en la que se puede encontrar la referencia.
+
+En concreto, admitimos un nuevo campo, \verb+webpage+ que permite
+indicar una página Web, y un campo \verb+lastaccess+ permite indicar
+la fecha del último acceso. De esta forma, la referencia, además de
+los campos e información habituales, incluye la localización.
+
+Por ejemplo, el libro del Subversion citado en un capítulo anterior
+\citep{Subversion} está disponible en la Web; para que la URL o
+dirección Web aparezca en la referencia, se pueden utilizar los nuevos
+campos:
+
+\begin{verbatim}
+@Book{Subversion,
+  author      = {Ben Collins-Sussman and
+                 Brian W. Fitzpatrick and
+                 C. Michael Pilato},
+  title       = {Version Control with Subversion},
+  publisher   = {O'Reilly},
+  year        = 2004,
+  isbn        = {0-596-00448-6},
+  webpage     = {http://svnbook.red-bean.com/},
+  lastaccess  = {Octubre, 2009}
+}
+\end{verbatim}
+
+El estilo añade la cadena ``Disponible en'' antes de la url (que se
+añade con el comando \verb+\url+ para su correcta división en líneas)
+y entre paréntesis incluye la fecha del último acceso. El aspecto
+final de la referencia del libro anterior es:
+
+\medskip
+
+\noindent{\sc Collins-Sussman, B.}, {\sc Fitzpatrick, B.~W.} y {\sc Pilato, C.~M.}
+\newblock {\em Version Control with Subversion\/}.
+\newblock O'Reilly, 2004.
+\newblock ISBN 0-596-00448-6.
+\newblock Disponible en \url{http://svnbook.red-bean.com/} (último acceso,
+  Octubre, 2009).
+
+\medskip
+
+También hemos añadido un nuevo tipo de entrada para referenciar
+artículos de la Wikipedia. Puede ser discutible si es adecuado o no
+utilizar citas de la Wikipedia en documentos académicos como tesis o
+trabajos de fin de master, pero si eres de los que opinan que debe
+citarse todo lo que uno utilice y utilizas la Wikipedia, puede que
+quieras usar esta nueva entrada que hay en \texis. Por ejemplo, la
+entrada de \LaTeX\ de la Wikipedia \citep{LaTeXWikipedia} se define
+con:
+
+\begin{verbatim}
+@Wikipedia{LaTeXWikipedia,
+   author     = {Wikipedia},
+   title      = {{LaTeX}},
+   wpentry    = {LaTeX},
+   language   = {es},
+   webpage    = {http://es.wikipedia.org/wiki/LaTeX},
+   lastaccess = {Mayo, 2009},
+}
+\end{verbatim}
+
+En el texto la referencia no aparece con el año sino que hace
+alusión a que es una entrada de la Wikipedia, como se ha podido ver en
+el parrafo anterior. El resultado final en la lista de referencias es:
+
+\medskip
+
+\noindent{\sc Wikipedia} (LaTeX).
+\newblock Entrada: ``{LaTeX}''.
+\newblock Disponible en \url{http://es.wikipedia.org/wiki/LaTeX} (último
+  acceso,  Mayo, 2009).
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Cambio del estilo de la bibliografía}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\label{cap5:sec:cambios}
+
+El estilo de las referencias de \texis\ está definido en
+\texttt{TeXiS/TeXiS.bst}, que se incluye en la parte final del fichero
+\texttt{TeXiS\_bib.tex}:
+
+\begin{verbatim}
+...
+\bibliographystyle{TeXiS/TeXiS}
+...
+\end{verbatim}
+
+Si quieres utilizar un estilo distinto de los disponibles en \LaTeX\
+basta con que cambies esa línea para definir ese otro estilo. Por
+ejemplo:
+
+\begin{verbatim}
+...
+\bibliographystyle{abbrv}
+...
+\end{verbatim}
+
+\noindent configura la bibliografía para que queden numeradas y se
+referencien desde el texto con el número entre paréntesis\footnote{Si
+  quieres que queden entre corchetes ('[', ']'), debes quitar el
+  \texttt{[round]} que aparece en la inclusión del paquete
+  \texttt{natbib} en el fichero \texttt{TeXiS/TeXiS\_pream.tex}.}.  Ten
+en cuenta, no obstante, que en ese caso el resultado de los comandos
+\verb+\citep+ y \verb+citet+ es el mismo, por lo que puede que
+necesites reescribir algunas frsaes; además, \verb+\citeyear+ y
+\verb+\citeauthor+ dejarán de funcionar. Por último, cambiar el estilo
+a un estilo predeterminado como ese elimina la posibilidad de incluir
+referencias a páginas Web y a la Wikipedia explicadas antes.
+
+\medskip
+
+Otra posibilidad es que desees ajustar el funcionamiento del estilo
+proporcionado por \texis. En ese caso, puedes editar el fichero
+del estilo (el antes nombrado \texttt{TeXiS/TeXiS.bst}), respetando la
+sintáxis que espera \texttt{bibtex}.
+
+
+
+%-------------------------------------------------------------------
+\section{Acrónimos}
+%-------------------------------------------------------------------
+\label{capBiblio:sec:glosstex}
+
+Los acrónimos son las \emph{siglas} utilizadas a lo largo del
+documento. \LaTeX\ permite facilitar su gestión, de manera que se
+controle automáticamente el momento de la primera aparición de un
+acrónimo para poner su significado, o para que se genere
+automáticamente una lista de acrónimos a modo de resumen para ser
+añadida al final del documento.
+
+Dado que el uso de acrónimos no es tan conocido, de nuevo romperemos
+nuestra promesa de no explicar aquí aspectos concretos de \LaTeX, y
+describiremos en la siguiente sección el funcionamiento del paquete
+Gloss\TeX, que se encarga de la gestión de acrónimos. Después, nos
+centraremos en el modo en el que \texis\ integra su uso.
+
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Acrónimos con glosstex}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\label{cap5:sec:glosstex}
+
+\figura{Bitmap/05/ListaAcronimos}{width=0.7\textwidth}%
+       {cap5:fig:listaAcronimos}{Resultado de la lista de acrónimos}
+
+Al igual que ocurre con la bibliografía, el uso de acrónimos en el documento supone dos cosas:
+
+\begin{itemize}
+  \item A lo largo del texto habrá que indicar en qué punto se usa un acrónimo, al igual que se indica cuando se utiliza una referencia bibliográfica.
+  \item Al final del texto, tendrá que aparecer una lista con todos los acrónimos utilizados (figura~\ref{cap5:fig:listaAcronimos}), al igual que ocurre con las citas.
+\end{itemize}
+
+Dada esta similitud con la bibliografía, no sorpende que para que sea \LaTeX quién nos gestione nuestros acrónimos tendremos que hacer uso de una ``base de datos'' de acrónimos, generalmente en ficheros con extensión \texttt{.gdf} (\emph{Glossary Data File}), que son conceptualmente similares a los ficheros \texttt{.bib} usados por Bib\TeX. Como ejemplo, a continuación se indica el contenido (parcial) del fichero usado en este manual:
+
+\begin{verbatim}
+@entry{CVS, , \emph{Control Version System}, Sistema de Control
+de Versiones}
+
+@entry{GPL, , \emph{General Public License}, Licencia Pública
+General de GNU}
+\end{verbatim}
+
+Cada entrada se coloca dentro de un ``comando'' \texttt{@entry}, que tiene tres parámetros, separados por comas:
+
+\begin{enumerate}
+  \item \emph{Acrónimo}: en el ejemplo, CVS y GPL. El acrónimo hace también las veces de etiqueta identificativa, para referenciarlo dentro del texto.
+  \item \emph{Representación corta}: no aparece en ninguno de los dos ejemplos anteriores (se ha dejado en blanco). Es necesaria únicamente si el acrónimo \emph{tiene formato}. Veremos un ejemplo en un instante.
+  \item \emph{Versión larga}: contiene la descripción completa del acrónimo. Aunque estemos utilizando comas como separadores de cada uno de los tres elementos, al ser éste el último campo, podría contener comas tal y como muestran los ejemplos.
+\end{enumerate}
+
+
+Una vez que se ha poblado el fichero con los acrónimos, a lo largo del texto es posible añadir comandos de Gloss\TeX\ para referirse a ellos, algo conceptualmente similar al uso de \verb+\cite+ respecto a la bibliografía. A continuación se muestran los comandos disponibles\footnote{Para poder usarlos, será necesario haber incluído el paquete \texttt{glosstex} en el preámbulo del documento.}, y su resultado en el documento final\ifx\generaacronimos\undefined \footnote{Dado que \emph{no} estás compilando el documento con el glosario, \emph{no} podrás ver el resultado correcto aquí. Consulta la sección~\ref{cap5:subsec:acronimosEnTeXiS} para más información.}\fi:
+
+% Intento de hacerlo con una tabla. Queda mal porque ocupa demasiado
+% en horizontal.
+%
+% \begin{center}
+% \begin{tabular}{|c|c|c|}
+% \hline
+% Versión & Comando & Resultado \\
+% \hline
+% Corta (\emph{\textsf{s}hort}) & \verb+\acs{CVS}+ & \acs{CVS} \\
+% Larga (\emph{\textsf{l}ong}) & \verb+\acl{CVS}+ & \acl{CVS} \\
+% Completa (\emph{\textsf{f}ull}) & \verb+\acf{CVS}+ & \acf{CVS} \\
+% \hline
+% \end{tabular}
+% \end{center}
+
+\begin{itemize}
+  \item \verb+\acs{CVS}+ (\emph{\textbf{s}hort}): \acs{CVS}
+  \item \verb+\acl{CVS}+ (\emph{\textbf{l}ong}): \acl{CVS}
+  \item \verb+\acf{CVS}+ (\emph{\textbf{f}ull}): \acf{CVS}
+  \item \verb+\ac{CVS}+: es la más interesante de todas. Funciona como \verb+\acf+ la primera vez que aparece en el texto, y como \verb+\acs+ el resto de las veces.
+\end{itemize}
+
+Las tres primeras muestran diferentes partes de la entrada definida en el fichero \texttt{.gdf}. La más completa es la mostrada por \verb+\acf+, que combina la versión corta con la larga, que coloca entre paréntesis. No obstante, el comando más interesante es \verb+\ac+, que ``recuerda'' si ya se introdujo un acrónimo anteriormente en el documento, mostrando su descripción completa únicamente la primera vez\footnote{El uso manual de \texttt{acf} \emph{no} hace que Gloss\TeX\ considere que el acrónimo ya se ha ``presentado'', por lo que si se utiliza primero \texttt{acf} y más adelante \texttt{ac}, aparecerá de nuevo la versión completa.}. El modo en el que se construye esta descripción (con la versión larga entre paréntesis) es personalizable, si bien el modo de hacerlo queda fuera del alcance de este documento.
+
+Por tanto, el modo de uso recomendado de los acrónimos es añadir en el fichero \texttt{.gdf} todos los acrónimos usados en el documento, y luego hacer \emph{siempre} referencia a ellos a través del comando \verb+\ac+. \LaTeX\ incluirá la descripción completa la primera vez, y dejará únicamente el acrónimo todas las demás.
+
+\medskip
+
+Hemos visto que en los ejemplos descritos, el propio acrónimo \emph{hace las veces de identificador}, de modo que pare referenciarlo basta con un mero \verb+\ac{CVS}+ o similar. Esto será suficiente la mayor parte de las veces, pero en ocasiones tendremos acrónimos más complejos, como por ejemplo PC$^2$ (\emph{Programming Contest Control}).
+% Para no tener que volver a decirlo, aquí lo hemos puesto a mano sin usar GlossTeX, para que lo vean bien también aquellos que no generen el documento con él.
+El problema, es que para que se muestre correctamente, el código \LaTeX\ del acrónimo es en realidad \verb+PC$^2$+, por lo que tendríamos que referirnos a él como \verb+\ac{PC$^2$}+. Esto no sólo resulta incómodo, sino que además genera un error de compilación, dado que no podemos añadir comandos \LaTeX\ dentro de un identificador.
+
+La solución es hacer uso del segundo campo que dejábamos vacío en las entradas del fichero \texttt{.gdf} de ejemplo:
+
+\begin{verbatim}
+@entry{PC2, PC$^2$, \emph{Programming Contest Control}}
+\end{verbatim}
+
+Cuando se indica dicho campo, Gloss\TeX\ hará uso de él para mostrar el acrónimo, y utilizará el primero sólo como identificador. Ahora, para referirnos a él bastará con un \verb+\ac{PC2}+ que, la primera vez que se usa, se convierte en un \acf{PC2}, y las siguientes en un más corto \acs{PC2}\ifx\generaacronimos\undefined \footnote{De nuevo, como \emph{no} estás compilando el documento con el glosario, \emph{no} podrás ver el resultado correcto aquí.}\fi.
+
+\medskip
+
+Aparte de la ayuda proporcionada por Gloss\TeX\ para evitarnos tener que escribir la versión completa de nuestros acrónimos, también nos sirve para añadir en la parte final un listado de acrónimos donde se muestra el acrónimo y su descripción larga (tal y como mostraba la figura~\ref{cap5:fig:listaAcronimos}). Al igual que ocurre con la bibliografía, sólo aparecerán en la lista aquellos acrónimos que realmente se hayan usado a lo largo del documento. El comando para conseguirlo es:
+
+\begin{verbatim}
+\printglosstex(acr)
+\end{verbatim}
+
+No obstante, y al igual que ocurre con la bibliografía, para que toda esta infraestructura funcione es necesario ejecutar programas externos (aparte del propio \texttt{latex} o \texttt{pdflatex}). El proceso completo es el siguiente:
+
+\begin{enumerate}
+  \item El uso de comandos \verb+\ac?+ genera la inclusión de anotaciones dentro de los ficheros \texttt{.aux} generados al compilar los \texttt{.tex}.
+  \item Al igual que se hace con la aplicación \texttt{bibtex} para la bibliografía, en este caso usamos el programa \texttt{glosstex}\footnote{Este programa deberá estar instalado en el sistema en el que se esté generando el documento.} que los recorre y genera un nuevo fichero con extensión \texttt{.gxs} con información sobre las entradas referenciadas, y un \texttt{.gxg} con información de registro (\emph{log}).
+  \item El fichero \texttt{.gxs} debe volverse a procesar usando otro programa, en este caso \texttt{makeindex}, que ordena alfabéticamente las entradas utilizadas, y les aplica un formato concreto. Este proceso genera un nuevo fichero, con extensión \texttt{.glx}, que, finalmente, contiene todo correcto.
+  \item El fichero anterior es utilizado por el comando \LaTeX\ \verb+printglosstex+ que debe ser incluído dentro de algún fichero \texttt{.tex} del documento, y que es conceptualmente similar al \verb+\bibliography{ficheros}+ usado para Bib\TeX.
+\end{enumerate}
+
+Todo esto complica el proceso de construcción del documento, que ahora
+requiere pasos adicionales\footnote{Como siempre, también es válido el
+  uso de \texttt{latex} en lugar de \texttt{pdflatex}, pero el fichero
+  generado (\texttt{.dvi}) deberá después ser convertido a PDF.}:
+
+\begin{verbatim}
+$ pdflatex Tesis
+$ bibtex Tesis
+$ glosstex Tesis acronimos.gdf
+$ makeindex Tesis.gxs -o Tesis.glx -s glosstex.ist
+$ pdflatex Tesis
+\end{verbatim}
+
+En la ejecución de \texttt{glosstex} es necesario proporcionarle el nombre del fichero (o ficheros) con la ``base de datos'' de acrónimos. En el caso de \texttt{bibtex} esto no es necesario, porque ya se lo proporcionamos directamente en los \texttt{.tex} con el comando \verb+\bibliography{ficheros}+. Además, en la ejecución a \texttt{makeindex} proporcionamos el parámetro \texttt{glosstex.ist} que indica el formato que queremos aplicar a nuestra lista de acrónimos; ten en cuenta que \texttt{makeindex} se utiliza para la generación de otros índices, por lo que para mantener la generalidad mantiene fuera dicho formato para que pueda ser adaptado a cada caso.
+
+Para poder hacer uso, por tanto, de los acrónimos, \emph{es necesario} disponer no sólo del paquete \LaTeX\ \texttt{glosstex}, sino también de las \emph{aplicaciones} \texttt{glosstex} y \texttt{makeindex}. En la sección~\ref{cap2:sec:compilacion} veíamos un modo simplificado de compilar el presente documento que no incluía las órdenes para procesar los acrónimos. Si no se ejecutan estas aplicaciones, el documento se generará correctamente, salvo por la lista de acrónimos que aparecerá vacía.
+
+
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Acrónimos en \texis}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\label{cap5:subsec:acronimosEnTeXiS}
+
+Afortunadamente, al utilizar \texis\, prácticamente de lo único que hay que preocuparse es de crear la ``base de datos'' de acrónimos y de hacer uso del comando \verb+\ac+ cuando corresponda. El resto de tareas son gestionadas automáticamente\footnote{Salvo, naturalmente, la instalación de las propias aplicaciones \texttt{glosstex} y \texttt{makeindex} que deberá haber realizado el usuario.}.
+
+Para dar soporte al uso de acrónimos, \texis\ se apoya en varios ficheros:
+
+\begin{itemize}
+   \item \texttt{TeXiS/TeXiS\_acron.tex}: contiene el comando de Gloss\TeX\ que añade al documento un nuevo capítulo sin numeración con la lista de acrónimos. De manera predefinida, este capítulo se añadirá al documento \emph{unicamente en modo ``release''} (consulta la sección~\ref{cap3:sec:modos-compilacion} para más información). En modo borrador (\emph{debug}) los acrónimos no se incluyen en el documento, de modo que se ahorra algo de tiempo.
+
+   \item \texttt{acronimos.gdf}: éste es el fichero donde se recomienda añadir los acrónimos que se usen. Hace las veces de ``base de datos'' de acrónimos. Siendo realistas, los ficheros \texttt{.tex} de \texis\ \emph{no} dependen de que se utilice este fichero en concreto. Tal y como se explicó en la sección anterior, es la ejecución externa de las herramientas de Gloss\TeX\ la que recibirá el nombre en concreto. Sin embargo, \texis\ proporciona un modo automático de construcción, descrito en el capítulo~\ref{cap:makefile}, que sí asume este nombre de fichero. La construcción se apoya en la herramienta \texttt{make}, de ahí que al principio del documento mencionáramos que resultaba más cómodo hacer uso de plataformas GNU/Linux (que disponen de él) en lugar de Windows.
+\end{itemize}
+
+En la versión en borrador, además de no generarse la lista de acrónimos como un capítulo más, \emph{tampoco} se añaden las descripciones largas de los acrónimos. Es decir, si se utiliza en algún lugar del documento las órdenes de Gloss\TeX\ mencionadas previamente (\verb+\ac+, \verb+\acl+, etcétera), éstas se ``puentearán'' de modo que en el documento final tan sólo aparecerá la propia etiqueta.
+\ifx\generaacronimos\undefined
+Por ejemplo, dado que esta versión se ha compilado \emph{sin} acrónimos, aparecerá tan sólo \acl{CVS} aunque en el código \texttt{.tex} subyacente haya sido escrito \verb+\acl{CVS}+ (puedes comprobarlo si te parece).
+\else
+Por ejemplo, ante \verb+\acl{CVS}+, en lugar de aparecer ``\acl{CVS}'' se mostrará únicamente ``CVS''.
+\fi
+
+\medskip
+
+Dado que no todos los documentos harán uso de acrónimos, y que, después de todo, generarlos supone un esfuerzo en la fase de compilación no despreciable\footnote{Este esfuerzo es real tan sólo si no se hace uso del \texttt{Makefile} proporcionado por \texis.}, es posible que en ocasiones no se desee que se incluyan los acrónimos tampoco en la versión final (modo \emph{release}). En ese caso, basta con que se modifique el fichero \texttt{config.tex} (el mismo en el que se escogía qué versión se quería compilar) y comentar la linea siguiente:
+
+\begin{verbatim}
+\def\acronimosEnRelease{1}
+\end{verbatim}
+
+Si se comenta, \texis\ asumirá que no se desean acrónimos tampoco en la versión final, y no se incluirá el capítulo sin numeración. De nuevo, ten en cuenta que en ese caso los comandos de Gloss\TeX\ se puentearán también\footnote{Aunque en este caso no debería ser un problema porque si no se quieren los acrónimos en la versión final será porque no se han usado.}.
+
+\medskip
+
+En el improbable caso en el que se quiera hacer uso de los acrónimos para que sea el propio sistema el que se encargue de escribirnos el significado la primera vez que se usan, pero no se quiere que aparezca el listado final de los acrónimos, entonces será necesario modificar directamente el fichero \texttt{Tesis.tex}, y dejar de incluir \texttt{TeXiS/TeXiS\_acron}, cuya inclusión es ahora mismo condicional en función de si se usan o no los acrónimos.
+
+\medskip
+
+Por último, hay que tener en cuenta que cuando se modifica el modelo de compilación (por ejemplo, indicando versión final o borrador, o pidiendo que se añadan o quiten los acrónimos en \emph{release}) es necesario \emph{borrar los ficheros intermedios} generados durante la compilación\footnote{Las razones que ocasionan esto quedan explicadas en la sección~\ref{cap6:subsec:glosstexYCambioModo}.}. Si se está generando el documento haciendo uso de la infraestructura proporcionada por \texis\ a través de su \texttt{Makefile} (descrita en el capítulo siguiente), bastará con un sencillo:
+
+\begin{verbatim}
+make clean
+\end{verbatim}
+
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\subsection{Más allá de \texis}
+%- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+El nombre Gloss\TeX\ proviene en realidad de \emph{glossary}, por lo
+que su objetivo inicial era realizar \emph{glosarios}, no meras listas
+de acrónimos. Para ser honestos, en las entradas de los ficheros
+\texttt{.gdf} podemos añadir una \emph{descripción completa} con una
+descripción de la entrada:
+
+\begin{verbatim}
+@entry{PC2, PC$^2$, \emph{Programming Context Control}}
+Software de gestión utilizado en los concursos de programación
+impulsados por ACM, a través del cual los concursantes envían
+sus soluciones, y los jueces acceden a ellas y las valoran.
+\end{verbatim}
+
+Esa descripción \emph{está fuera} de la entrada \texttt{@entry}, y
+resulta útil en el caso de que quisieramos mantener un glosario de
+palabras. \texis\ \emph{no} proporciona soporte para esto, por lo que
+si lo quieres utilizar, tendrás que añadir la infraestructura
+necesaria por tu cuenta.
+
+%-------------------------------------------------------------------
+\section*{\NotasBibliograficas}
+%-------------------------------------------------------------------
+\TocNotasBibliograficas
+
+Existen numerosas publicaciones relacionadas con BibTeX; para una
+descripción de los tipos de entradas que se soportan, etc., se puede
+consultar \citet{BibTexOriginal} o \citet{latexCompanion}. En esta
+última referencia también puede encontrarse información sobre las
+posibilidades del paquete \texttt{natbib}.
+
+Por otro lado, es también fácil encontrar información sobre cómo
+cambiar el estilo utilizado (es decir, lo que hemos hecho en
+\texis\ para añadir el \verb+@lastaccess+ o ajustar las cadenas
+que aparecen). Por ejemplo, una descripción en español es
+\citet{AtazLopez}. También se puede consultar \citet{latexCompanion} o
+\citet{patashnik1988a}.
+
+\medskip
+
+Respecto a Gloss\TeX, la fuente principal de información es la
+disponible en el catálogo de paquetes de \TeX. Puedes encontrarla en
+\url{http://www.ctan.org/tex-archive/help/Catalogue/entries/glosstex.html}.
+
+%-------------------------------------------------------------------
+\section*{\ProximoCapitulo}
+%-------------------------------------------------------------------
+\TocProximoCapitulo
+
+Con este capítulo terminan los capítulos más importantes del manual,
+donde se ha contado lo que se debe saber para utilizar \texis.  El
+próximo capítulo describe el fichero \texttt{Makefile} proporcionado.
+El fichero permite generar de forma fácil el documento final,
+utilizando la utilidad \texttt{make} disponible en virutalmente todas
+las plataformas. Somos conscientes de que no todo el mundo querrá
+utilizar este mecanismo para generar el documento final (muchos
+usuarios preferirán utililizar las opciones del editor que
+utilicen); por eso lo hemos puesto al final.
+
+% Variable local para emacs, para  que encuentre el fichero maestro de
+% compilación y funcionen mejor algunas teclas rápidas de AucTeX
+%%%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../ManualTeXiS.tex"
+%%% End:

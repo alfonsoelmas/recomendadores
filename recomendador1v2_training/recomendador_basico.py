@@ -74,12 +74,7 @@ class RecomendadorBasico:
                 booleanos = (self.matrizDatos[self.userPosOwner] == 1)
                 return np.where(booleanos)[0].size
 
-"""
-TODO AQUI ME HE QUEDADO HACIENDO LA "LIMPIEZA"
-"""
 
-        # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
-        # Todo: testear
         """
         Método recomendar
                 - Recomienda un usuario userIDowner, con un grado de similitud, devolviendo un diccionario de problemas ordenado.
@@ -120,7 +115,7 @@ TODO AQUI ME HE QUEDADO HACIENDO LA "LIMPIEZA"
                 #Ordena de menor a mayor y se le da la vuelta.
                 diccionario = sorted(diccionario.items(), key=operator.itemgetter(1))
                 diccionario.reverse()
-                #Esta parte puede quizás ahora se el mayor cuello de botella del algoritmo completo.
+                #Esta parte puede quizás ahora ser el mayor cuello de botella del algoritmo completo.
                 #Devuelve la posicion de la matriz, no su ID como tal. Habra que parsearlo con la clase conect para obtener el id correspondiente.
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
 
@@ -294,74 +289,4 @@ Prueba funcionamiento y tiempo de funciones recomendador v2
 # np.count_nonzero(y == 1) >> ESTA FUNCION CUENTA CUANTAS VECES SE REPITE EL VALOR UNO EN EL ARRAY Y
 # np.any(a!=0)
 # np.all(a==a)
-f = open("resultadosV3_entrenamiento1000v2.txt", "w")
-s_t = time()
-db = conect.JuezDB()
-e_t = time() - s_t
-recomendador  = RecomendadorBasico(db)
-listaUsuarios = db._obtenerTodosUsuarios()
-for usuario in np.nditer(listaUsuarios):
-        s_t = time()
-        a = recomendador.recomendar(usuario,1000)
-        e_t = time() - s_t
 
-        f.write('U: '+ str(usuario) +'\n')
-        for idproblema, valor in a:
-                #parseamos la pos del problema en su id con db.problems[pos]
-                f.write(str(db._problems[idproblema]) +'='+ str(valor) +'\n')
-        f.write("[time: "+ str(e_t) +"]\n")
-
-"""
-# Entorno de pruebas: Resultados recomendador optimizado en formato txt para los primeros N usuarios de la BBDD
-listaTodosUsuarios = conexion._obtenerTodosUsuarios()
-# Todo: pruebas que se quitarán.
-f = open("resultados2.txt", "w")
-
-
-
-conexion = conect.JuezDB()
-salto = 100
-for usuario in np.nditer(listaTodosUsuarios):
-        if(salto>0): #Nos saltamos los 100 primeros usuarios ya que hemos recomendado varios
-                salto = salto - 1
-        else:
-                recomendador = RecomendadorBasico(usuario)
-                a = recomendador.recomendar(10000)
-                f.write('USUARIO: '+ str(usuario) +'\n')
-                f.write('===========================\n')
-                for idproblema, valor in a:
-                        f.write(str(idproblema) +'-->'+ str(valor) +'\n')
-                f.write('===========================\n')
-
-f.close()
-"""
-
-"""
-
-tiempo de calculo
-discriminaria problemas con menos entregas quizas, y sería más costoso que recomendase esos problemas a no ser que el usuario a recomendar ya halla realizado problemas con muchas entregas...
-menos eficaz para aquellos usuarios que tengan menos problemas resueltos. (Ya que recomendaría problemas que mas AC tienen principalmente)...
-
-
-Para un N pequeño es poco preciso ya que hay bastantes usuarios cuya correlacion es casi 1 por haber resuelto casi todos los problemas. Para grandes precisiones... mejor un N casi del maximo.
-
-Probemos...
-
-si N = maximo usuarios que cumplen condicion de tener algun problema diferente...
-obtenemos un grado de fiabilidad alto, pero el tiempo de calculo empeora un poco
-
-para un N suficientemente fiable, podemos calcularlo estimando cuantos usuarios deberíamos observar sobre el total.
-
-Si N = 10 de 5000 > Muy poco fiable y valores similares
-Si N = 1000 de 5000, aumenta la fiabilidad pero nuestra "fuerza" de recomendacion sobre los problemas desciende bastante (Si antes teniamos valores de casi 1 sobre 1, ahora tenemos valores de 0.07 los mas altos)
- (Todo esto bajo el usuario de prueba "alfonsoelmas" con un total de 122 problemas resueltos (Una cantidad medio-alta sobre el total)
-
-**TODO:
-        Y para un usuario con cantidad medio-baja?
-        como estimar un grado de recomendacion optimo?
-        Multiplicar por algo el resultado para que no tenga tantos decimales?...
-    
-    CREAR VERSION EN LA QUE CARGUEMOS UNA MATRIZ DE FILAS(USERS)COLUMNAS(PROBLEMAS) EN MEMORIA PARA REDUCIR LAS CONSULTAS Y POR ENDE LA SOBRECARGA DE LA BBDD Y POR ENDE EL TIEMPO.
-    CONSIDERAR QUE PARA UNA BBDD MUY GRANDE CARGAR TODO EN MEMORIA NOS SUPONDRÍA UN PROBLEMA DEBIDO A LA EXISTENCIA DE RECURSOS LIMITADOS DEL ORDENADOR.
-
-"""

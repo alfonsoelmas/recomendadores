@@ -1,0 +1,324 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo 1
+%
+%---------------------------------------------------------------------
+%
+% 01Introduccion.tex
+% Copyright 2009 Marco Antonio Gomez-Martin, Pedro Pablo Gomez-Martin
+%
+% This file belongs to the TeXiS manual, a LaTeX template for writting
+% Thesis and other documents. The complete last TeXiS package can
+% be obtained from http://gaia.fdi.ucm.es/projects/texis/
+%
+% Although the TeXiS template itself is distributed under the 
+% conditions of the LaTeX Project Public License
+% (http://www.latex-project.org/lppl.txt), the manual content
+% uses the CC-BY-SA license that stays that you are free:
+%
+%    - to share & to copy, distribute and transmit the work
+%    - to remix and to adapt the work
+%
+% under the following conditions:
+%
+%    - Attribution: you must attribute the work in the manner
+%      specified by the author or licensor (but not in any way that
+%      suggests that they endorse you or your use of the work).
+%    - Share Alike: if you alter, transform, or build upon this
+%      work, you may distribute the resulting work only under the
+%      same, similar or a compatible license.
+%
+% The complete license is available in
+% http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+%---------------------------------------------------------------------
+
+\chapter{Introducción}
+
+\begin{FraseCelebre}
+\begin{Frase}
+Púsose don Quijote delante de dicho carro, y haciendo en su fantasía
+uno de los más desvariados discursos que jamás había hecho, dijo en
+alta voz:
+\end{Frase}
+\begin{Fuente}
+  Alonso Fernández de Avellaneda, El Ingenioso Hidalgo Don Quijote de
+  la Mancha
+\end{Fuente}
+\end{FraseCelebre}
+
+\begin{resumen}
+  Este capítulo presenta una breve introducción a \texis.  El
+  lector podrá hacerse una idea de qué es y para qué sirve. También se
+  encuentra aquí una descripción del resto de capítulos del manual.
+\end{resumen}
+
+
+%-------------------------------------------------------------------
+\section{Introducción}
+%-------------------------------------------------------------------
+\label{cap1:sec:introduccion}
+
+
+Si estás leyendo estas líneas es muy posible que haya llegado la hora
+de ponerte a escribir la tesis, después de mucho tiempo dando vueltas
+al área de investigación concreta en el que estás inmerso. O puede que
+estés a punto de empezar a escribir la memoria del proyecto de fin de
+carrera, fin de master, o cualquier otro documento de cierta
+envergadura.
+
+Sea lo que sea lo que te traes entre manos, lo más probable es que no
+sea fácil hacerlo. Muy posiblemente no tengas aún muy claro qué vas a
+escribir, pero tu tutor/director/profesor te ha dicho que vayas
+empezando a plasmar esas ideas sobre el papel para tener algo firme, y
+sentir que vas avanzando.
+
+Y entonces viene el problema de cómo escribirlo. Muy posiblemente
+habrás escrito algún artículo en \LaTeX\ y estés convencido de que esa
+es la vía a seguir para hacer un documento que superará las 10 páginas
+y que tendrá bibliografía. O puede, simplemente, que alguien te haya
+dicho que lo mejor es que escribas el proyecto en \LaTeX\ porque la
+apariencia final es mejor, porque es más cómodo, o cualquier otra
+razón.
+
+Sea como fuere, parece que estás más o menos decidido a escribir tu
+documento en \LaTeX. Bien hecho. Pero, ¿cómo?. Al contrario de lo que
+suele ocurrir en congresos y en revistas, no tienes disponible ninguna
+página en la que descargarte las ``instrucciones para los autores'',
+con la cómoda plantilla en \LaTeX\ que tú, sufrido autor, simplemente
+tienes que rellenar. No. Ahora las cosas son más complicadas.
+
+Así que te vas a la guía de \LaTeX\ con la que empezaste (apostamos
+que es la misma con la que hemos empezado todos), y ves las distintas
+posibilidades que te ofrece en su ``\texttt{documentclass}'':
+\texttt{article}, \texttt{report}, \texttt{book}, ... Y te quedas con
+la última. Pero te asaltan muchas preguntas. ¿Cómo organizo todo esto?
+o ¿cómo hago la portada? o incluso ¿qué hago para que no ponga
+``Chapter'', sino ``Capítulo''?. En ese punto, es de suponer, has
+pedido ayuda a la gente de alrededor y/o a tu buscador de Internet
+favorito. Y de alguna forma, te has encontrado leyendo estas líneas.
+
+Tenemos que decir que exactamente esa fue nuestra situación cuando por
+fin nos decidimos a escribir nuestras tesis. Desgraciadamente, ni la
+gente que teníamos alrededor ni nuestro buscador favorito supieron
+contestarnos de forma satisfactoria, por lo que tuvimos que invertir
+\emph{mucho tiempo} hasta conseguir que el resultado que salía de
+nuestros \texttt{.tex} nos gustara, hasta que nos sentimos cómodos con
+la estructura de los ficheros, con las macros disponibles y con el
+modo de compilación.
+
+Y para que nadie más pueda utilizar como excusa el no saber cómo
+personalizar la clase \texttt{book} para retrasar el comienzo de su
+tesis, para que nadie más se decida por Word u otro paquete ofimático
+en vez de \LaTeX\ porque lo ve mucho más sencillo, en definitiva, para
+que nadie pierda tanto tiempo como perdimos nosotros creando la
+estructura, decidimos hacer público el esqueleto básico que
+construimos nosotros para hacerlas. Ese esqueleto básico o plantilla
+es \texis.
+
+En vez de hacer disponible la plantilla o ficheros \texttt{.tex} sin
+ningún contenido, proporcionamos un manual en formato PDF que (a no
+ser que estés leyendo directamente el código \LaTeX), será lo que
+estás leyendo. Este manual ha sido creado \emph{con la propia
+  plantilla}. Por lo tanto, la distribución de \texis\ es en
+realidad el código fuente de \emph{su propio manual}. Con su código
+fuente entre tus manos, lo único que tienes que hacer es borrar su
+contenido (\emph{este texto}), y rellenarlo con tu gran contribución
+al mundo.  Como podrás comprobar, la estructura del propio manual
+sigue el esquema de lo que podría ser una tesis, trabajo de
+investigación o proyecto de fin de carrera, precisamente para que sea
+fácil quitar el contenido textual y sustituirlo por el nuevo.
+
+En los capítulos que siguen encontrarás toda la información necesaria
+para poder utilizar los ficheros \LaTeX\ para crear tus propios
+documentos. Además, el propio código fuente está lleno de comentarios
+(especialmente en los ficheros que definen el estilo), por lo que
+también en ellos encontrarás una buena fuente de información. Eso es
+especialmente importante en caso de que quieras modificar en algo el
+aspecto final de tu documento.
+
+Esperemos que te sea de utilidad. Si es así, nos gustaría que lo
+reconocieras en la sección de agradecimientos. Si durante tu proceso
+de escritura has añadido algún aspecto que crees que puede ser
+interesante para otros, no dudes en decírnoslo para intentar incluirlo
+en siguientes versiones de la propia plantilla; tampoco dudes en
+enviarnos sugerencias sobre las explicaciones de este manual para
+poder mejorarlo con el tiempo. Por último, también puedes enviarnos el
+resultado final para poner una referencia a él en la página de
+descarga, donde, por cierto, puedes ver otros documentos creados con
+la plantilla, lo que te permitirá coger ideas de cosas que puedes
+variar. Recuerda que la versión más reciente de \texis\ está
+disponible en \url{http://gaia.fdi.ucm.es/projects/texis/}.
+
+%-------------------------------------------------------------------
+\section{Qué es \texis}
+%-------------------------------------------------------------------
+\label{cap1:sec:que-es}
+
+La plantilla que tienes entre las manos es, como hemos dicho, el
+esqueleto del código fuente de las Tesis Doctorales de los dos autores
+\citep{GomezMartinMA2008PhD, GomezMartinPP2008PhD}. Por tanto, sirve
+para escribir otras Tesis Doctorales u otros documentos con estructura
+similar de forma fácil.
+
+\texis\ te permite además generar el fichero utilizando tanto el
+comando \texttt{latex} (que genera de forma nativa ficheros
+\texttt{dvi} que luego se convierten a ficheros \texttt{ps} o
+\texttt{pdf}), como \texttt{pdflatex}. De esta forma el usuario final
+puede elegir entre cualquiera de las dos herramientas\footnote{Esto es
+  útil por ejemplo cuando quieres utilizar \texttt{pdflatex} pero
+  finalmente el servicio de publicaciones sólo admite el uso de
+  \texttt{latex}.}.  Aconsejamos, no obstante, la utilización de este
+último, debido a que \texis\ contiene ciertos comandos para dotar al
+PDF final de marcadores que permiten una navegación cómoda por el
+fichero utilizando los visores tradicionales.
+
+\medskip
+
+Como explicaremos en el capítulo siguiente, la plantilla se aprovecha
+mejor en sistemas GNU/Linux. Nota que hemos dicho que la plantilla
+``\emph{se aprovecha mejor}'' en sistemas GNU/Linux, no que \emph{no
+pueda utilizarse} en Windows o Mac; es evidente que \LaTeX\ es
+multiplataforma, y por lo tanto puede compilarse en cualquier sistema
+que tenga instalada una distribución del mismo.
+
+La razón por esta ``desviación positiva'' hacia Linux estriba en que
+para hacer más cómodo el proceso de edición y compilación, \texis\
+proporciona ficheros que facilitan el proceso de generación del
+fichero PDF final, tal y como se describe en el
+capítulo~\ref{cap:makefile}.  Esos ficheros adicionales sólo funcionan
+correctamente si son ejecutados en Linux.
+
+%-------------------------------------------------------------------
+\section{Qué no es}
+%-------------------------------------------------------------------
+\label{cap1:sec:que-no-es}
+
+Esta plantilla \emph{no} es un manual de \LaTeX, ni una guía de
+referencia, ni un compendio de preguntas frecuentes. De hecho, no nos
+consideramos expertos en \LaTeX, por lo que no tendríamos fuerzas para
+escribir algo así. Si necesitas un manual de \LaTeX, puedes encontrar
+muchos y muy buenos en Internet. Al final de este capítulo aparece una
+lista con algunos de ellos.
+
+La plantilla tampoco es \emph{una clase} de \LaTeX. Si miras el código
+fuente podrás comprobar que el documento comienza con
+\verb+\documentclass{book}+\footnote{Personalizado, eso sí, para que
+  utilice DIN A-4, a doble cara y con letra de 11 puntos.}, por lo que
+se basa en la clase \texttt{book}.
+
+La plantilla tampoco te ayudará a gestionar tu bibliografía. Los
+\texttt{.bib} los tendrás que crear y organizar tú ya sea de forma
+manual o con alguna herramienta diseñada para ello.
+
+\medskip
+
+Queremos una vez más insistir antes de terminar que no somos expertos
+en \LaTeX.  Durante el proceso de escritura de nuestras Tesis nos
+tuvimos que enfrentar a problemas de formato que tuvimos que
+solucionar buscando en Internet o preguntando a personas cercanas. Y
+podemos decir que prácticamente todos los problemas a los que nos
+hemos enfrentado en nuestra vida como usuarios de \LaTeX\ están
+resueltos aquí, pues sendas Tesis han sido los documentos más extensos
+que hemos escrito.
+
+Por lo tanto, si tienes alguna duda concreta de \LaTeX, en vez de
+preguntarnos a nosotros, busca en foros de Internet o en la
+documentación del paquete que estás utilizando. A buen seguro
+encontrarás ahí la respuesta. Si la duda que tienes es relativa a la
+plantilla, revisa los comentarios que encontrarás en el código fuente,
+hay ciertas cosas de demasiado bajo nivel que hemos preferido no
+contar en el texto. Y sólo como último recurso, preguntanos a
+nosotros, aunque ya te advertimos que puede que no sepamos
+responderte. Querríamos poder animarte a escribirnos tus dudas, pero
+preferimos no hacerlo para no decepcionarte.
+
+
+%-------------------------------------------------------------------
+\section{Estructura de capítulos}
+%-------------------------------------------------------------------
+\label{cap1:sec:estructura}
+
+El manual está estructurado en los siguientes capítulos:
+
+\begin{itemize}
+\item El capítulo~\ref{cap2} describe a vista de pájaro los distintos
+  ficheros que forman \texis. Además da una primera aproximación
+  a cómo generar el documento final (\texttt{.pdf}).
+
+\item El capítulo~\ref{cap3} se centra en el proceso de
+  edición. Aunque aparentemente la tarea de escribir el texto es
+  trivial, \texis\ proporciona una serie de comandos que pueden
+  ser útiles durante la escritura (al menos a nosotros nos lo
+  parecieron). Este capítulo se centra en la explicación de esos
+  comandos.
+
+\item El capítulo~\ref{cap4} pasa a describir cómo se estructuran las
+  imágenes en \texis. Igual que antes, esto puede parecer
+  superfluo a un usuario medio de \LaTeX, pero \texis\ contiene
+  algunos comandos que esperan esa estructura. Es el usuario el último
+  que decide si utiliza esos comandos (y por lo tanto esa estructura)
+  u opta por otra completamente distinta.
+
+\item El capítulo~\ref{cap5} aborda la bibliografía y la gesión de los
+  acrónimos. Como se verá, \texis\ dispone de algunas opciones de
+  personalización que merecen un pequeño capítulo.
+
+\item El capítulo~\ref{cap6} pone fin al manual, detallando las
+  opciones del fichero \texttt{Makefile} que permiten una generación
+  cómoda del documento final en entornos Linux.
+\end{itemize}
+
+El manual tiene, por último, un apéndice que, si bien no es
+interesante desde el punto de vista del usuario, nos sirve de excusa
+para proporcionar el código \LaTeX\ necesario para su creación: a modo
+de ``así se hizo'', comenta brevemente cómo fue el proceso de
+escritura de nuestras tesis.
+
+
+%-------------------------------------------------------------------
+\section*{\NotasBibliograficas}
+%-------------------------------------------------------------------
+\TocNotasBibliograficas
+
+El ``libro'' por el que la mayoría de la gente empieza sus andaduras
+con \LaTeX\ es \cite{ldesc2e} pues es relativamente corto, fácil de
+leer y de acceso público (licencia GPL), por lo que se puede
+conseguir la versión electrónica fácilmente. Un libro algo más
+completo que éste y que suele ser el segundo en orden de preferencia
+es \cite{notsoshort} con la misma licencia. Dentro de los libros
+dedicados a \LaTeX\ de libre distribución, también se puede contar con
+\cite{latexAPrimer}.
+
+No obstante, los libros de \LaTeX\ más conocidos son ``The \LaTeX\
+Companion'' \citep{latexCompanion} y ``\LaTeX: A Document Preparation
+System'' \citep{LaTeXLamport}.
+
+%-------------------------------------------------------------------
+\section*{\ProximoCapitulo}
+%-------------------------------------------------------------------
+\TocProximoCapitulo
+
+Una vez hecha una descripción de \texis, el próximo capítulo
+describe los ficheros que componen tanto la plantilla como el manual
+que estás leyendo. También se explicará cómo se puede generar o
+compilar el manual a partir de los \texttt{.tex} proporcionados. Por
+lo tanto, el capítulo sirve como una primera aproximación rápida al
+trabajo con \texis; al final del mismo seremos capaces de entender
+la estructura de directorios propuesta y dónde se encuentran los
+ficheros que hay que editar para cambiar el contenido del documento
+final.
+
+No obstante, el capítulo siguiente debe verse únicamente como una
+primera aproximación. El capítulo~\ref{cap:edicion} da más detalles
+sobre el proceso de edición del documento, y el
+capítulo~\ref{cap:makefile} dará una alternativa al modo de
+compilación explicado.
+
+% Variable local para emacs, para  que encuentre el fichero maestro de
+% compilación y funcionen mejor algunas teclas rápidas de AucTeX
+%%%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../ManualTeXiS.tex"
+%%% End:

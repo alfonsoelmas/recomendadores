@@ -1,0 +1,111 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo 3
+%
+%---------------------------------------------------------------------
+%
+% 03RecomendadorKVecinosCercanos.tex
+% Copyright 2009 Marco Antonio Gomez-Martin, Pedro Pablo Gomez-Martin
+%
+% This file belongs to the TeXiS manual, a LaTeX template for writting
+% Thesis and other documents. The complete last TeXiS package can
+% be obtained from http://gaia.fdi.ucm.es/projects/texis/
+%
+% Although the TeXiS template itself is distributed under the 
+% conditions of the LaTeX Project Public License
+% (http://www.latex-project.org/lppl.txt), the manual content
+% uses the CC-BY-SA license that stays that you are free:
+%
+%    - to share & to copy, distribute and transmit the work
+%    - to remix and to adapt the work
+%
+% under the following conditions:
+%
+%    - Attribution: you must attribute the work in the manner
+%      specified by the author or licensor (but not in any way that
+%      suggests that they endorse you or your use of the work).
+%    - Share Alike: if you alter, transform, or build upon this
+%      work, you may distribute the resulting work only under the
+%      same, similar or a compatible license.
+%
+% The complete license is available in
+% http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+%---------------------------------------------------------------------
+
+\chapter{Recomendador por K-Vecinos más similares}
+\label{cap3}
+
+\begin{FraseCelebre}
+\begin{Frase}
+  La inteligencia artificial será la última versión de Google, el motor de búsqueda que entenderá todo en la web. Comprenderá exactamente lo que quiera el usuario y le dará lo correcto. No estamos cerca de lograrlo ahora pero podemos acercarnos cada vez más y es básicamente en lo que trabajamos.
+\end{Frase}
+\begin{Fuente}
+Larry Page, fundador de Google
+\end{Fuente}
+\end{FraseCelebre}
+
+\begin{resumen}
+  Este capítulo tratará en profundidad el recomendador basado en los K vecinos más cercanos. Se comentarán las diferentes implementaciones y formas de funcionamientos que tiene este concepto adaptado a los jueces en línea, su evaluación y su proceso de optimización. Las comparativas y evaluaciones en conjunto con el otro recomendador se tratarán en otro capítulo más adelante.~\ref{cap:comparaciones}.
+\end{resumen}
+
+%-------------------------------------------------------------------
+\section{Introducción recomendador k-vecinos}
+%-------------------------------------------------------------------
+\label{cap3:sec:introduccion}
+
+El recomendador de vecinos, o recomendador basado en correlaciones de usuarios, es un recomendador cuyo algoritmo recomienda calculando la correlación entre usuarios y posteriormente se le da un peso a cada problema que aún no ha hecho el usuario A, respecto al resto de usuarios Bi teniendo en cuenta ese grado de correlación de cada Bi. La finalidad y motivación para realizar este recomendador ha sido la necesidad de poder implementar un “algoritmo” más común en el mundo de los recomendadores, pero adaptado al caso de los \texttt{jueces en línea} y optimizado para este, teniendo en cuenta que no tenemos información más que usuarios y problemas anonimizados sin “propiedades” solo \texttt{relaciones} entre ellos considerando que un usuario ha “intentado y resuelto/intentado y no resuelto/no intentado”  un problema. De esta manera podemos tratar esto como un grafo donde los nodos son los usuarios y las relaciones son los problemas en común entre ellos. Con este recomendador también vamos a poder contrastar los resultados con el otro recomendador que se va a realizar (Para tener más diversidad en la recomendación y poder tener una api sobre la que decidir qué recomendador usar según qué momentos o qué situaciones, etc). Estos conceptos e ideas de trabajarán con más detalle en los capítulos a posterior donde se habla como funciona la api y la comunicación del recomendador con un juez en línea. ~\ref{cap:implementacion}.
+
+Para este recomendador se han estudiado también sus diferentes situaciones límite, por ejemplo para casos donde tenemos usuarios que aún no han realizado problemas (El recomendador devuelve una lista de todos los problemas con un peso de 0 para todos, y por lo tando, un orden “aleatorio” que no sirve para recomendar), o casos donde le cueste recomendar un problema nuevo que se ha añadido por falta de AC’s/Entregas que tenga (Como otros recomendadores, si falta información no podrá realizar recomendaciones buenas hasta tener suficiente información para ello), indirectamente el algoritmo se ve afectado por estos parámetros y por ello discrimina en ciertos casos problemas que en un futuro podría no discriminar… Para ello se pueden contemplar modificaciones en el algoritmo que tengan en cuenta estos casos en que la base del algoritmo no llega a lograr cubrir y discrimine en ciertos casos problemas que quizás otros recomendadores no discriminen en estas mismas situaciones (Sean más eficaces para situaciones límites). De todas formas se puede implementar el recomendador, teniendo en cuenta las situaciones límites para hacer recomendaciones sobre usuarios que vaya a tener recomendación eficaz, que llevándolo a casos prácticos reales, será la gran mayoría de las veces. Por lo general este algoritmo de recomendación recomendará el problema más fácil que un usuario podría hacer (O un orden a seguir del que menos le pueda costar, frente al que más le pueda costar). Esto generará que muchos problemas tengan más peso respecto a otros, aunque si falta información (como podremos observar más adelante), muchos problemas tendrán los mismos pesos y podrán “dificultar” la precisión de la recomendación, esto se dará para un número de K-vecinos muy bajo (K <= 10) como veremos en la evaluación, y se podrá hacer un estudio y cálculo en base a estas recomendaciones, obteniendo un listado ordenado de los problemas más fáciles a los más difíciles. Se podría considerar que también sean recomendaciones por gustos, ya que nos fijamos en los usuarios similares y les damos un peso a los problemas que nos faltan, pero más adelante en los resultados analizaremos mejor cómo ha actuado el algoritmo y cómo, por lo tanto, recomienda este recomendador. Hay que tener en cuenta, que una vez implementado el recomendador, quizás perdemos fiabilidad a medida que pasa el tiempo, con las nuevas recomendaciones, ya que si los usuarios siguen a rajatabla los ejercicios recomendados, se crearán patrones de recomendación para los nuevos usuarios o aquellos que tengan pocos problemas resueltos.
+
+%-------------------------------------------------------------------
+\section{Funcionamiento recomendador k-vecinos}
+%-------------------------------------------------------------------
+\label{cap3:sec:funcionamiento}
+
+Este recomendador tiene similitudes en algunos aspectos con los Nearest Neighborhood ya hablados en el capítulo de estado del arte /*TODO INSERTAR REFERENCIA*/, con la diferencia de que una vez obtenemos esos vecinos más cercanos, en vez de clasificar en clases al usuario y generar una recomendación en base a la clase donde se ha clasificado, usamos esas correlaciones o similitudes entre usuarios calculadas para asignarle pesos a problemas a modo de sumatorio.
+
+
+
+
+
+
+
+%-------------------------------------------------------------------
+\section*{\NotasBibliograficas}
+%-------------------------------------------------------------------
+\TocNotasBibliograficas
+
+En este capítulo hemos descrito simplemente la estructura de
+directorio de \texis, por lo que no existe ninguna fuente
+relacionada adicional de consulta. Se mantiene este apartado por
+simetría con el resto de capítulos. En un documento normal (tesis,
+trabajo de investigación) lo más probable es que todos los capítulos
+puedan extenderse con notas de este tipo.
+
+%-------------------------------------------------------------------
+\section*{\ProximoCapitulo}
+%-------------------------------------------------------------------
+\TocProximoCapitulo
+
+Una vez que se han descrito a vista de pájaro los ficheros que
+componen la plantilla y una primera aproximación al proceso de
+generación del documento final (en PDF), el siguiente capítulo pasa a
+describir el proceso de edición.
+
+Eso cubre aspectos tales como los ficheros que deben modificarse para
+añadir nuevos capítulos o los comandos que \texis\ hace
+disponibles para escribir ciertas partes de los mismos. El capítulo
+describe también los dos modos de generación del documento final que
+pueden ser de utilidad durante el largo proceso de escritura. Por
+último, el capítulo terminará con ciertas consideraciones relativas a
+los editores de \LaTeX\ utilizados así como sobre la posibilidad de
+utilizar un control de versiones.
+
+% Variable local para emacs, para  que encuentre el fichero maestro de
+% compilación y funcionen mejor algunas teclas rápidas de AucTeX
+%%%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../ManualTeXiS.tex"
+%%% End:

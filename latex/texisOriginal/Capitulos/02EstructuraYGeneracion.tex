@@ -1,0 +1,493 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo 2
+%
+%---------------------------------------------------------------------
+%
+% 02EstructuraYGeneracion.tex
+% Copyright 2009 Marco Antonio Gomez-Martin, Pedro Pablo Gomez-Martin
+%
+% This file belongs to the TeXiS manual, a LaTeX template for writting
+% Thesis and other documents. The complete last TeXiS package can
+% be obtained from http://gaia.fdi.ucm.es/projects/texis/
+%
+% Although the TeXiS template itself is distributed under the 
+% conditions of the LaTeX Project Public License
+% (http://www.latex-project.org/lppl.txt), the manual content
+% uses the CC-BY-SA license that stays that you are free:
+%
+%    - to share & to copy, distribute and transmit the work
+%    - to remix and to adapt the work
+%
+% under the following conditions:
+%
+%    - Attribution: you must attribute the work in the manner
+%      specified by the author or licensor (but not in any way that
+%      suggests that they endorse you or your use of the work).
+%    - Share Alike: if you alter, transform, or build upon this
+%      work, you may distribute the resulting work only under the
+%      same, similar or a compatible license.
+%
+% The complete license is available in
+% http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+%---------------------------------------------------------------------
+
+\chapter{Estructura  y generación}
+\label{cap2}
+
+\begin{FraseCelebre}
+\begin{Frase}
+  La mejor estructura no garantizará los resultados ni el rendimiento.
+  Pero la estructura equivocada es una garantía de fracaso.
+\end{Frase}
+\begin{Fuente}
+Peter Drucker
+\end{Fuente}
+\end{FraseCelebre}
+
+\begin{resumen}
+  Este capítulo explica la estructura de directorios de \texis\
+  así como los ficheros más importantes, describiendo el cometido de
+  cada uno. También hace una primera aproximación al proceso de
+  generación (o compilación) del PDF final, aunque este tema será
+  extendido posteriormente en el
+  capítulo~\ref{cap:makefile}.
+\end{resumen}
+
+%-------------------------------------------------------------------
+\section{Estructura de directorios}
+%-------------------------------------------------------------------
+\label{cap2:sec:estructura}
+
+Como habrás podido comprobar, la plantilla contiene bastantes ficheros
+organizados en varios directorios. Esta sección explica el contenido
+de cada uno de los directorios, para que seas capaz de encontrar el
+directorio en el que debería estar un fichero concreto.
+
+Existen los siguientes directorios:
+
+\begin{description}
+\item[Directorio raíz] contiene el fichero principal del documento
+  (también llamado fichero \emph{maestro}), que es el que se utiliza
+  como entrada a \texttt{pdflatex} (o \texttt{latex}) y cuyo nombre es
+  \texttt{Tesis.tex}. También aparecen en el directorio otros ficheros
+  que si bien no generan texto en el documento final cumplen ciertas
+  funciones específicas descritas en la
+  sección~\ref{cap2:sec:directorio-raiz}. Por último, el directorio
+  contiene también los ficheros \texttt{.bib} con la información
+  bibliográfica así como el fichero para generar el documento
+  utilizando la aplicación \verb+make+.
+
+\item[Directorio \texttt{./Capitulos}] contiene los \texttt{.tex} de
+  cada capítulo del documento.
+
+\item[Directorio \texttt{./Apendices}] contiene los \texttt{.tex} de
+  cada uno de los apéndices.
+
+\item[Directorio \texttt{./Cascaras}] contiene los \texttt{.tex}
+  responsables del contenido del resto de páginas del documento: el
+  texto de la portada, agradecimientos, resumen, etc. En definitiva
+  son los ficheros responsables de todo aquello que precede a los
+  capítulos y sigue a los apéndices.
+
+\item[Directorio \texttt{./Imagenes}] contiene las imágenes del
+  documento. Dentro de él aparecen varios directorios distintos. La
+  gestión de imágenes (y por lo tanto la estructura de estos
+  directorios) se describirá en el capítulo~\ref{cap:imagenes}.
+
+\item[Directorio \texttt{./TeXiS}] contiene todos los ficheros
+  relacionados con la propia plantilla, es decir, los ficheros que
+  definen la apariencia final del documento, así como los comandos que
+  facilitan la edición que serán descritos en el
+  capítulo~\ref{cap:edicion}. La creación de un documento que se
+  adhiere completamente al formato de \texis\ no necesitará tocar
+  ninguno de los ficheros de este directorio.
+
+\item[Directorio \texttt{./VersionesPrevias}] Este directorio es
+  usado por el \texttt{Makefile} cuando se realiza una copia de
+  seguridad del estado del documento. Describiremos esta
+  característica en el capítulo~\ref{cap:makefile}.
+\end{description}
+
+Existen por lo tanto, tres tipos de ficheros \texttt{.tex}: los
+ficheros que contienen el texto principal del documento (capítulos y
+apéndices), los ficheros que definen las partes adicionales del mismo
+(como portada y agradecimientos), y los ficheros que determinan la
+apariencia. En las tres secciones siguientes describimos cada uno de
+ellos.
+
+%-------------------------------------------------------------------
+\section{Ficheros con el texto principal del documento}
+%-------------------------------------------------------------------
+\label{cap2:sec:ficheros-texto}
+
+Estos \texttt{.tex} son los que contienen el texto tanto de los
+capítulos como de los apéndices, por lo tanto son los ficheros que más
+tiempo pasarás editando. Están divididos en secciones, tienen figuras,
+tablas, referencias bibliográficas, y cualquier otro tipo de elemento
+que quieras o debas añadir.
+
+En principio pueden contener cualquier código \LaTeX. No obstante, no
+olvides que si necesitas algún paquete especial que no se cargue por
+defecto en la plantilla, deberás incluir el \verb+\usepackage+
+correspondiente en el documento maestro o en el fichero de preámbulo
+de \texis, \url{TeXiS/TeXiS\_pream.tex} descrito en la
+Sección~\ref{cap2:sec:ficheros-formato}.
+
+El capítulo siguiente está enteramente dedicado al proceso de edición
+de estos ficheros.
+
+%-------------------------------------------------------------------
+\section[Ficheros del documento auxiliares]%
+{Ficheros del documento auxiliares: las cáscaras del documento}
+%-------------------------------------------------------------------
+\label{cap2:sec:ficheros-auxiliares}
+
+Estos ficheros, como ya hemos dicho, son los responsables del
+contenido del resto de páginas del documento, todo aquello que no son
+capítulos o apéndices. Son los siguientes (por orden de ``aparición''
+en el documento final)\footnote{Si crees que no necesitas alguno de
+  ellos, puedes eliminar su inclusión en el fichero maestro,
+  \texttt{Tesis.tex}.}:
+
+\begin{itemize}
+\item \texttt{cover.tex}: responsable de las dos primeras hojas del
+  documento, que forman las portada. Mediante comandos se definen el
+  autor y título que aparecerá en la portada, la fecha de publicación,
+  facultad, etc. Como podrás ver cuando lo edites, el fichero contiene
+  los datos concretos para generar este manual. Los comandos se
+  describen en la sección~\ref{cap3:sec:tituloYmetadatas}.
+
+\item \texttt{dedicatoria.tex}: contiene el código \LaTeX\ que crea la
+  ``dedicatoria'' de la Tesis. Consiste en una hoja donde aparece
+  alineada a la izquierda una frase indicando a quién se ``dedica'' el
+  documento (en los libros serios pone algo como ``A mis padres'',
+  aunque también hay autores en libros más distendidos, como
+  \citeauthor{AIbyExample} que dice textualmente ``For Mum and Dad,
+  who bought me my first computer, and therefore must share some
+  responisibility for turning me into the geek that I am''
+  \citep{AIbyExample}). Se pueden poner todas las páginas de
+  dedicatorias que se deseen, utilizando la macro
+  \verb|\putDedicatoria|, que recibe la cita completa y crea la hoja
+  completa con la misma. Lo más cómodo, no obstante, es utilizar la
+  macro \verb|\dedicatoriaUno| y (opcionalmente)
+  \verb|\dedicatoriaDos| para establecer las dos dedicatorias y a
+  continuación invocar \verb|\makeDedicatorias| para generarlas. Así
+  lo hace este manual.
+
+\item \texttt{agradecimientos.tex}: contiene el texto de las únicas
+  páginas que tu familia y amigos van a leer de la Tesis: los
+  agradecimientos. Así que piensa bien lo que pones, no olvides a
+  nadie\footnote{Tampoco a nosotros por quitarte la preocupación del
+    aspecto final... \texttt{:-)}}.
+
+  Es importante que no borres la línea que aparece justo después del
+  \verb|\chapter|,
+
+\begin{verbatim}
+\cabeceraEspecial{Agradecimientos}
+\end{verbatim}
+
+  ya que lo que hace es modificar la cabecera de la página para que no
+  aparezca con el mismo formato que en los capítulos. Puedes consultar
+  la sección~\ref{cap3:ssec:capitulos-especiales} para obtener más
+  detalles sobre esto.
+
+\item \texttt{resumen.tex}: si quieres incluir antes del índice un
+  pequeño resumen de tu trabajo, puedes hacerlo en este fichero. Al
+  igual que en los agradecimientos no debes eliminar el comando
+  \LaTeX\ del principio que altera la cabecera.
+
+  Tanto el resumen como los agradecimientos antes explicados se
+  convierten en dos ``capítulos sin numeración'' que también serán
+  listados en el índice de contenidos. No obstante, al aparecer antes
+  que el texto principal del documento (los capítulos propiamente
+  dichos), sus páginas serán numeradas con notación romana, en
+  lugar de con la arábiga tradicional.
+
+\item \texttt{bibliografia.tex}: en él se configura la
+  bibliografía del documento. En concreto, el fichero permite indicar
+  tanto qué ficheros \texttt{.bib} contienen las entradas
+  bibliográficas como una frase célebre (seguramente, ya habrás notado
+  que \texis\ permite iniciar los capítulos con una frase
+  célebre), característica descrita con más detalle en la sección
+  \ref{cap3:ssec:frases}.
+
+  El capítulo~\ref{cap:bibliografia} hace una descripción más
+  detallada del tipo de bibliografía que propone utilizar la plantilla
+  (y que utiliza este manual).
+
+\item \texttt{fin.tex}: En nuestras respectivas tesis, como ``cierre''
+  incluimos una última página parecida a la dedicatoria con un par de
+  frases célebres. El código \TeX\ responsable se encuentra en este
+  fichero.
+\end{itemize}
+
+Existen otros dos ficheros que no aparecen en este directorio pero que
+generan páginas en el documento final. Son \texttt{TeXiS\_toc.tex} y
+\texttt{TeXiS\_acron.tex} del directorio \texttt{TeXiS}, descritos en
+la sección~\ref{cap2:sec:ficheros-formato}. Aparecen en ese directorio
+debido a que no permiten ningún tipo de personalización al usuario de
+\texis.
+
+%-------------------------------------------------------------------
+\section{Directorio raiz}
+%-------------------------------------------------------------------
+\label{cap2:sec:directorio-raiz}
+
+En el directorio raíz aparecen, además de \texttt{Tesis.tex}, el
+documento maestro, otros tres ficheros \texttt{.tex} que no son
+responsables de la generación de ninguna página del documento. Uno de
+ellos, \texttt{config.tex} se describe en la
+sección~\ref{cap3:sec:modos-compilacion}. Los otros dos son:
+
+\begin{itemize}
+\item \texttt{guionado.tex}: contiene una lista de aquellas palabras
+  que, durante la edición del documento, se ha podido comprobar que
+  \LaTeX\ dividía mal. En esos casos, la alternativa mala es hacer
+  pequeños ajustes en el párrafo para que esa palabra cuyos guiones
+  \LaTeX\ no sabe colocar no quede cerca del final de la línea. La
+  alternativa buena es añadir la palabra a este fichero, colocando los
+  guiones donde van. En el fichero proporcionado aparece una lista de
+  algunas palabras de ejemplo.
+
+\item \texttt{constantes.tex}: está pensado para la definición de
+  constantes que aparezcan a menudo en el texto. Por ejemplo, si se
+  hace un documento sobre Cruise Control~\citep{CruiseControl}, para
+  evitar tener que escribir contínuamente las dos palabras, es buena
+  idea incluir una constante en el fichero que cree un comando para
+  hacerlo más rápidamente:
+
+\begin{example}
+\newcommand{\cc}{Cruise Control}
+La nueva versión de \cc\ \ldots
+\end{example}
+
+En este fichero aparece definida la constante \verb|\titulo| que
+contiene el título del documento y \verb|\autor| con el autor. Ambos
+son utilizados en la portada. También aparece definido el comando
+\verb|\texis| que utilizamos en este manual para evitarnos escribir el
+código que escribe ``\texis''\ una y otra vez:
+
+\begin{example}
+\texis\ te permite generar el
+fichero final tanto como .dvi
+como en un .pdf.
+\end{example}
+\end{itemize}
+
+Por último indicar que en el directorio raíz aparecen los ficheros con
+extensión \texttt{.bib} que contienen la información bibliográfica y
+los \texttt{.gdf} para los acrónimos (ver
+capítulo~\ref{cap:bibliografia}) así como el fichero \texttt{Makefile}
+para la generación automática del documento final
+(capítulo~\ref{cap:makefile}).
+
+%-------------------------------------------------------------------
+\section{Ficheros de la plantilla}
+%-------------------------------------------------------------------
+\label{cap2:sec:ficheros-formato}
+
+El directorio \texttt{TeXiS} contiene los ficheros que definen la
+apariencia final del documento. Si el formato de este manual te gusta
+tal cual, no tendrás por qué tocar ninguno de estos ficheros. La
+explicación de su contenido aparece a continuación. Su código fuente
+contiene numerosos comentarios y enlaces, por lo que no debería
+suponerte demasiado problema modificarlos.
+
+\begin{itemize}
+\item \texttt{TeXiS\_cab.tex}: contiene la definición de la apariencia
+  de las cabeceras de las páginas utilizadas en el documento. La
+  plantilla utiliza el paquete \texttt{fancyhdr}. Sin embargo, la
+  cabecera por defecto se ha modificado para que aparezca el número
+  del capítulo, así como su nombre en minúsculas, junto con algún otro
+  cambio menor.
+
+\item \texttt{TeXiS.sty}: contiene los comandos que la plantilla
+  proporciona para facilitar el proceso de edición. El uso de estos
+  comandos está explicado en el capítulo~\ref{cap:edicion}. A pesar de
+  que la extensión distinta a la habitual (\texttt{.sty} en vez de
+  \texttt{.tex}) puede imponer cierto respeto al principio, puedes
+  abrir sin miedo el fichero para edición, pues es un fichero de
+  \LaTeX\ normal, con definiciones de comandos tradicionales.
+
+\item \texttt{TeXiS.bst}: contiene el estilo que utiliza la plantilla
+  para generar la lista de las referencias bibliográficas al final del
+  documento. Las posibilidades de este estilo son descritas en el
+  capítulo~\ref{cap:bibliografia}.
+
+\item \texttt{TeXiS\_pream.tex}: este fichero contiene la mayor parte
+  del código del preámbulo del documento (lo que va antes del
+  \verb|\begin{document}|). En él aparecen incluidos un buen número de
+    paquetes que pueden ser útiles en la elaboración del documento,
+    junto con una explicación de para qué sirven y, en algunas
+    ocasiones, algunos ejemplos de uso. Existen incluso ciertos
+    paquetes cuya inclusión aparece comentada pero que se mantienen,
+    junto con su comentario correspondiente, por si pueden venir bien
+    para documentos concretos que necesiten ciertas características
+    que ni este manual ni nuestras tesis requirieron.
+
+  \item \texttt{TeXiS\_cover.tex}: contiene el código \TeX\ que genera
+    la portada, y la hoja siguiente a la misma, que vuelve a tener los
+    mismos datos pero sin el escudo.
+
+  \item \texttt{TeXiS\_dedic.tex}: contiene el códito \TeX\ para
+    generar las hojas de dedicatorias.
+
+  \item \texttt{TeXiS\_toc.tex}: es el responsable de la generación de
+    los índices de capítulos, tablas y figuras que aparece en el
+    documento.
+
+  \item \texttt{TeXiS\_bib.tex}: es el encargado de que en el
+    documento aparezca bibliografía. Incluido desde el fichero
+    maestro, lo primero que hace es leer el fichero de configuración,
+    \texttt{Cascaras/configBibliografia.tex}.
+
+    Como puedes comprobar, la bibliografía es también referenciada en
+    el índice como un capítulo sin numerar; también se preocupa de
+    cambiar la cabecera para que no se utilice la habitual del resto
+    de capítulos.
+
+\item \texttt{TeXiS\_acron.tex}: la plantilla también permite añadir
+  una lista de acrónimos o abreviaturas utilizadas en el texto. En
+  este fichero se incluyen los comandos necesarios para que aparezca
+  esta lista. No obstante, para que la lista funcione, en el momento
+  de la generación se debe invocar a la herramienta correspondiente
+  para que se creen los ficheros auxiliares necesarios para su
+  generación. En la descripción sobre la generación dada en la
+  sección~\ref{cap2:sec:compilacion} no se describe este proceso,
+  por lo que el resultado contendrá una lista de acrónimos
+  vacía. El uso de acrónimos se describe con detalle en la
+  sección~\ref{capBiblio:sec:glosstex}.
+
+\item \texttt{TeXiS\_part.tex}: contiene los comandos relacionados con
+  la posibilidad de dividir en \emph{partes} el documento final. Los
+  detalles de qué posibilidades ofrece \texis\ para hacerlo están
+  descritas en la sección~\ref{cap3:ssec:partes}.
+
+\end{itemize}
+  
+%-------------------------------------------------------------------
+\section{Generando el documento}
+%-------------------------------------------------------------------
+\label{cap2:sec:compilacion}
+
+Como ya se dijo en la introducción, \texis\ permite compilar el
+documento\footnote{Cuando hablamos de ``compilación'' nos referimos,
+  por analogía con el desarrollo software, a la generación del fichero
+  final (un PDF) resultado de analizar los ficheros fuente en \LaTeX.}
+tanto con \verb+latex+ como \verb+pdflatex+.  Si has utilizado \LaTeX\
+a través de editores de texto específicos (como Kile o WinEdt), es
+posible que no sepas de qué estamos hablando. Tanto \texttt{latex}
+como \texttt{pdflatex} son dos aplicaciones que cogen un fichero
+\texttt{.tex} como entrada y generan el documento final
+``renderizado''. La diferencia entre ambas radica en el fichero de
+salida que generan. En el primer caso, se genera un fichero
+\texttt{.dvi}\footnote{\emph{Device independent}, o ``independiente
+  del dispositivo'' (en el que se mostrará el contenido).}, mientras
+que en el segundo caso se genera un fichero PDF directamente.
+Tradicionalmente se ha utilizado \texttt{latex}, convirtiendo después
+el fichero \texttt{.dvi} al formato deseado (como \texttt{.ps} o
+\texttt{.pdf}). Sin embargo, en nuestro caso, aconsejamos la
+utilización de \texttt{pdflatex}, debido a que, al generar de forma
+nativa ficheros PDF, aprovecha algunas de las características
+disponibles en los mismos. En particular, \texis\ contiene algunos
+comandos \LaTeX\ que \texttt{pdflatex} aprovecha para añadir
+información de \emph{copyright} al fichero, así como enlaces a cada
+uno de los capítulos y secciones del documento, permitiendo una
+navegación rápida por el mismo cuando se utilizan visores
+(figura~\ref{cap2:fig:pdf}).
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][Propiedades del documento]{
+     \includegraphics[width=0.42\textwidth]%
+                     {Imagenes/Bitmap/02/PropiedadesPDF}
+     \label{cap2:fig:PropiedadesPDF}
+  }
+  \qquad
+  \subfloat[][Tabla de contenidos]{
+     \includegraphics[width=0.42\textwidth]%
+                     {Imagenes/Bitmap/02/IndicePDF}
+     \label{cap2:fig:TocPDF}
+  }
+ \caption{Capturas del visor de PDF\label{cap2:fig:pdf}}
+\end{figure}
+
+
+La plantilla incluye un fichero \texttt{Makefile} para automatizar la
+generación del fichero final\footnote{Los ficheros \texttt{Makefile}
+  son ampliamente utilizados en el desarrollo de software. Son
+  ficheros que sirven de entrada a la utilidad \texttt{make} que
+  genera automáticamente los ficheros de resultado a partir de los
+  archivos de código fuente.} que es capaz de crear el PDF utilizando
+cualquiera de las dos alternativas. No obstante, en este apartado no
+entraremos en los detalles de este fichero, ya que existe un capítulo
+dedicado enteramente a él (capítulo~\ref{cap:makefile}).
+
+Para generar el documento de este manual a partir de los ficheros de
+\texis\ proporcionados, la forma inmediata es seguir el proceso
+tradicional de generación de cualquier fichero de \LaTeX, es decir,
+ejecutar \texttt{pdflatex} (o \texttt{latex}), a continuación ejecutar
+\texttt{bibtex} para resolver las referencias bibliográficas, y
+posteriormente ejecutar un par de veces más \texttt{pdflatex} para
+resolver las referencias cruzadas y que aparezcan en el documento
+final.
+
+En línea de comandos eso se traduce a las siguientes
+órdenes\footnote{También es válido el uso de \texttt{latex} en lugar
+  de \texttt{pdflatex}, pero el fichero generado (\texttt{.dvi})
+  deberá después ser convertido a PDF.}:
+
+\begin{verbatim}
+$ pdflatex Tesis
+$ bibtex Tesis
+$ pdflatex Tesis
+$ pdflatex Tesis
+\end{verbatim}
+
+Si se utiliza algún editor de \LaTeX\ para la edición, también se
+pueden utilizar sus teclas rápidas (o en su defecto, sus botones u
+opciones de menú) para generarlo; encontrarás una explicación al
+respecto en la sección~\ref{cap3:sec:editores}.
+
+%-------------------------------------------------------------------
+\section*{\NotasBibliograficas}
+%-------------------------------------------------------------------
+\TocNotasBibliograficas
+
+En este capítulo hemos descrito simplemente la estructura de
+directorio de \texis, por lo que no existe ninguna fuente
+relacionada adicional de consulta. Se mantiene este apartado por
+simetría con el resto de capítulos. En un documento normal (tesis,
+trabajo de investigación) lo más probable es que todos los capítulos
+puedan extenderse con notas de este tipo.
+
+%-------------------------------------------------------------------
+\section*{\ProximoCapitulo}
+%-------------------------------------------------------------------
+\TocProximoCapitulo
+
+Una vez que se han descrito a vista de pájaro los ficheros que
+componen la plantilla y una primera aproximación al proceso de
+generación del documento final (en PDF), el siguiente capítulo pasa a
+describir el proceso de edición.
+
+Eso cubre aspectos tales como los ficheros que deben modificarse para
+añadir nuevos capítulos o los comandos que \texis\ hace
+disponibles para escribir ciertas partes de los mismos. El capítulo
+describe también los dos modos de generación del documento final que
+pueden ser de utilidad durante el largo proceso de escritura. Por
+último, el capítulo terminará con ciertas consideraciones relativas a
+los editores de \LaTeX\ utilizados así como sobre la posibilidad de
+utilizar un control de versiones.
+
+% Variable local para emacs, para  que encuentre el fichero maestro de
+% compilación y funcionen mejor algunas teclas rápidas de AucTeX
+%%%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../ManualTeXiS.tex"
+%%% End:

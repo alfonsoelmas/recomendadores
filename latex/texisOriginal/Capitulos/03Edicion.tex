@@ -1,0 +1,1076 @@
+%---------------------------------------------------------------------
+%
+%                          Capítulo 3
+%
+%---------------------------------------------------------------------
+%
+% 03Edicion.tex
+% Copyright 2009 Marco Antonio Gomez-Martin, Pedro Pablo Gomez-Martin
+%
+% This file belongs to the TeXiS manual, a LaTeX template for writting
+% Thesis and other documents. The complete last TeXiS package can
+% be obtained from http://gaia.fdi.ucm.es/projects/texis/
+%
+% Although the TeXiS template itself is distributed under the 
+% conditions of the LaTeX Project Public License
+% (http://www.latex-project.org/lppl.txt), the manual content
+% uses the CC-BY-SA license that stays that you are free:
+%
+%    - to share & to copy, distribute and transmit the work
+%    - to remix and to adapt the work
+%
+% under the following conditions:
+%
+%    - Attribution: you must attribute the work in the manner
+%      specified by the author or licensor (but not in any way that
+%      suggests that they endorse you or your use of the work).
+%    - Share Alike: if you alter, transform, or build upon this
+%      work, you may distribute the resulting work only under the
+%      same, similar or a compatible license.
+%
+% The complete license is available in
+% http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+%---------------------------------------------------------------------
+
+\chapter{Proceso de edición}
+\label{cap3}
+\label{cap:edicion}
+
+\begin{FraseCelebre}
+\begin{Frase}
+%Si quieres ser leído más de una vez, no vaciles en borrar a menudo.
+Rem tene, verba sequentur (Si dominas el tema, las palabras vendrán solas)
+\end{Frase}
+\begin{Fuente}
+%Horacio
+Catón el Viejo
+\end{Fuente}
+\end{FraseCelebre}
+
+\begin{resumen}
+  Este capítulo se centra en el proceso de edición, dando detalles de
+  qué cosas deben cambiarse y qué comandos y características tiene
+  \texis\ que facilitan el proceso.
+\end{resumen}
+
+%-------------------------------------------------------------------
+\section{Empezando a escribir}
+%-------------------------------------------------------------------
+\label{cap3:sec:tituloYmetadatas}
+
+En primer lugar, es necesario destacar que los ficheros \texttt{.tex}
+\emph{deben tener} codificación ISO-8859-1. Esto es lo que ocurre de
+manera predefinida en Windows y en algunos Linux como Debian. Una
+excepción significativa es el caso de Ubuntu, que usa de manera
+predeterminada UTF-8. En ese caso, deberás ser cuidadoso para
+asegurarte de que grabas tus ficheros con ISO-8859-1.
+
+\com{En realidad, hay una remota posibilidad de que TeXiS se pueda
+  configurar para usar UTF-8 de manera nativa, aunque \emph{nunca lo
+    hemos probado} y \emph{no} lo recomendamos.  Hay información
+  adicional en un comentario en \texttt{TeXiS/TeXiS\_pream.tex} (busca
+  \texttt{inputenc} para encontrarlo).}
+
+\medskip
+
+El primer paso para la construcción de un nuevo documento es cambiar
+el título y autores. Es posible que al principio del proceso no se
+tenga muy claro cuál es el título final del documento pero, y esto es
+una opinión personal, ver un título (aunque sea provisional) en vez de
+lo que ahora aparece (``\titulo'') te ayudará a pensar que lo que
+estás escribiendo es tuyo y no de otros. Para eso, basta con cambiar
+la constante \verb|\titulo| y \verb|\autor| que aparece definida en el
+fichero \texttt{constantes.tex}.
+
+El segundo paso es crear la portada en
+\texttt{Cascaras/cover.tex}. Como habrás podido observar, \texis\
+genera dos hojas de portada, al igual que hacen la mayoría de los
+libros. La primera portada es la que iría en la parte exterior del
+documento encuadernado, mientras que la siguiente es una repetición
+que aparece en la primera página. A continuación aparece una lista con
+el texto que puede cambiarse usando los comandos de \texis; una vez
+que se configuran, se debe invocar al comando \verb|\makeCover| para
+generar las portadas:
+
+\begin{itemize}
+\item Título del documento: aparece en las dos portadas. Por defecto
+  se utilizará la constante \verb|\titulo| definida en
+  \texttt{constantes.tex}. No obstante, se puede indicar un título
+  distinto usando \verb|\tituloPortada|. De esta forma, se pueden
+  forzar saltos de línea artificiales si se desea.
+
+\item Autor del documento: normalmente aparece también en las dos
+  portadas. Igual que antes, si no se indica lo contrario se utiliza
+  \verb|\autor|, aunque se puede cambiar con \verb|\autorPortada|.
+
+\item Una imagen en la primera portada, normalmente el escudo
+  institucional. El fichero a utilizar se define con
+  \verb|\imagenPortada|. También puede especificarse la escala a
+  utilizar en el fichero si éste es demasiado grande o pequeño con
+  \verb|\escalaImagenPortada|.
+
+\item Una fecha de publicación, que aparece en la parte inferior de
+  ambas portadas. Se utiliza el comando \verb|\fechaPublicacion|.
+
+\item El ``tipo de documento'' que aparece en la primera portada. Si
+  no se indica nada, será ``TESIS DOCTORAL''. Se puede modificar con
+  \verb|\tipoDocumento|. Este manual por ejemplo lo establece en
+  ``MANUAL DE USUARIO''.
+
+\item El departamento y facultad al que está asociado el
+  documento. Aparece en ambas portadas, y se establece con
+  \verb|\institucion|.
+
+\item Un primer bloque de texto en la segunda portada, que aparece
+  después del título. Si no se indica lo contrario, en ese bloque
+  aparecerá el texto ``Memoria que presenta para optar al título de
+  Doctor en Informática'' seguido del \verb|\autorPortada|. Se puede
+  cambiar el contenido completo con
+  \verb|\textoPrimerSubtituloPortada|.
+
+\item Un segundo bloque de texto donde aparece ``Dirigida por el
+  Doctor'' seguido del director del trabajo que se establece con
+  \verb|\directorPortada|. El comando
+  \verb|\textoSegundoSubtituloPortada| permite establecer otro texto
+  distinto.
+\end{itemize}
+
+Las dos portadas en sus caras traseras pueden, además, presentar otra
+información auxiliar:
+
+\begin{itemize}
+\item Un breve recordatorio indicando que el documento está preparado
+  para su impresión a doble cara. Si se desea que aparezca, basta con
+  llamar a \verb|\explicacionDobleCara|.
+
+\item El ISBN del documento, en caso de poseerlo. Se define con
+  \verb|\isbn|.
+
+\item Información de copyright. Se puede indicar con
+  \verb|\copyrightInfo|, y lo habitual será pasar como parámetro el
+  \verb|\autor|.
+
+\item Por defecto en la cara posterior de la primera portada aparecen
+  unos ``créditos'' a \texis, donde se indica que el documento se ha
+  generado con \texis\ y la versión. Si no se desea que aparezca, se
+  puede llamar a \verb|\noTeXiSCredits|, aunque nos gustaría que lo
+  incluyeras.
+\end{itemize}
+
+Por último, quizá quieras cambiar la información de ``metadatos'' que
+se incrustará en el PDF generado. Los metadatos aparecen directamente
+en el fichero \texttt{Tesis.tex} y, como indicamos en el capítulo
+anterior y mostramos en la figura~\ref{cap2:fig:pdf}, son:
+
+\begin{verbatim}
+%
+% "Metadatos" para el PDF
+%
+\ifpdf\hypersetup{%
+    pdftitle = {\titulo},
+    pdfsubject = {Plantilla de Tesis},
+    pdfkeywords = {Plantilla, LaTeX, tesis, trabajo de
+      investigación, trabajo de Master},
+    pdfauthor = {\textcopyright\ \autor},
+    pdfcreator = {\LaTeX\ con el paquete \flqq hyperref\frqq},
+    pdfproducer = {pdfeTeX-0.\the\pdftexversion\pdftexrevision},
+    }
+    \pdfinfo{/CreationDate (\today)}
+\fi
+\end{verbatim}
+
+%Para adecuarlo a tu documento concreto, deberás cambiar la entrada del
+%tema y palabras clave. El título y autores se rellenan con las
+%contantes correspondientes.
+
+%-------------------------------------------------------------------
+\section{Editando el texto}
+%-------------------------------------------------------------------
+\label{cap3:sec:edicion}
+
+Una vez que se tiene el título y autores del documento puestos, el
+trabajo de escritura consiste, en su mayor parte, en la creación de
+los correpondientes ficheros \LaTeX\ de cada uno de los capítulos y
+apéndices.
+
+%-------------------------------------------------------------------
+\subsection{Nuevos capítulos (y apéndices)}
+%-------------------------------------------------------------------
+
+Según la estructura de directorios vista en el capítulo anterior,
+\texis\ te recomienda crear los capítulos en el directorio
+\texttt{Capitulos} y los apéndices en \texttt{Apendices}.
+
+Cuando crees un fichero en cualquiera de los directorios, se debe
+añadir en el fichero maestro (\texttt{Tesis.tex}) el nombre de ese
+nuevo fichero para que se procese en el momento de la generación:
+
+\begin{verbatim}
+\mainmatter
+
+\include{Capitulos/01Introduccion}
+\include{Capitulos/02EstructuraYGeneracion}
+...
+
+% Apéndices
+\appendix
+\include{Apendices/01AsiSeHizo}
+...
+\end{verbatim}
+
+\medskip
+
+Todos estos ficheros de capítulos y apéndices deben comenzar con el
+comando \LaTeX\ \verb|\chapter|\footnote{Esto \emph{también} se
+  cumple para los apéndices.}. El resto del fichero es un fichero
+\LaTeX\ normal que tendrá secciones, subsecciones, figuras, tablas,
+etc.
+
+Al añadir un nuevo fichero, es posible que también quieras añadir su
+nombre en el fichero \texttt{config.tex} para permitir la compilación
+rápida de un único capítulo según se cuenta en la
+seccion~\ref{cap3:sec:compilacion-rapida}.
+
+%-------------------------------------------------------------------
+\subsection{Resumen del capítulo}
+%-------------------------------------------------------------------
+
+\texis\ permite incluir al comienzo de todos los capítulos un
+breve resumen del mismo; este mismo manual lo hace. Para separarlo del
+resto se utiliza un formato distinto.
+
+En vez de cambiar el formato en todos y cada uno de los capítulos (y
+apéndices), \texis\ proporciona un \emph{entorno} nuevo,
+\texttt{resumen}, que lo hace por nosotros:
+
+\begin{example}
+\begin{resumen}
+En este capítulo se describe...
+\end{resumen}
+\end{example}
+
+El formato concreto está definido en el fichero
+\texttt{TeXiS/TeXiS.sty}, por lo que se puede cambiar a voluntad, lo
+que provocará el cambio en todas sus apariciones.
+
+%-------------------------------------------------------------------
+\subsection{Frases célebres}
+%-------------------------------------------------------------------
+\label{cap3:ssec:frases}
+
+Como habrás podido comprobar leyendo este manual, \texis\ permite
+además escribir en cada capítulo una ``frase célebre'' que es añadida
+inmediatamente después del título del mismo, alineada a la derecha.
+
+Para añadir la frase (que está formada por la cita en cuestión y su
+autor), \texis\ define un nuevo entorno \texttt{FraseCelebre},
+dentro del cual se especifican cada una de ellas con otros dos
+entornos, \texttt{Frase} y \texttt{Fuente}:
+
+\begin{example}
+\begin{FraseCelebre}
+\begin{Frase}
+Nadie espere que yo diga algo.
+\end{Frase}
+\begin{Fuente}
+Mafalda
+\end{Fuente}
+\end{FraseCelebre}
+\end{example}
+
+Evidentemente, las frases célebres pueden añadirse en todos los
+capítulos, incluidos los ``especiales'' (aquellos que no tienen
+numeración normal) como el capítulo de agradecimientos. Para hacerlo,
+basta con utilizar los comandos anteriores.
+
+Un capítulo donde es algo más complicado es el ``capítulo'' de
+\emph{bibliografía}. Esto es debido a que la generación del capítulo
+completo consiste en una mera invocación al comando
+\verb+bibliography+
+
+\begin{verbatim}
+\bibliography{fichero1,fichero2}
+\end{verbatim}
+
+En el \verb|documentclass| que estamos utilizando (\texttt{book}) eso
+significa que se creará un nuevo \emph{capítulo} con la lista de
+referencias. Si en ese capítulo se quiere añadir una cita (como
+hacemos por ejemplo en este manual), hay que realizar algunas tareas
+adicionales. Naturalmente \texis\ las hace por nosotros, por lo que,
+como se mencionó en la sección~\ref{cap2:sec:ficheros-auxiliares}, lo
+único que tendremos que hacer es editar el fichero
+\texttt{bibliografia.tex}, buscar la frase célebre del manual y
+cambiarla a voluntad.
+
+Antes de terminar, decir que, igual que en el caso del resumen, la
+apariencia de la frase célebre se puede modificar en el fichero
+\texttt{TeXiS/TeXiS.sty}.
+
+%-------------------------------------------------------------------
+\subsection{Secciones no numeradas}
+%-------------------------------------------------------------------
+\label{cap3:ssec:secciones-no-numeradas}
+
+Como habrás podido comprobar, en este manual todos los capítulos
+terminan con dos secciones no numeradas, una de ellas con unas notas
+bibliográficas, y otra que tiene un pequeño resumen del siguiente
+capítulo.
+
+Aunque para el manual no son en realidad necesarias (especialmente la
+de notas bibliográficas, que en muchos capítulos nos ha costado
+rellenar\ldots), las hemos puesto para que sirvan de ejemplo en el
+\texttt{.tex}.
+
+En principio, para poner una sección no numerada basta con utilizar la
+``versión estrellada'' del comando \LaTeX\ correspondiente. Es decir,
+utilizar \verb+\section*+ para añadir una sección sin número. El
+problema en nuestro caso es que este comando no parece funcionar
+correctamente con el paquete \texttt{fancyhdr}. \texis\ utiliza
+ese paquete para configurar la cabecera y pie de página; en concreto
+para indicar que se desea que el número de página aparezca en las
+esquinas ``externas'', mientras que en las esquinas internas debe
+aparecer el nombre del capítulo (en las hojas pares o izquierdas) y
+sección (en las impares o derechas). El mismo paquete es el que se
+utiliza para que aparezca el número de página en la primera página de
+un capítulo y para cierta información que aparece cuando se genera el
+documento en ``modo borrador'', según aparece descrito en la
+sección~\ref{cap3:sec:modos-compilacion}.
+
+El problema aparece cuando una sección no numerada excede
+el límite de la página en la que empieza. En ese caso, la cabecera en
+la que aparece el nombre de la sección en vez de contener el título de
+esa sección sin numerar, seguirá mostrando la última sección numerada.
+
+La solución es modificar a mano la cabecera, en concreto modificar la
+configuración de la cabecera donde aparece el título de la sección
+actual (la parte izquierda de las páginas impares). Para eso, tras
+consultar la documentación del paquete, se aprende que hay que
+utilizar el comando \verb+\markright+. Por ejemplo:
+
+\begin{verbatim}
+\section*{Notas bibliográficas\markright{Notas bibliográficas}}
+\end{verbatim}
+
+Como puede verse, en el propio comando \verb+\section*+, se incluye una
+llamada a \verb+\markright+, que contiene el texto que debe aparecer a
+en la cabecera. Con esto se soluciona el problema de las cabeceras.
+
+Otro ``problema'' de las secciones sin numerar es que no se meten en
+la tabla de contenidos que se incluye al principio del documento;
+tampoco aparecen en el ``contenido'' del PDF listado por el visor que
+mostrabamos en la figura~\ref{cap2:fig:pdf}\footnote{Ponemos
+  \emph{problema} entre comillas porque normalmente se utiliza la
+  versión con estrella de los comandos \texttt{section} precisamente
+  para evitar que una sección aparezca en el índice.}. Sin embargo, en
+nuestro caso preferíamos que también las secciones aparecieran en el
+índice (es decir, que la única diferencia entre las secciones
+numeradas y las no numeradas fuera, precisamente, la ausencia de
+numeración). Para que aparezca, por lo tanto, se debe añadir
+explícitamente la sección en la tabla de contenidos, con el comando:
+
+\begin{verbatim}
+\addcontentsline{toc}{section}{Notas bibliográficas}
+\end{verbatim}
+
+\noindent que debe ejecutarse \emph{después} del comando
+\verb+\section*+. Por lo tanto, para añadir una sección sin numerar
+como la de ``Notas bibliográficas'', el código \LaTeX\ final que hay
+que poner es:
+
+\begin{verbatim}
+%--------------------------------------------------------------
+\section*{Notas bibliográficas\markright{Notas bibliográficas}}
+%--------------------------------------------------------------
+\addcontentsline{toc}{section}{Notas bibliográficas}
+\end{verbatim}
+
+Entendemos que invocar a los comandos anteriores cada vez que se desea
+una de estas secciones no numeradas es tedioso. Por ello \texis\
+proporciona una serie de comandos (definidos en el fichero
+\texttt{./TeXiS/TeXiS\_cab.tex}) que permiten añadir fácilmente cuatro
+tipos de secciones sin numerar. Las secciones son los siguientes (ver
+tabla~\ref{cap3:tab:seccionesnonumeradas}):
+
+\begin{table}[t]
+\footnotesize
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+Texto & Comando para \texttt{section} & Comando para índice \\
+\hline
+\hline
+Conclusiones & \verb+\Conclusiones+ & \verb+\TocConclusiones+ \\
+\hline
+En el próximo capítulo\ldots & \verb+\ProximoCapitulo+ & \verb+\TocProximoCapitulo+ \\
+\hline
+Notas bibliográficas & \verb+\NotasBibliograficas+ & \verb+\TocNotasBibliograficas+ \\
+\hline
+Resumen & \verb+\Resumen+ & \verb+\TocResumen+ \\
+\hline
+\end{tabular}
+\caption{Secciones no numeradas soportadas por \texis
+   \label{cap3:tab:seccionesnonumeradas}}
+\end{table}
+
+\begin{itemize}
+\item ``Conclusiones'': el manual no utiliza esta sección sin numerar,
+  pero sí puede ser razonable utilizarlo a modo de resumen al final
+  del capítulo de otro tipo de documentos. 
+
+\item ``Notas bibliográficas'': también utilizado en este documento,
+  es útil para dar otras referencias bibliográficas que por cualquier
+  razón no se citó en el texto.
+
+\item ``En el próximo capítulo...'': sí se ha utilizado en el manual,
+  y puede servir para enlazar el contenido del capítulo con el
+  siguiente.
+
+\item ``Resumen'': con un objetivo parecido al de conclusiones pero
+  con distinto título; tampoco lo utilizamos en el manual.
+\end{itemize}
+
+Como se puede ver en la tabla, para cada una de estas secciones
+aparecen dos comandos, uno para el comando \verb+\section*+ y otro
+para añadir el índice, de forma que la definición de, por ejemplo, la
+sección de ``En el próximo capítulo...'' quedaría:
+
+\begin{verbatim}
+%--------------------------------------------------------------
+\section*{\ProximoCapitulo}
+%--------------------------------------------------------------
+\TocProximoCapitulo
+\end{verbatim}
+
+Somos conscientes de que los dos comandos podrían haberse unificado en
+uno sólo, como \verb+\SeccionProximoCapitulo+ y que él mismo hiciera todo el
+trabajo (es decir, pusiera el \verb+\section*{...}+ así como el
+\verb+\addcontestline+). Sin embargo, esta solución no es compatible
+con la capacidad de los editores de resaltar secciones, ya que los
+editores simplemente buscan la cadena ``\verb+\section+'' para
+resaltarlo (ver figura~\ref{cap3:fig:emacs}).
+
+\figura{Bitmap/03/SeccionesEmacs}{width=0.7\textwidth}%
+       {cap3:fig:emacs}{Resaltado de secciones en emacs}
+
+Es por ello que, a pesar de ser más tedioso, optamos por la
+alternativa complicada: si se quiere meter una sección sin numerar, se
+debe primero utilizar el comando \verb+\section*+, añadiendo como
+texto el comando que aparece en la segunda columna de la
+tabla~\ref{cap3:tab:seccionesnonumeradas}, y posteriormente se utiliza
+el otro comando para añadirlo al índice. Separándolo así, además,
+permite al usuario de \texis\ decidir si quiere o no que la
+sección aparezca en el índice.
+
+%-------------------------------------------------------------------
+\subsection{Capítulos especiales}
+%-------------------------------------------------------------------
+\label{cap3:ssec:capitulos-especiales}
+
+Relacionado con las cabeceras de la sección anterior, \texis\
+soporta (y este manual tiene) capítulos ``especiales'' que aparecen
+sin numerar. Estos ``capítulos'' son, en concreto, la parte de
+agradecimientos y resumen, los índices y la bibliografía.
+
+Dado que todos ellos se caracterizan por la ausencia de secciones, no
+tiene sentido mantener la cabecera utilizada en el resto del texto.
+Por lo tanto, configuramos sus cabeceras para que en ambas páginas
+aparezca directamente el título del capítulo (también sin número).
+
+Para hacerlo, \texis\ dispone del comando
+\verb+\cabeceraEspecial+, que recibe como parámetro el nombre del
+capítulo. De esta forma, el capítulo de agradecimientos comienza con:
+
+\begin{verbatim}
+\chapter{Agradecimientos}
+
+\cabeceraEspecial{Agradecimientos}
+
+\begin{FraseCelebre}
+...
+\end{verbatim}
+
+que provoca un cambio en la cabecera que se debe utilizar.
+
+Los capítulos sin numerar de este manual se encargan de configurar la
+propia cabecera por lo que si partes de ellos para escribir tu
+documento no deberás preocuparte de nada (más allá de \emph{no} borrar
+el comando).
+
+Si incluyes nuevos capítulos sin numerar, has de saber que:
+
+\begin{itemize}
+\item No debes olvidar invocar el comando anterior al principio del
+  capítulo sin numerar.
+
+\item El comando anterior \emph{sobreescribe} el funcionamiento normal
+  de la cabecera, por lo que se debe llamar al comando
+  \verb+\restauraCabecera+ para reestablecerlo \emph{después} del
+  capítulo especial. Es importante resaltar el \emph{después} pues
+  debe hacerse cuando el capítulo \emph{ya ha terminado} y o bien se
+  ha empezado el siguiente o bien se ha forzado el final de página con
+  un \verb+\newpage+. \texis\ ya hace esto automáticamente justo
+  antes del primer capítulo (en \texttt{Tesis.tex}). Sin embargo, si
+  incluyes algún capítulo especial más adelante en el documento, no
+  debes olvidar restaurar la cabecera.
+\end{itemize}
+
+%-------------------------------------------------------------------
+\subsection{Dividiendo el documento en partes}
+%-------------------------------------------------------------------
+\label{cap3:ssec:partes}
+
+En ocasiones la estructura del documento tiene dos o más partes
+claramente diferenciadas. Por ejemplo un libro puede tener una primera
+parte de conceptos básicos con unos pocos capítulos y otra de
+conceptos avanzados con el resto.
+
+\LaTeX\ permite especificar distintas partes utilizando el comando
+\verb|\part|. El resultado es la inserción de una
+nueva hoja con el número (en romanos) y título de la parte y la
+adaptación del índice de contenidos para incluir la información de esa
+nueva parte.
+
+Obviamente, \texis\ también permite la inclusión de distintas partes
+(y este manual las tiene a modo de ejemplo). Sin embargo, en vez de
+utilizar directamente el comando de \LaTeX, aconsejamos el uso de
+comandos del propio \texis\ que tienen funcionalidad adicional.
+
+En concreto, los comandos de \texis\ relacionados con las partes del
+documento (y que describiremos a continuación) permiten añadir una
+pequeña descripción de la parte que comienza en su hoja de título y
+una  descripción más larga en la parte trasera (sólo si el documento
+está configurado ``a dos caras'', especificando \texttt{twoside} en el
+\texttt{documentclass} del  principio del documento).
+
+\texis\ también se preocupa de que en el índice de contenidos del PDF
+final la bibliografía (y en caso de existir la última hoja con la
+frase célebre) \emph{no} aparezcan ligados a la última parte del
+documento, sino que estén en su mismo nivel.
+
+Dicho todo esto, aconsejamos que, igual que se hace en el código de
+este manual, existan ficheros para definir cada una de las partes (en
+el manual se llaman \texttt{Capitulos/Parte1.tex}, etc.). Estos
+ficheros se incluyen desde el documento maestro justo antes del primer
+capítulo de esa parte.
+
+Los comandos de \texis\ relacionados con las partes del documento son
+cuatro:
+
+\begin{itemize}
+\item \verb|\partTitle|: permite especificar el título de la parte que
+  comenzará.
+
+\item \verb|\partDesc|: para indicar el texto descriptivo que
+  aparecerá en la ``portada'' de esa parte. Es opcional; si no se
+  indica, no aparecerá descripción.
+
+\item \verb|\partBackText|: sirve para especificar el texto que
+  aparecerá en la parte trasera de la hoja que delimita esa nueva
+  parte. Es responsbilidad del autor asegurarse de que ese texto entra
+  perfectamente en una única cara. Igual que el anterior, es opcional.
+
+\item \verb|\makepart|: tras indicar el título y, opcionalmente,
+  descripción y texto trasero, este comando construye la hoja que
+  define esa parte del documento. Si se desea crear una parte sin
+  numerar (lo que en \LaTeX\ suele conseguirse con la versión ``con
+  estrella'' del comando), se puede utilizar \verb|\makespart| (la
+  \texttt{s} solicita la versión \emph{starred}).
+\end{itemize}
+
+A modo de ejemplo este manual contiene tres partes; la primera de ella
+cubre los tres primeros capítulo y tiene tanto descripción como texto
+en la parte trasera. La segunda tiene únicamente una descripción y la
+tercera y última, para los apéndices, no tiene ni descripción ni texto
+trasero.
+
+El código \LaTeX\ para la definición de la primera parte es:
+
+\begin{verbatim}
+\partTitle{Conceptos básicos}
+
+\partDesc{Esta primera parte del manual presenta los conceptos 
+  básicos de \texis. Contiene un capítulo de introducción, 
+  seguido de una descripción de la estructura de \texis\ y
+  cómo se genera el documento final, para terminar con un
+  capítulo en el que se describe el proceso de edición sugerido
+  y los comandos que \texis\ proporciona para facilitar dicho
+  proceso.}
+
+\partBackText{En realidad la división por partes del manual no
+  aporta demasiado al lector; se ha dividido en varias partes
+  debido a que, en la práctica, el código de este manual sirve
+  como ejemplo de uso de \texis.
+
+  En un contexto distinto, es posible que un manual de este
+  tipo no habría tenido estas partes así de diferenciadas.}
+
+\makepart
+\end{verbatim}
+
+
+%-------------------------------------------------------------------
+\section{Programando en \LaTeX}
+%-------------------------------------------------------------------
+\label{cap3:sec:programando}
+
+Uno de los aspectos que diferencia a \LaTeX\ de los sistemas
+ofimáticos tradicionales para creación de documentos es el modelo
+subyacente que utiliza. En realidad, todo lo que el autor escribe en
+sus ficheros \LaTeX\ es ``\emph{ejecutado}'' por el intérprete de
+\LaTeX\ hasta generar el documento final. Por lo tanto, se puede decir
+que básicamente, cuando se escribe en \LaTeX\ se ``está programando''
+lo que posteriormente será un programa que generará nuestro documento
+final. Afortunadamente esa sensación de ``programador'' no se tiene en
+condiciones normales durante el proceso de autoría. Sin embargo esta
+peculiaridad sí se puede aprovechar para facilitar el proceso de
+edición.
+
+Ya hemos visto en el capítulo anterior un ejemplo de cómo la
+posibilidad de crear \emph{comandos} de \LaTeX\ nos permite establecer
+``constantes'' que nos evitan tener que escribir palabras que
+utilizaremos a menudo durante el texto. Sin embargo, profundizando un
+poco más en el ``lenguaje'' que hay por debajo (por debajo de \LaTeX\
+está \TeX) se puede comprobar que pone a nuestra disposición algunas
+estructuras conocidas por los programadores como los \texttt{if}.
+
+%-------------------------------------------------------------------
+\section{Modos de generación del documento}
+%-------------------------------------------------------------------
+\label{cap3:sec:modos-compilacion}
+
+Aprovechando esto, \texis\ está preparada para admitir dos
+\emph{configuraciones de generación} o ``\emph{compilación}''
+distintas que, imitando los nombres tradicionales en el desarrollo
+software, llamamos configuración en modo ``release'' y en modo
+``debug'' (o de depuración):
+
+\begin{itemize}
+\item La configuración en modo ``release'' está pensada para la
+  versión ``definitiva'', por lo que genera un fichero con la
+  apariencia final del documento.
+
+\item La configuración en modo ``debug'' puede verse como una versión
+  ``borrador''. En este caso el documento incluye ciertos elementos
+  que no se desea incluir en la versión final, como comentarios en el
+  propio texto.
+\end{itemize}
+
+La existencia de estos dos modos de compilación puede sonar extraña al
+principio. En realidad, su utilidad depende del modo de escribir el
+documento de cada uno. En nuestro caso, los capítulos de la tesis se
+escribieron en un proceso ``iterativo'' de tal forma que incluíamos
+comentarios que queríamos que aparecieran al imprimir ``la versión de
+depuración'', pero no queríamos preocuparnos de tener que recordar
+borrar llegado el momento de imprimir la versión final. Por otro lado,
+cuando el documento es escrito por más de un autor (como este manual),
+la posibilidad de poner comentarios fácilmente descartables es
+especialmente útil.
+
+Los ficheros descargados están configurados para compilar la versión
+definitiva; para cambiarla a la versión de ``depuración'', basta con
+cambiar el fichero \texttt{config.tex} del directorio raíz. En cierto
+momento al principio del fichero aparecen las líneas siguientes.
+
+\begin{verbatim}
+% Comentar la línea si no se compila en modo release.
+% TeXiS hará el resto
+\def\release{1}
+\end{verbatim}
+
+Para generar el fichero con la configuración de depuración, basta con
+comentar la línea en la que se ``define'' el símbolo
+\texttt{release}\footnote{El comando recuerda a la orden del
+  preprocesador de C/C++ ``\texttt{\#define release 1}''.}.
+
+El primer efecto inmediato es que la plantilla añade automáticamente
+como pie de página el texto:
+
+\medskip
+
+{\small \sc Borrador -- \today}
+
+\medskip
+
+De esta forma, si tienes varias versiones imprimidas puedes estar
+tranquilo de que no se te mezclarán, pues además de marcar que es un
+borrador, aparece la fecha en la que se generó el fichero.
+
+En los tres apartados siguientes se describen tres comandos definidos
+por \texis\ cuyo comportamiento depende del modo de compilación.
+
+\subsection{Comando \texttt{com}}
+\label{cap3:subsec:comando-com}
+
+El comando \verb|\com| permite añadir un comentario que aparecerá (en
+modo depuración) en un párrafo aparte, con un ancho de línea algo
+superior a lo normal y rodeado de un cuadro negro.
+
+% En este caso no podemos utilizar el entorno example, porque para
+% poner el comentario de verdad no podemos utilizar el comando real,
+% \com, pues en la compilación en release no saldría. He intenado hace
+% que quede con la misma apariencia que en el ejemplo, pero no lo he
+% logrado :(
+
+Como ejemplo, el código \LaTeX:
+
+\begin{verbatim}
+\com{Lo que sigue podría en realidad ser una sección distinta...}
+\end{verbatim}
+
+Se convierte en:
+
+\comImpl{Lo que sigue podría en realidad ser una sección distinta...}
+
+Hay que advertir que el recuadro anterior no tiene ningún control
+sobre los saltos de página, por lo que ante comentarios demasiado
+grandes (que no entran en lo que queda de página), provoca que se
+salte el resto de la misma y aparezca el comentario en la siguiente.
+
+\subsection{Comando \texttt{comp}}
+\label{cap3:subsec:comando-comp}
+
+El comando anterior es muy útil pero debido a su tamaño puede no ser
+recomendable para pequeños comentarios ``integrados'' dentro de un
+párrafo. Para eso existe otro comando, \verb|\comp|, que hace
+precisamente eso, permitir añadir pequeños comentarios directamente en
+el propio párrafo (\texttt{comp} viene de \textbf{COM}entario en \textbf{P}árrafo).
+
+% Igual que antes, no vale el "example".
+
+El código:
+
+\begin{verbatim}
+El juego ``Vampire: the Masquerade'', publicado en 1998,
+requirió 12 desarrolladores durante 24 meses, casi dos millones
+de dólares y unas 366.000 líneas de código.\comp{300.000 para
+el juego, y 66.000 de scripts.}
+\end{verbatim}
+
+Se convierte en:
+
+\smallskip
+
+El juego ``Vampire: the Masquerade'', publicado en 1998,
+requirió 12 desarrolladores durante 24 meses, casi dos millones
+de dólares y unas 366.000 líneas de código.\compImpl{300.000 para
+el juego, y 66.000 de scripts.}
+
+\subsection{Comando \texttt{todo}}
+\label{cap3:subsec:comando-todo}
+
+Este comando permite añadir comentarios para indicar tareas que aún
+faltan por hacer. Los informáticos solemos marcar esos comentarios en
+nuestro código fuente utilizando la ``palabra''
+\texttt{TODO}\footnote{Que en realidad no tiene nada que ver con la
+  palabra española, sino con las inglesas ``\emph{to do}'', que puede
+traducirse aquí a ``\emph{por hacer}''.}.
+
+El comando \verb+\todo+ encierra el texto entre llaves y lo
+antecede con la marca ``TODO'' en negrita, de forma que el
+código:
+
+% Igual que antes, no vale el "example".
+
+\begin{verbatim}
+Existen autores que piensan que enseñar programación orientada
+a objetos en el primer curso de programación (CS1) es
+beneficioso para los alumnos\todo{Meter referencias...}.
+\end{verbatim}
+
+se convierte en la versión de depuración en:
+
+\smallskip
+
+Existen autores que piensan que enseñar programación orientada a
+objetos en el primer curso de programación (CS1) es beneficioso para
+los alumnos\todoImpl{Meter referencias...}.
+
+\medskip
+
+Y, al igual que los anteriores, cuando se compila el documento en
+``modo release'', el comando no tiene ningún efecto.
+
+\bigskip
+
+Es importante destacar que en los dos comandos que van dentro de los
+párrafos (\verb+\comp+ y \verb+\todo+) \emph{no
+  se debe poner ningún espacio antes del comando}. En caso de ponerse
+el espacio, éste \emph{aparecería} en la versión Release, cuando el
+comando no tiene ningún efecto:
+
+\com{Aquí utilizamos el entorno \texttt{example}, porque asumimos que
+  la versión que estará leyendo el usuario es la Release. Si estás
+  leyendo este texto, el ejemplo no lo entenderás, porque estás
+  manejando la versión de depuración, y a la derecha verás también la
+  sección ``\textbf{TODO}''.}
+
+\begin{example}
+... beneficioso para los
+alumnos \todo{Meter 
+referencias...}.
+\end{example}
+
+Para que cuando se genera el documento en modo depuración quede bien,
+el propio comando \emph{añade} el espacio de separación entre el texto
+que le precede y la apertura de la llave.
+
+\medskip
+
+Ten en cuenta, que al hacer uso de estos comandos para depuración (\verb|\com|, \verb|\comp| o \verb|\todo|) el documento generado contendrá más texto que el final en \emph{release}. Eso significa que el número de páginas variará, y la maquetación general también. Por tanto, \emph{no} debes utilizar el resultado de la generación en depuración para averiguar, por ejemplo, si una figura queda cerca del punto donde es referenciada, o si en una misma página aparecen dos elementos flotantes.
+
+%-------------------------------------------------------------------
+\section{Acelerando la compilación}
+%-------------------------------------------------------------------
+\label{cap3:sec:compilacion-rapida}
+
+Cuando el documento va teniendo más y más páginas, compilarlo una y
+otra vez hasta dar con el tamaño exacto que queremos darle a una
+imagen, o para ver si una referencia queda bien generada a partir de
+la entrada en el \texttt{.bib} puede llevar demasiado tiempo.
+
+Para evitarlo, \texis\ permite, de manera fácil, compilar un único
+capítulo (o apéndice), que normalmente será aquél en el que se esté trabajando.
+
+Para eso, simplemente hay que indicar qué capítulo se quiere compilar
+en el fichero \texttt{config.tex} utilizando el comando
+\verb+\compilaCapitulo+\footnote{El comando sólo puede invocarse una
+  vez, por lo que no es válido si se quiere compilar un grupo
+  determinado de capítulos.}. Si en vez de ser un capítulo lo que
+queremos generar es un apéndice el procedimiento es el mismo, pero
+utilizando el comando \verb+\compilaApendice+. Observa que \emph{no}
+debe incluirse el nombre del directorio donde aparecen los ficheros
+(es decir el ``\texttt{Capitulos}''), pues el propio comando lo hace
+por nosotros.
+
+Una vez que el capítulo se termina de escribir y se pasa al siguiente,
+se querrá añadir el \verb+\compilaCapitulo+ para el nuevo capítulo (y
+anular el otro). En nuestro caso, en vez de eliminar el comando del
+capítulo anterior, lo dejamos comentado por si es necesario en el
+futuro. Es por ello que al final de la redacción del documento, se
+tiene una línea por cada uno de los capítulos:
+
+\begin{verbatim}
+% Descomentar la línea para establecer el capítulo que queremos
+% compilar
+
+% \compilaCapitulo{01Introduccion}
+% \compilaCapitulo{02EstructuraYGeneracion}
+% \compilaCapitulo{03Edicion}
+% \compilaCapitulo{04Imagenes}
+% \compilaCapitulo{05Bibliografia}
+% \compilaCapitulo{06Makefile}
+
+% \compilaApendice{01AsiSeHizo}
+\end{verbatim}
+
+%-------------------------------------------------------------------
+\section{Editores de \LaTeX\ y compilación}
+%-------------------------------------------------------------------
+\label{cap3:sec:editores}
+
+Existen numerosas alternativas para editar los ficheros de \LaTeX
+\citep[ver][sec. 2.3]{Flynn05}, y
+si has escrito ya algún artículo, posiblemente ya tengas uno
+``favorito''. Aunque el editor parezca poco importante (al fin y al
+cabo lo importante es tu documento), en realidad pasarás mucho tiempo
+utilizándolo, viendo sus colores, pulsando sus botones, y activando
+sus teclas rápidas.
+
+Evidentemente \texis\ no obliga a utilizar ningún editor en
+concreto (faltaría más), aunque es posible que necesites hacer algunos
+cambios en los ficheros para que se adecúen a lo que espera el
+editor. Esto es especialmente cierto si pretendes generar el documento
+final utilizando alguna opción del editor.
+
+En la sección~\ref{cap2:sec:compilacion} mostrábamos cómo compilar
+todos los \texttt{.tex} desde la línea de comandos. Sin embargo,
+reconocemos que esto no es lo más cómodo\footnote{\texis\ tiene un
+  fichero \texttt{Makefile} para la compilación en un único paso, que
+  es explicado en el capítulo~\ref{cap:makefile}.}. Por lo tanto, si
+el editor que tienes está preparado para \LaTeX\ (no utilizas el Bloc
+de notas...), es muy posible que tenga algún botón o tecla rápida para
+compilar el fichero abierto, ya sea con \texttt{latex} o
+\texttt{pdflatex}.
+
+Pues bien, en ese caso, debes comprobar cómo funciona exactamente el
+editor, ya que muy posiblemente, el fichero que estarás editando
+cuando quieras generar el documento no será el documento
+\emph{maestro} (es decir, el que en la plantilla hemos llamado
+\texttt{Tesis.tex}, y que contiene el punto de entrada e incluye todos
+los demás). Por lo tanto, debes mirar de qué manera puedes hacer que
+el fichero que se envía a \texttt{latex} sea el documento maestro.
+Por ejemplo,
+WinEdt\footnote{\url{http://www.winedt.com/}} permite crear
+``proyectos'' donde se añaden ficheros y se especifica cuál es el
+documento maestro; cuando se pulsa el botón de compilar,
+independientemente del fichero activo en el editor, se manda compilar
+el documento maestro.
+
+Como se describe en la sección \ref{ap1:edicion}, nosotros utilizamos emacs \citep{emacsStallman} para crear nuestros ficheros \LaTeX. Como no podía ser de otro modo, \texis\ está preparado para integrarse con él, en particular
+con el modo Auc\TeX\ que permite una edición cómoda de ficheros \TeX\ \citep{AtazLopezEmacs}.
+En concreto, este modo dispone de una combinación de teclas para
+lanzar la generación del documento final. En condiciones normales eso
+implica enviar al programa \texttt{latex} el fichero que se está
+editando; sin embargo, en nuestro caso lo normal es que el fichero
+\emph{maestro} que hay que utilizar no es el que se está editando,
+sino el fichero \texttt{Tesis.tex}. Para que funcione como queremos,
+basta con añadir al final de los ficheros \texttt{tex} unas
+indicaciones para que Auc\TeX\ utilice ese fichero como fichero
+maestro:
+
+% ¿¡Tendrá alguna repercusión que se meta en medio del fichero
+% para el propio emacs!?
+\begin{verbatim}
+% Variable local para emacs, para  que encuentre el fichero
+% maestro de compilación y funcionen mejor algunas teclas
+% rápidas de AucTeX
+%%%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../Tesis.tex"
+%%% End:
+\end{verbatim}
+
+Esta ``coletilla'' no es necesaria si utilizas cualquier otro editor.
+Sin embargo \texis\ las tiene añadidas en todos los ficheros (y
+también en los ficheros de los capítulos y apéndices de este manual).
+Las líneas anteriores, además, son utilizadas por otras combinaciones
+de teclas de Auc\TeX, como las que permiten navegar por todas las
+secciones del documento.
+
+%-------------------------------------------------------------------
+\section{Control de versiones}
+%-------------------------------------------------------------------
+\label{cap3:sec:control-versiones}
+
+Como veremos en el capítulo~\ref{cap:makefile}, el fichero
+\texttt{Makefile} contiene algunos objetivos para realizar copias de
+seguridad de todos los ficheros del documento.
+
+Sin embargo en el mundo de desarrollo software es habitual utilizar
+sistemas de control de versiones. Estos sistemas gestionan las
+distintas versiones por las que van pasando los ficheros durante todo
+el proceso de desarrollo. La necesidad de estas herramientas está
+ampliamente reconocida, no sólo porque sirven como medio de copia de
+seguridad que permite \emph{volver hacia atrás} ante algún fallo, sino
+porque permite el trabajo simultáneo de dos o más
+personas\footnote{Aunque esto en la redacción de una tesis no suele
+  tener sentido, sí puede ser necesario en la elaboración de manuales,
+  cuadernillos de prácticas u otros documentos para los que
+  \texis\ puede utilizarse.}.
+
+Existen varias alternativas para el control de versiones, tanto
+comerciales como bajo licencia \ac{GPL}
+o similares. El sistema por excelencia dentro del software libre
+fue durante muchos años \ac{CVS}
+\citep{CVS}, aunque hoy por hoy ha sido desbancado por Subversion
+\citep{Subversion}.  Entre las herramientas comerciales, destacan
+SourceSafe de
+Microsoft\footnote{\url{http://msdn.microsoft.com/ssafe/}},
+Perforce\footnote{\url{http://www.perforce.com/}} y
+AccuRev\footnote{\url{http://www.accurev.com/}}.
+
+Aunque es una decisión que los autores del documento tendrán que
+tomar, aconsejamos el uso de uno de estos sistemas\footnote{En nuestro
+  caso, utilizamos CVS para la escritura de las tesis, mientras que
+  para la elaboración de la plantilla (y manual), utilizamos
+  Subversion.}. Una vez que se tiene configurada la máquina servidora
+que aloja el control de versiones (ver notas bibliográficas), se suben
+los ficheros \emph{fuente} del documento, que pasarán a estar bajo el
+control del servidor, lo que permitirá recuperar el estado del
+documento en cualquier momento pasado (por lo que sirve también como
+copia de seguridad).
+
+Un punto importante es hacer que el sistema de control de versiones
+\emph{ignore} los ficheros que son resultados de la generación del
+fichero final (el PDF). Cuando se compila el documento, \LaTeX\ genera
+numerosos ficheros temporales (con extensiones como \texttt{.aux} o
+\texttt{.bbl}) que \emph{no} deben subirse al sistema control de
+versiones. Cuando se utiliza CVS se elimina el problema creando en los
+directorios un fichero de texto llamado \texttt{.cvsignore} que
+contiene todos los ficheros que deben ser ignorados. A pesar de que en
+la elaboración de la plantilla no utilizamos CVS, \texis\
+incorpora esos ficheros para que puedan utilizarse en el proceso de
+redacción de los documentos.
+
+Si en vez de utilizar CVS estás utilizando Subversion, puedes hacer
+que éste ignore los ficheros contenidos en el archivo
+\texttt{.cvsignore} ejecutando la siguiente orden:
+
+\begin{verbatim}
+svn propset svn:ignore -F .cvsignore .
+\end{verbatim}
+
+\noindent en cada uno de los directorios que contengan el fichero. La
+orden lo que hace es establecer la propiedad (\texttt{propset})
+concreta para que el Subversion ignore (\texttt{svn:ignore}) los
+ficheros que se indican en el fichero (\texttt{-F})
+\texttt{.cvsignore}.
+
+\com{
+Para una versión futura de \texis, podríamos incluir información
+sobre la  revisión de la
+plantilla en la página posterior a la portada, igual que en el libro
+del SVN. En ese caso, habría que contarlo aquí para que los usuarios
+puedan utilizarlo también.
+}
+
+%-------------------------------------------------------------------
+\section*{\NotasBibliograficas}
+%-------------------------------------------------------------------
+\TocNotasBibliograficas
+
+La idea de los dos modos de compilación de la Tesis surgió de forma
+natural dada la experiencia en el proceso de desarrollo en C++, donde
+los entornos integrados de desarrollo suelen proporcionar al menos
+esas dos configuraciones posibles. La forma de hacerlo posible vino
+después de inspeccionar el código \LaTeX\ del libro
+\cite{ldesc2e}. La implementación de los comandos no requiere un
+conocimiento ni mucho menos extenso de las capacidades de \TeX; basta
+con un poco de intuición al ver un ejemplo de \verb|\if|.
+
+No obstante, el lector interesado en aprender \TeX\ a fondo puede
+encontrar diversos manuales, como ``\TeX\ for the Impatient''
+\citep{texImpatient}, aunque advertimos que se debe estar \emph{muy}
+interesado para leerselo, ya que en condiciones normales no se
+utilizará nada de lo aprendido\footnote{A no ser que se quiera
+  construir un paquete con una funcionalidad muy concreta...}. También
+se puede consultar \cite{texKnuth} o \cite{texByTopic}.
+
+Con respecto a la utilización de control de versiones, dentro de las
+opciones libres es muy utilizado el Subversion, cuyo libro de
+referencia que ya se ha citado en el texto es
+\cite{Subversion}. Para una descripción sencilla de cómo instalar una
+máquina servidora puede consultarse \citet{LatexAndSVN} y
+\citet{PaquetesSVNLatex}. En éste último también aparece una somera
+descripción de algunos paquetes de \LaTeX\ que pueden utilizarse para
+incluir información relacionada directamente con las versiones de
+Subversion. Aunque para más información al respecto recomendamos
+\citet{SVNmulti} que dedica toda su atención a la descripción de
+\verb+svn-multi+, uno de los paquetes con más opciones disponibles
+para ello.
+
+%-------------------------------------------------------------------
+\section*{\ProximoCapitulo}
+%-------------------------------------------------------------------
+\TocProximoCapitulo
+
+En este capítulo hemos tratado los aspectos más importantes desde el
+punto de vista de la edición de un documento realizado con \texis,
+describiendo los comandos \LaTeX\ disponibles.
+
+El próximo capítulo aborda el tratamiento de las imágenes. Como se verá,
+soportar la generación del documento
+tanto con \texttt{latex} como \texttt{pdflatex} dificulta la gestión
+de imágenes, pues cada uno utiliza un formato de fichero distinto. El
+capítulo explica las distintas opciones que el usuario de \texis\
+tiene para su manejo.
+
+% Variable local para emacs, para  que encuentre el fichero maestro de
+% compilación y funcionen mejor algunas teclas rápidas de AucTeX
+%%%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../ManualTeXiS.tex"
+%%% End:

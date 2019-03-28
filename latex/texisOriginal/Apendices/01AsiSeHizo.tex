@@ -1,0 +1,208 @@
+%---------------------------------------------------------------------
+%
+%                          Apéndice 1
+%
+%---------------------------------------------------------------------
+%
+% 01AsiSeHizo.tex
+% Copyright 2009 Marco Antonio Gomez-Martin, Pedro Pablo Gomez-Martin
+%
+% This file belongs to the TeXiS manual, a LaTeX template for writting
+% Thesis and other documents. The complete last TeXiS package can
+% be obtained from http://gaia.fdi.ucm.es/projects/texis/
+%
+% Although the TeXiS template itself is distributed under the 
+% conditions of the LaTeX Project Public License
+% (http://www.latex-project.org/lppl.txt), the manual content
+% uses the CC-BY-SA license that stays that you are free:
+%
+%    - to share & to copy, distribute and transmit the work
+%    - to remix and to adapt the work
+%
+% under the following conditions:
+%
+%    - Attribution: you must attribute the work in the manner
+%      specified by the author or licensor (but not in any way that
+%      suggests that they endorse you or your use of the work).
+%    - Share Alike: if you alter, transform, or build upon this
+%      work, you may distribute the resulting work only under the
+%      same, similar or a compatible license.
+%
+% The complete license is available in
+% http://creativecommons.org/licenses/by-sa/3.0/legalcode
+%
+%---------------------------------------------------------------------
+
+\chapter{Así se hizo...}
+\label{ap1:AsiSeHizo}
+
+\begin{FraseCelebre}
+\begin{Frase}
+Pones tu pie en el camino y si no cuidas tus pasos, nunca sabes a donde te pueden llevar.
+\end{Frase}
+\begin{Fuente}
+John Ronald Reuel Tolkien, El Señor de los Anillos
+\end{Fuente}
+\end{FraseCelebre}
+
+\begin{resumen}
+Este apéndice cuenta algunos aspectos prácticos que nos planteamos en
+su momento durante la redacción de la tesis (a modo de ``así se hizo
+nuestra tesis''). En realidad no es más que una excusa para que éste
+manual tenga un apéndice que sirva de ejemplo en la plantilla.
+\end{resumen}
+
+%-------------------------------------------------------------------
+\section{Edición}
+%-------------------------------------------------------------------
+\label{ap1:edicion}
+
+Ya indicamos en la sección~\ref{cap3:sec:editores} (página
+\pageref{cap3:sec:editores}) que \texis\ está preparada para
+integrarse bien con emacs, en particular con el modo Auc\TeX.
+
+Eso era en realidad un síntoma indicativo de que en nuestro trabajo
+cotidiano utilizamos emacs para editar ficheros \LaTeX. Es cierto que
+inicialmente utilizamos otros editores creados expresamente para la
+edición de ficheros en \LaTeX, pero descubrimos emacs y ha llegado
+para quedarse (la figura~\ref{cap3:fig:emacs} mostraba una captura del
+mismo mientras creábamos este manual). Ten en cuenta que si utilizas
+Windows, también puedes usar emacs para editar; no lo consideres como
+algo que sólo se utiliza en el mundo Unix. Nosotros lo usamos a diario
+tanto en Linux como en Windows.
+
+No obstante, hay que reconocer que emacs \emph{no} es fácil de
+utilizar al principio (el manual de referencia de \cite{emacsStallman}
+tiene más de 550 páginas); su curva de aprendizaje es empinada,
+especialmente si quieres sacarle el máximo partido, o al menos
+beneficiarte de algunas de sus combinaciones de teclas. Pero una vez
+que consigues \emph{no} mover las manos para desplazar el cursor sobre
+el documento, manejas las teclas rápidas para añadir los comandos
+\LaTeX\ más utilizados y conoces las combinaciones de Auc\TeX\ para
+moverte por el documento o buscar las entradas de la bibliografía, no
+cambiarás fácilmente a otro editor.
+
+Si quieres aprovechar emacs, no debes dejar de leer el documento que
+nos introdujo a nosotros en el modo Auc\TeX, ``\emph{Creación de
+  ficheros \LaTeX\ con GNU Emacs}'' \citep{AtazLopezEmacs}.
+
+%-------------------------------------------------------------------
+\section{Encuadernación}
+%-------------------------------------------------------------------
+\label{ap1:encuadernacion}
+
+Si has mirado con un poco de atención este manual, habrás visto que
+los márgenes que tiene son bastante grandes. \texis\ no configura
+los márgenes a unos valores concretos sino que, directamente, utiliza
+los que se establecen por defecto en la clase \texttt{book} de \LaTeX.
+
+Aunque es más o menos reconocido que si \LaTeX\ utiliza esos márgenes
+debe tener una razón de peso (y de hecho la tiene, se utilizan esos
+para que el número de letras por línea sea el idóneo para su lectura),
+cuando se comienza a mirar el documento con los ojos del que quiere
+verlo encuadernado, es cierto que parecen excesivos. Y empiezas a
+abrir libros, regla en mano, para medir qué márgenes utilizan. Y
+reconoces que son mucho más pequeños (y razonables) que el de tu
+maravilloso escrito. Al menos ese fue nuestro caso.
+
+En ese momento, una solución es \emph{reducir} esos márgenes para que
+aquello quede mejor. Sin embargo nuestra opción no fue esa. Si tu
+situación te permite \emph{no} encuadernar el documento en formato
+DIN-A4, entonces puedes ir a la reprografía de turno y pedir que, una
+vez impreso, te guillotinen esos márgenes.
+
+Tu escrito quedará entonces en ``formato libro'', mucho más manejable
+que el gran DIN-A4, y con unos márgenes mucho más razonables. La
+figura~\ref{ap1:fig:encuadernacion} muestra el resultado, comparando
+el tamaño final con el de un folio, que aparece superpuesto.
+
+\figura{Bitmap/0A/encuadernacion}{width=0.7\textwidth}%
+       {ap1:fig:encuadernacion}{Encuadernación y márgenes guillotinados}
+
+%-------------------------------------------------------------------
+\section{En el día a día}
+%-------------------------------------------------------------------
+\label{ap1:cc}
+
+Para terminar este breve apéndice, describimos ahora un modo de
+trabajo que, si bien no utilizamos en su día para la escritura de la
+tesis, sí hemos utilizado desde hace algún tiempo para el resto de
+nuestros escritos de \LaTeX , incluidos \texis\ y éste, su manual.
+
+Estamos hablando de lo que se conoce en el mundo de la ingeniería del
+software como \emph{integración contínua} \citep{Fowler06}. En
+concreto, la integración contínua consiste en aprovecharse del
+servidor del control de versiones para realizar, en cada
+\emph{commit} o actualización realizada por los autores, una
+comprobación de si los ficheros que se han subido son de verdad
+correctos.
+
+En el mundo del desarrollo software donde un proyecto puede involucrar
+decenas de personas realizando varias actualizaciones diarias, la
+integración contínua tiene mucha importancia. Después de que un
+programador realice una actualización, un servidor dedicado comprueba
+que el proyecto sigue compilando correctamente (e incluso ejecuta los
+test de unidad asociados). En caso de que la actualización haya
+estropeado algo, el servidor de integración envía un mensaje de correo
+electrónico al autor de ese \emph{commit} para avisarle del error y
+que éste lo subsane lo antes posible, de forma que se perjudique lo
+menos posible al resto de desarrolladores.
+
+Esa misma idea la hemos utilizado en la elaboración de \texis\ y
+de este manual. Cada vez que uno de los autores subía al SVN algún
+cambio, el servidor comprobaba que el fichero maestro seguía siendo
+correcto, es decir, que se podía generar el PDF final sin errores.
+
+No entraremos en más detalles de cómo hacer esto. El lector interesado
+puede consultar \citet{CCLatex}. Como se explica en ese artículo
+algunas ventajas del uso de esta técnica son:
+
+\begin{figure}[t]
+  \centering
+  %
+  \subfloat[][Página de descarga del documento generado]{
+     \includegraphics[width=0.445\textwidth]%
+                     {Imagenes/Bitmap/0A/dashboard}
+     \label{ap1:fig:dashboard}
+  }
+  \qquad
+  \subfloat[][Métricas del proyecto]{
+     \includegraphics[width=0.445\textwidth]%
+                     {Imagenes/Bitmap/0A/metrics}
+     \label{ap1:fig:metrics}
+  }
+ \caption{Servidor de integración contínua\label{ap1:fig:cc}}
+\end{figure}
+
+\begin{itemize}
+\item Se tiene la seguridad de que la versión disponible en el control
+  de versiones es válida, es decir, es capaz de generar sin errores el
+  documento final.
+
+\item Se puede configurar el servidor de integración contínua para que
+  cada vez que se realiza un \emph{commit}, envíe un mensaje de correo
+  electrónico \emph{a todos los autores} del mismo. De esta forma
+  todos los colaboradores están al tanto del progreso del mismo.
+
+\item Se puede configurar para que el servidor haga público (via
+  servidor Web) el PDF del documento (ver
+  figura~\ref{ap1:fig:dashboard}). Esto es especialmente útil para
+  revisores del texto como tutores de tesis, que no tendrán que
+  preocuparse de descargar y compilar los \texttt{.tex}.
+\end{itemize}
+
+Por último, el servidor también permite ver la evolución del proyecto.
+La figura~\ref{ap1:fig:metrics} muestra una gráfica que el servidor de
+integración contínua muestra donde se puede ver la fecha (eje
+horizontal) y hora (eje vertical) de cada \emph{commit} en el
+servidor; los puntos rojos representan commits cuya compilación falló.
+
+
+
+% Variable local para emacs, para  que encuentre el fichero maestro de
+% compilación y funcionen mejor algunas teclas rápidas de AucTeX
+%%%
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../ManualTeXiS.tex"
+%%% End:

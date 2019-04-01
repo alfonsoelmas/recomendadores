@@ -13,19 +13,68 @@ _______________________________________
 ESTARÍA BIEN ESTE TIPO DE "CONFIGURACIONES" QUE ACTUAN COMO CTES GLOBALES
 TENERLOS DESDE UN ARCHIVO PYTHON APARTE
 """
-#La base de datos SOLO se usa para cargar una unica vez los datos desde la BBDD de aceptaelreto, el resto de veces lo carga desde local y lo actualiza con las entregas
+#La base de datos SOLO se usa para cargar una unica vez los datos desde la BBDD de aceptaelreto
+#el resto de veces lo carga desde local y lo actualiza con las entregas
+#estas variables globales para la clase sirven para configurar los campos de la BBDD para conectarte a un juez en línea
+#bajo un servidor MySQL. Para otras modificaciones sobre el servidor de BBDD habría que modificar partes de esta clase
 DATABASEDOMAIN = 'localhost'
 DATABASEUSER = 'root'
 DATABASEPASS = ''
 DATABASENAME = 'aceptaelreto'
 
+#VALORES Y NOMBRES DE CAMPOS PARA LA BBDD SOBRE LA QUE SE VAN A PRECARGAR LOS DATOS AL RECOMENDADOR
+#(Esta configuración nos permite hacer mas portable el recomendador sobre otros jueces en línea)
+USERS_TABLENAME         = 'users'
+USER_IDNAME             = 'id'
+USER_REGISTRATIONDATE   = 'registrationDate'
+
+SUBMITS_TABLENAME       = 'submission'
+SUBMIT_IDUSER           = 'user_id'
+SUBMIT_IDPROBLEM        = 'problem_id'
+SUBMIT_STATUS           = 'status'
+SUBMIT_STATUSOK         = 'AC'
+SUBMIT_DATE             = 'submissionDate'
+
+USERS
+
+
+# =========================================
+# =========================================
+FECHACORTE                      = "2017-10-23 08:00:00"
+MATRIZACsLOCAL                  = "matrizACs.dat"
+PROBLEM_PARSER_LOCAL            = "problemParser.dat"
+USER_PARSER_LOCAL               = "userParser.dat"
+LASTSUBMIT_LOCAL                = "lastSubmition.dat"
+
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+# =========================================
+
 
 class JuezDB:
         def __init__(self):
                 #Fecha de corte por si se quiere trabajar con un subconjunto de datos inferior al total acotado por fechas. (Para entrenamiento del recomendador)
-                self.fechaCorteTraining = "2017-10-23 08:00:00"
+                self.fechaCorteTraining = FECHACORTE
                 #Nombre del fichero local que contiene la matriz de ACs de usuario guardada
-                self.matrizLocal = "matrizACs.dat"
+                self.matrizLocal = MATRIZACsLOCAL
                 self.problemParserLocal = "problemParser.dat"
                 self.userParserLocal = "userParser.dat"
                 self.lastSubmitionLocal = "lastSubmition.dat"
@@ -40,13 +89,13 @@ class JuezDB:
                         self.cursor = db.cursor()
 
                 #Carga la matriz de datos desde la BBDD o desde local según el atributo isCreatedLocal == false/true
-                self.cargarMatrizDatos()
+                self._cargarMatrizDatos()
 
         #Metodo privado obtener usuarios. Devuelve un array con id de usuarios obtenido de la BBDD
         def _obtenerUsuarios(self):
                 #Hacemos una consulta eficaz y descartamos aquellos usuarios que tengan 1 o menos entregas aceptadas.
                 #Hemos reducido a la mitad el numero de usuarios!
-                recs = self.cursor.execute('SELECT DISTINCT users.id from users INNER JOIN submission ON users.id = submission.user_id WHERE submission.status = "AC"')
+                recs = self.cursor.execute('SELECT DISTINCT '+USERS_TABLENAME+'.'+USER_IDNAME+' from '+USERS_TABLENAME+' INNER JOIN '+SUBMITS_TABLENAME+' ON 'USERS_TABLENAME'.'USER_IDNAME' = '+SUBMITS_TABLENAME+'.'+SUBMIT_IDUSER+' WHERE '+SUBMITS_TABLENAME+'.'+SUBMIT_STATUS+' = "'+SUBMIT_STATUSOK+'"')
                 listaUsers = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():
@@ -57,7 +106,7 @@ class JuezDB:
         #Metodo obtener entregas validas de un determinado usuario
         def _obtenerEntregasValidasDeUser(self, user):
                         #Mi user ID es 847 (Para posibles pruebas)
-                        recs = self.cursor.execute('SELECT DISTINCT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" AND submissionDate <= "'+self.fechaCorteTraining+'" group by problem_id')
+                        recs = self.cursor.execute('SELECT DISTINCT '+SUBMIT_IDPROBLEM+' FROM '+SUBMITS_TABLENAME+' WHERE '+SUBMIT_IDUSER+' = '+str(user)+' AND '+SUBMIT_STATUS+' = "'+SUBMIT_STATUSOK+'" AND '+SUBMIT_DATE +' <= "'+self.fechaCorteTraining+'" group by '+SUBMIT_IDPROBLEM)
                         listaProblemas = np.empty([recs],dtype=int)
                         i=0
                         for row in self.cursor.fetchall():
@@ -68,7 +117,7 @@ class JuezDB:
         #Metodo para obtener Entregas Válidas tras el entrenamiento.
         def _obtenerEntregasValidasDeUserPostTraining(self, user):
                         #Mi user ID es 847 (Para posibles pruebas)
-                        recs = self.cursor.execute('SELECT DISTINCT problem_id FROM submission WHERE user_id = '+str(user)+' AND status = "AC" AND submissionDate > "2'+self.fechaCorteTraining+'" group by problem_id')
+                        recs = self.cursor.execute('SELECT DISTINCT '+SUBMIT_IDPROBLEM+' FROM '+SUBMITS_TABLENAME+' WHERE '+SUBMIT_IDUSER+' = '+str(user)+' AND '+SUBMIT_STATUS+' = "'+SUBMIT_STATUSOK+'" AND '+SUBMIT_DATE +' > "'+self.fechaCorteTraining+'" group by '+SUBMIT_IDPROBLEM)
                         listaProblemas = np.empty([recs],dtype=int)
                         i=0
                         for row in self.cursor.fetchall():
@@ -80,7 +129,7 @@ class JuezDB:
         #Obtener todos los usuarios de la BBDD
         #Almacena el listado de posicion/id para parsear la posicion por el ID correspondiente
         def _obtenerTodosUsuarios(self):
-                recs = self.cursor.execute('SELECT id from users WHERE registrationDate <= "'+self.fechaCorteTraining+'" ORDER BY id ASC')
+                recs = self.cursor.execute('SELECT '+USER_IDNAME+' from '+USERS_TABLENAME+' WHERE '+USER_REGISTRATIONDATE+' <= "'+self.fechaCorteTraining+'" ORDER BY '+USER_IDNAME+' ASC')
                 listaUsers = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():
@@ -92,7 +141,8 @@ class JuezDB:
         #Obtiene la lista de problemas con su ID. Devolvemos el tamaño de la lista
         #Guardamos en un atributo el listado para usarlo como parseador de posicion a ID en la matriz de datos
         def _obtenerTodosProblemas(self):
-                recs = self.cursor.execute('SELECT internalId from problem WHERE publicationDate <= "'+self.fechaCorteTraining+'" ORDER BY internalId ASC')
+                #TODO, CUIDADO CON ESTA PARTE, TRABAJAMOS CON EL INTERNAL ID, PERO EL JSON NOS DA EL ID EXTERNO...
+                recs = self.cursor.execute('SELECT DISTINCT problem_id from problem WHERE publicationDate <= "'+self.fechaCorteTraining+'" ORDER BY internalId ASC')
                 listaProblems = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():
@@ -100,6 +150,12 @@ class JuezDB:
                         i=i+1
                 self._problems = listaProblems
                 return listaProblems.size
+        
+        #Obtiene el último submit que contiene la BBDD del servidor
+        # *Solo se usará para precargar la BBDD del servidor, luego gestiona todo a nivel local
+        def _obtenerUltimoSubmitServerDB():
+                # TODO
+                return 1
 
         # Nos sirve para hacer busqueda de un id sobre nuestro listado de problemas o usuarios
         # Obtenemos la posicion del id en nuestro array
@@ -129,7 +185,7 @@ class JuezDB:
 
 
         #Carga una matriz de filas = usuarios / columnas = problemas con valores binarios 1 si hecho 0 si no hecho para cada (fila,col)
-        def cargarMatrizDatos(self):
+        def _cargarMatrizDatos(self):
                 #para cada usuario, le ponemos a 1 los problemas resueltos
                 if not self.isCreatedLocal:
                         listaUsers = self._obtenerTodosUsuarios()
@@ -149,15 +205,15 @@ class JuezDB:
                 else:
                         self._cargarMatrizDesdeLocal()
 
+        # guardamos con 1 decimal ya que nuestros datos son UINT8
+        # TODO: HAY QUE GUARDAR MI ULTIMO SUBMITION
         def _guardarMatrizEnLocal(self):
-            # guardamos con 1 decimal ya que nuestros datos son UINT8
-            # TODO: HAY QUE GUARDAR MI ULTIMO SUBMITION
             np.savetxt(self.matrizLocal, self.matrizDatos, fmt='%.1e')
             np.savetxt(self.problemParserLocal, self._problems)
             np.savetxt(self.userParserLocal, self._users)
 
+        # Cargamos matriz desde archivo .dat local
         def _cargarMatrizDesdeLocal(self):
-            # Cargamos matriz desde archivo .dat local
             self.matrizDatos = np.loadtxt(self.matrizLocal)
             self.matrizDatos = self.matrizDatos.astype(np.uint8)
             self._users = np.loadtxt(self.userParserLocal)
@@ -165,7 +221,7 @@ class JuezDB:
             self._problems = np.loadtxt(self.problemParserLocal)
             self._problems = self._problems.astype(int)
 
-        # Devuelve a matriz de datos
+        # Devuelve la matriz de datos
         def obtenerMatriz(self):
                 return self.matrizDatos
 
@@ -176,6 +232,7 @@ class JuezDB:
         # Actualiza la matriz de datos con las nuevas entregas que recibe desde el juez en línea
         def actualizarEntregas(self,nuevasEntregas):
                 #TODO: Debemos guardar la ultima entrega de la que tenemos info
+                # https://www.iteramos.com/pregunta/48866/numpy---agregar-la-fila-a-la-matriz
 
 
 """

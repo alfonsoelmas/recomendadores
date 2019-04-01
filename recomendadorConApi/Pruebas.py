@@ -50,13 +50,16 @@ import requests 				#para peticiones HTTP
 import json
 # ultimoSubmitRecomender = db._lastSubmition
 ultimoSubmitAceptaelreto = 1
-req = requests.get('https://www.aceptaelreto.com/ws/submission/')
-                                    #Obtenemos un JSON en texto
-resultados = json.loads(req.text)   #Lo transformamos a un objeto
-for i in resultados["submission"]:
-    print(i["user"]["nick"] + " ha intentado: " + i["problem"]["title"])
-
-
+K = 300000
+iterMax = 300000//20
+j=0
+while j < iterMax:
+    req = requests.get('https://www.aceptaelreto.com/ws/submission/?start='+str(20*j+1)+'&size=20')#Obtenemos un JSON en texto
+    resultados = json.loads(req.text)   #Lo transformamos a un objeto
+    for i in resultados["submission"]:
+        print(i["user"]["nick"] + " ha intentado: " + i["problem"]["title"] + "- ENVÍO: " + str(i["num"]))
+    j = j + 1
+# ANOTACION, SOLO PUEDO OBTENER LOS 41MIL ULTIMAS ENTREGAS.
 
 
 

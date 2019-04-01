@@ -86,9 +86,9 @@ class clientePeticiones:
 
                         #TODO: insertar en self._db.actualizar(datos)
                         
-                j = j + 1
-                req = self._obtener20entregas(j)
-                resultados = json.loads(req.text)
+                	j = j + 1
+                	req = self._obtener20entregas(j)
+                	resultados = json.loads(req.text)
 
 		
 

@@ -62,7 +62,7 @@ class clientePeticiones:
         *TODO: Quizas habría que bloquear el metodo "recomendar" cada vez que este se llame...
         """
         def _actualizarUltimosEnvios(self):
-            ultimoSubmitRecomender = self._db._lastSubmition
+            ultimoSubmitRecomender = self._db.lastSubmition
             req = requests.get('https://www.aceptaelreto.com/ws/submission/')
             resultados = json.loads(req.text)   #Lo transformamos a un objeto JSON
             # Ultimo submit que hemos obtenido, lo metemos al final de la funcion en la clase conect
@@ -84,11 +84,19 @@ class clientePeticiones:
                         if estadoString == "AC":
                             estado = 1
 
-                        #TODO: insertar en self._db.actualizar(datos)
+                        #TODO:
+			"""
+			Añadir elementos a array de diccionario o algo así
+			
+			"""
                         
                 	j = j + 1
-                	req = self._obtener20entregas(j)
-                	resultados = json.loads(req.text)
+                req = self._obtener20entregas(j)
+                resultados = json.loads(req.text)
+		"""
+		Invertir el array ya que está de mayor a menor (que se lea de derecha a izquierda)
+		"""
+		self._db.actualizarEntregas("""arrayNuevasEntregas""",actualizadorUltimoSubmit)
 
 		
 

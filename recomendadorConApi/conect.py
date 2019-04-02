@@ -7,6 +7,8 @@ from time import time
 import sys
 import os.path as path
 
+
+
 """
 VARIABLES GLOBALES PARA LA CLASE CONECT
 _______________________________________
@@ -22,24 +24,30 @@ DATABASEUSER = 'root'
 DATABASEPASS = ''
 DATABASENAME = 'aceptaelreto'
 
-#VALORES Y NOMBRES DE CAMPOS PARA LA BBDD SOBRE LA QUE SE VAN A PRECARGAR LOS DATOS AL RECOMENDADOR
-#(Esta configuración nos permite hacer mas portable el recomendador sobre otros jueces en línea)
+# =======================================
+# VALORES Y NOMBRES DE CAMPOS PARA LA BBDD SOBRE LA QUE SE VAN A PRECARGAR LOS DATOS AL RECOMENDADOR
+# (Esta configuración nos permite hacer mas portable el recomendador sobre otros jueces en línea)
+# ========================================
 USERS_TABLENAME         = 'users'
 USER_IDNAME             = 'id'
 USER_REGISTRATIONDATE   = 'registrationDate'
-
+# ========================================
 SUBMITS_TABLENAME       = 'submission'
 SUBMIT_IDUSER           = 'user_id'
 SUBMIT_IDPROBLEM        = 'problem_id'
 SUBMIT_STATUS           = 'status'
 SUBMIT_STATUSOK         = 'AC'
 SUBMIT_DATE             = 'submissionDate'
+# ========================================        
+PROBLEMS_TABLENAME      = 'problem'
+PROBLEM_ID              = 'internalId'
+PROBLEM_PUBLICATIONDATE = 'publicationDate'
+        
 
-USERS
 
-
-# =========================================
-# =========================================
+# ===============================================
+# ===Nombres archivos locales y fecha de corte===
+# ===============================================
 FECHACORTE                      = "2017-10-23 08:00:00"
 MATRIZACsLOCAL                  = "matrizACs.dat"
 PROBLEM_PARSER_LOCAL            = "problemParser.dat"
@@ -48,25 +56,15 @@ LASTSUBMIT_LOCAL                = "lastSubmition.dat"
 
 # =========================================
 # =========================================
+# ==================FIN====================
+# ===============VARIABLES=================
+# ===============GLOBALES!================
 # =========================================
 # =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
-# =========================================
+
+
+
+
 
 
 class JuezDB:
@@ -138,11 +136,12 @@ class JuezDB:
                 self._users = listaUsers
                 return listaUsers
 
+
         #Obtiene la lista de problemas con su ID. Devolvemos el tamaño de la lista
         #Guardamos en un atributo el listado para usarlo como parseador de posicion a ID en la matriz de datos
         def _obtenerTodosProblemas(self):
                 #TODO, CUIDADO CON ESTA PARTE, TRABAJAMOS CON EL INTERNAL ID, PERO EL JSON NOS DA EL ID EXTERNO...
-                recs = self.cursor.execute('SELECT DISTINCT problem_id from problem WHERE publicationDate <= "'+self.fechaCorteTraining+'" ORDER BY internalId ASC')
+                recs = self.cursor.execute('SELECT '+PROBLEM_ID+' from '+PROBLEMS_TABLENAME+' WHERE '+PROBLEM_PUBLICATIONDATE+' <= "'+self.fechaCorteTraining+'" ORDER BY '+PROBEM_ID+' ASC')
                 listaProblems = np.empty([recs],dtype=int)
                 i=0
                 for row in self.cursor.fetchall():

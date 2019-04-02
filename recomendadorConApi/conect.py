@@ -49,7 +49,7 @@ PROBLEM_PUBLICATIONDATE = 'publicationDate'
 # ===Nombres archivos locales y fecha de corte===
 # ===============================================
 FECHACORTE                      = "2017-10-23 08:00:00"
-MATRIZACsLOCAL                  = "matrizACs.dat"
+MATRIZACSLOCAL                  = "matrizACs.dat"
 PROBLEM_PARSER_LOCAL            = "problemParser.dat"
 USER_PARSER_LOCAL               = "userParser.dat"
 LASTSUBMIT_LOCAL                = "lastSubmition.dat"
@@ -72,7 +72,7 @@ class JuezDB:
                 #Fecha de corte por si se quiere trabajar con un subconjunto de datos inferior al total acotado por fechas. (Para entrenamiento del recomendador)
                 self.fechaCorteTraining = FECHACORTE
                 #Nombre del fichero local que contiene la matriz de ACs de usuario guardada
-                self.matrizLocal = MATRIZACsLOCAL
+                self.matrizLocal = MATRIZACSLOCAL
                 self.problemParserLocal = "problemParser.dat"
                 self.userParserLocal = "userParser.dat"
                 self.lastSubmitionLocal = "lastSubmition.dat"
@@ -154,6 +154,10 @@ class JuezDB:
         # *Solo se usará para precargar la BBDD del servidor, luego gestiona todo a nivel local
         def _obtenerUltimoSubmitServerDB():
                 # TODO
+                """
+                Consulta que nos devuelve el último submit de la BBDD
+                Lo debemos devolver como entero.
+                """
                 return 1
 
         # Nos sirve para hacer busqueda de un id sobre nuestro listado de problemas o usuarios
@@ -207,18 +211,26 @@ class JuezDB:
         # guardamos con 1 decimal ya que nuestros datos son UINT8
         # TODO: HAY QUE GUARDAR MI ULTIMO SUBMITION
         def _guardarMatrizEnLocal(self):
-            np.savetxt(self.matrizLocal, self.matrizDatos, fmt='%.1e')
-            np.savetxt(self.problemParserLocal, self._problems)
-            np.savetxt(self.userParserLocal, self._users)
+                np.savetxt(self.matrizLocal, self.matrizDatos, fmt='%.1e')
+                np.savetxt(self.problemParserLocal, self._problems)
+                np.savetxt(self.userParserLocal, self._users)
+                np.savetxt(self.lastSubmitionLocal, self.lastSubmition)
+                manejadorArchivo = open (self.lastSubmitionLocal, "w")
+                manejadorArchivo.write(self.lastSubmition)
+                manejadorArchivo.close()
+            
 
         # Cargamos matriz desde archivo .dat local
         def _cargarMatrizDesdeLocal(self):
-            self.matrizDatos = np.loadtxt(self.matrizLocal)
-            self.matrizDatos = self.matrizDatos.astype(np.uint8)
-            self._users = np.loadtxt(self.userParserLocal)
-            self._users = self._users.astype(int)
-            self._problems = np.loadtxt(self.problemParserLocal)
-            self._problems = self._problems.astype(int)
+                self.matrizDatos    = np.loadtxt(self.matrizLocal)
+                self.matrizDatos    = self.matrizDatos.astype(np.uint8)
+                self._users         = np.loadtxt(self.userParserLocal)
+                self._users         = self._users.astype(int)
+                self._problems      = np.loadtxt(self.problemParserLocal)
+                self._problems      = self._problems.astype(int)
+                manejadorArchivo    = open(self.lastSubmitionLocal, 'r')
+                self.lastSubmition  = int(manejadorArchivo.readline())
+                manejadorArchivo.close()
 
         # Devuelve la matriz de datos
         def obtenerMatriz(self):
@@ -229,16 +241,45 @@ class JuezDB:
                 return self._obtenerPos(idUser,"users")
 
         # Actualiza la matriz de datos con las nuevas entregas que recibe desde el juez en línea
+        # Param "nuevasEntregas": objeto JSON ordenado de menor a mayor por ID de entregas de últimas entregas que no tenemos.
         def actualizarEntregas(self,nuevasEntregas):
+                """IMPORTANTE LA SIGUIENTE NOTA!"""
+                #Nota: debemos obtener el listado ordenado de último a primero.
+                #El metodo previo debe saber esto para hacerlo
                 #TODO: Debemos guardar la ultima entrega de la que tenemos info
                 # https://www.iteramos.com/pregunta/48866/numpy---agregar-la-fila-a-la-matriz
-
+                """
+                coger ID de último submit de nuevasEntregas
+                - para cada elemento de nuevasEntregas:
+                        cogerIDproblema
+                        cogerIDuser
+                        parsearIDproblema a internal
+                        compProblem = comprobar si ID problema existe en self_problems
+                        compUser = comprobar si ID user existe en problems
+                        compResuelto = comprobar si resuelto cogiendo estado == "AC" del elemento mirando de nuevasEntregas
+                        - existen ambos?
+                          Si:
+                                - Do nothing
+                          No:
+                                - existe user?
+                                  Si:
+                                        añadir problema nuevo al final de parseador de problemas
+                                        añadir columna nueva de problemas en matriz de datos e inicializarla a 0
+                                  No:
+                                        añadir usuario nuevo al final de parseador de usuarios
+                                        añadir fila nueva de problemas en matriz de datos e inicializarla a 0
+                        - compResuelto == true? (Está resuelto? -AC-)
+                          Si:
+                                - Añadir en pos. correspondiente matriz un 1
+                          No:
+                                - Do nothing
+                llamar a guardarMatrizEnLocal
+                """
 
 """
 Pruebas funcionamiento clase conect
 Tarda 30 segundos en crear la clase conect y cargar en memoria la matriz
 La matriz en memoria ocupa 3.5Mb siendo uint8, y 14Mb siendo int.
-Todo:
-    Por hacer un metodo que guarde matriz en txt por si es necesario
+
 """
 

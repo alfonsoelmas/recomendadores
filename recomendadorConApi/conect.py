@@ -242,14 +242,14 @@ class JuezDB:
 
         # Actualiza la matriz de datos con las nuevas entregas que recibe desde el juez en línea
         # Param "nuevasEntregas": objeto JSON ordenado de menor a mayor por ID de entregas de últimas entregas que no tenemos.
-        def actualizarEntregas(self,nuevasEntregas):
+        def actualizarEntregas(self,nuevasEntregas, ultimaEntrega):
                 """IMPORTANTE LA SIGUIENTE NOTA!"""
-                #Nota: debemos obtener el listado ordenado de último a primero.
-                #El metodo previo debe saber esto para hacerlo
-                #TODO: Debemos guardar la ultima entrega de la que tenemos info
+                # Nota: debemos obtener el listado ordenado de último a primero.
+                # El metodo previo debe saber esto para hacerlo
                 # https://www.iteramos.com/pregunta/48866/numpy---agregar-la-fila-a-la-matriz
+                # Agregar fila/col a la matriz: https://es.stackoverflow.com/questions/250622/a%c3%b1adir-nuevas-filas-%c3%b3-columnas-a-matriz-numpy/250690#250690
+                self.lastSubmition = ultimaEntrega
                 """
-                coger ID de último submit de nuevasEntregas
                 - para cada elemento de nuevasEntregas:
                         cogerIDproblema
                         cogerIDuser

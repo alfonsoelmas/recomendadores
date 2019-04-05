@@ -157,6 +157,11 @@ class JuezDB:
                 """
                 Consulta que nos devuelve el último submit de la BBDD
                 Lo debemos devolver como entero.
+    SELECT t.campo1, t.campovalor
+    FROM tabla t
+    WHERE t.campovalor = ( 
+    SELECT MAX( campovalor )  FROM tabla)
+                
                 """
                 return 1
 
@@ -242,18 +247,71 @@ class JuezDB:
 
         # Actualiza la matriz de datos con las nuevas entregas que recibe desde el juez en línea
         # Param "nuevasEntregas": objeto JSON ordenado de menor a mayor por ID de entregas de últimas entregas que no tenemos.
+        # TODO: TESTEAR
         def actualizarEntregas(self,nuevasEntregas, ultimaEntrega):
-                """IMPORTANTE LA SIGUIENTE NOTA!"""
-                # Nota: debemos obtener el listado ordenado de último a primero.
-                # El metodo previo debe saber esto para hacerlo
-                # https://www.iteramos.com/pregunta/48866/numpy---agregar-la-fila-a-la-matriz
-                # Agregar fila/col a la matriz: https://es.stackoverflow.com/questions/250622/a%c3%b1adir-nuevas-filas-%c3%b3-columnas-a-matriz-numpy/250690#250690
                 self.lastSubmition = ultimaEntrega
+
+                for elem in nuevasEntregas:
+                        userId          = elem["userID"]
+                        problemPos      = elem["problemPos"]
+                        estado          = elem["estado"]
+                        """
+                        El external ID corresponde a la Posicion del problema... los problemas nuevos no sabremos
+                        Su internal ID, por lo que nos inventamos uno que sea x ejemplo ultimoProblemId de nuestra lista de parseador
+                        + 3... por ejemplo (en la bbdd el internal ID tiene un incremento aleatorio de 1, 2 o 3... incluso 30)
+
+                        En realidad el internal ID tampoco lo necesitamos para recomendar ya que con el external nos sirve
+                        por lo que el internal solo lo usaremos al cargar la bbdd desde el servidor de bbdd oficial y poco más
+                        """
+                        #Creo esta variable por si mas adelante lo tenemos en cuenta, pero quizas ni se use despues
+                        compUser = True
+                        if self.obtenerPosUser(userId) == -1:
+                                # Este usuario no existía
+                                compUser = False
+                                # añadir usuario nuevo al final de parseador de usuarios
+                                np.append(self._users, userId)
+                                # añadir fila nueva de problemas en matriz de datos e inicializarla a 0
+                                problemas = np.zeros(self._problems.size)
+                                np.insert(self.matrizDatos, self.matrizDatos[0], problemas, 0)
+                        
+                        #Creo esta variable por si mas adelante lo tenemos en cuenta, pero quizas ni se use despues
+                        compProblem = True
+                        if self._problems.size <= problemPos:
+                                #Este problema no existía
+                                compProblem = False
+                                # crearIDproblemaInternal
+                                # añadir problema nuevo al final de parseador de problemas
+                                """
+                                Nota: Como tenemos POSICIONES, si nuestra posicion de problema es N veces más
+                                que el Size de _problems, es que hay 10 problemas nuevos
+                                por lo que creamos todos los nuevos...
+                                """
+                                sizeP = self._problems.size-1
+                                diferencia = obtenerPos - sizeP
+                                increment = 0
+                                while increment != diferencia:
+                                        #Le añado a problems un nuevo elemento.
+                                        #El ID correspondera a su tamaño en ese momento.. problema: PUEDEN DUPLICARSE IDS!
+                                        #Para el estado actual de aceptaelreto le sumamos 10mil para evitar duplicados con los originales, ¡pero no es una solucion A LARGO PLAZO!
+                                        np.append(self._problems, self._problems[self._problems.size+10000])
+                                        # creamos las columnas correspondientes a la matriz de datos y las inicializamos a 0
+                                        userss = np.zeros(self._users.size)
+                                        np.insert(self.matrizDatos, self.matrizDatos[0], userss, 1)
+                                        increment = increment + 1 
+
+                        #compResuelto == true? (Está resuelto? -AC-)
+                        posUser = self.obtenerPosUser(userId) #La llamamos previamente, podemos aprovechar y usar esa llamada para no volver a iterar sobre un array tan grande...
+                        if estado == 1:
+                                self.matrizDatos[posUser, problemPos] = 1
+                self.guardarMatrizEnLocal
+                #TODO EN PRINCIPIO EL SERVER HA ACTUALIZADO A CONECT LA ULTIMA ENTREGA
+
                 """
+                Lo que hace actualizar entregas en alto nivel>
                 - para cada elemento de nuevasEntregas:
                         cogerIDproblema
                         cogerIDuser
-                        parsearIDproblema a internal
+                        
                         compProblem = comprobar si ID problema existe en self_problems
                         compUser = comprobar si ID user existe en problems
                         compResuelto = comprobar si resuelto cogiendo estado == "AC" del elemento mirando de nuevasEntregas
@@ -263,6 +321,7 @@ class JuezDB:
                           No:
                                 - existe user?
                                   Si:
+                                        crearIDproblemaInternal
                                         añadir problema nuevo al final de parseador de problemas
                                         añadir columna nueva de problemas en matriz de datos e inicializarla a 0
                                   No:
@@ -276,6 +335,12 @@ class JuezDB:
                 llamar a guardarMatrizEnLocal
                 """
 
+
+        #Como solo tenemos el external ID que corresponde a una lista ordenada de creacion con incremento = 1
+        #Nos inventamos las internal ID, que en principio no deberiamos usar... pero no estaría mal una funcion que
+        #se conecte a la BBDD y le asigne a ese external su internal correspondiente, de momento no la creamos porque no nos resulta util.        
+        def asignasIDsAproblemas:
+                #TODO
 """
 Pruebas funcionamiento clase conect
 Tarda 30 segundos en crear la clase conect y cargar en memoria la matriz

@@ -38,6 +38,7 @@ SUBMIT_IDPROBLEM        = 'problem_id'
 SUBMIT_STATUS           = 'status'
 SUBMIT_STATUSOK         = 'AC'
 SUBMIT_DATE             = 'submissionDate'
+SUBMIT_ID               = 'id'
 # ========================================        
 PROBLEMS_TABLENAME      = 'problem'
 PROBLEM_ID              = 'internalId'
@@ -58,7 +59,7 @@ LASTSUBMIT_LOCAL                = "lastSubmition.dat"
 # =========================================
 # ==================FIN====================
 # ===============VARIABLES=================
-# ===============GLOBALES!================
+# ===============GLOBALES!=================
 # =========================================
 # =========================================
 
@@ -73,11 +74,11 @@ class JuezDB:
                 self.fechaCorteTraining = FECHACORTE
                 #Nombre del fichero local que contiene la matriz de ACs de usuario guardada
                 self.matrizLocal = MATRIZACSLOCAL
-                self.problemParserLocal = "problemParser.dat"
-                self.userParserLocal = "userParser.dat"
-                self.lastSubmitionLocal = "lastSubmition.dat"
+                self.problemParserLocal = PROBLEM_PARSER_LOCAL
+                self.userParserLocal = USER_PARSER_LOCAL
+                self.lastSubmitionLocal = LASTSUBMIT_LOCAL
                 self.lastSubmition = 1
-                if path.exists(self.userParserLocal) and path.exists(self.problemParserLocal) and path.exists(self.matrizLocal):
+                if path.exists(self.userParserLocal) and path.exists(self.problemParserLocal) and path.exists(self.matrizLocal) and path.exists(self.lastSubmitionLocal):
                         self.isCreatedLocal = True
                 else:
                         self.isCreatedLocal = False
@@ -152,18 +153,14 @@ class JuezDB:
         
         #Obtiene el último submit que contiene la BBDD del servidor
         # *Solo se usará para precargar la BBDD del servidor, luego gestiona todo a nivel local
-        def _obtenerUltimoSubmitServerDB():
-                # TODO
+        def _obtenerUltimoSubmitServerDB(self):
                 """
                 Consulta que nos devuelve el último submit de la BBDD
-                Lo debemos devolver como entero.
-    SELECT t.campo1, t.campovalor
-    FROM tabla t
-    WHERE t.campovalor = ( 
-    SELECT MAX( campovalor )  FROM tabla)
-                
+                Lo debemos devolver como entero.                
                 """
-                return 1
+                recs = self.cursor.execute('SELECT MAX('+SUBMIT_ID+') FROM '+SUBMITS_TABLENAME)
+                self.lastSubmition = self.cursor.fecthone()[0]
+                return self.lastSubmition
 
         # Nos sirve para hacer busqueda de un id sobre nuestro listado de problemas o usuarios
         # Obtenemos la posicion del id en nuestro array
@@ -198,6 +195,7 @@ class JuezDB:
                 if not self.isCreatedLocal:
                         listaUsers = self._obtenerTodosUsuarios()
                         tamProblemas = self._obtenerTodosProblemas()
+                        self._obtenerUltimoSubmitServerDB(self)
                         tamUsers = listaUsers.size
                         #Creamos la matriz de tamUsers x tamProblemas y la inicializamos a cero
                         self.matrizDatos = np.zeros((tamUsers,tamProblemas), dtype=np.uint8)

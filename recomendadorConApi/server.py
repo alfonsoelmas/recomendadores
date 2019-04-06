@@ -16,6 +16,18 @@ from collections import deque                   #Usaremos una cola en la clase C
 SERVER_PORT         = 5050
 CANT_KVECINOS_SR    = 100
 
+#Obtencion JSON para actualizar recomendadorDB
+#LINK_JSON          = TODO, DE MOMENTO NO LO VAMOS A TRANSFORMAR COMO VARIABLE GLOBAL DE CONFIGURACION
+#PARAMETROS_JSON    = LO MISMO QUE EL ANTERIOR COMENTARIO DE ARRIBA
+
+"""
+======================
+======================
+FIN VARIABLES GLOBALES
+======================
+======================
+"""
+
 
 
 """

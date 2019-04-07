@@ -1,6 +1,16 @@
-#import conect
-# import recomendador_basico
+#import recomendador_basico
 #Ejecución de pruebas
+
+"""
+Pruebas de actualizacion de clase juezDB conect pidiendo desde server de clase clientePeticiones las nuevas
+entregas. pruebas de actualizaciones y de carga de BBDD en memoria desde local y desde MySQL
+"""
+from conect import JuezDB
+from server import ClientePeticiones
+db = JuezDB()
+print("Conectada la BBDD y cargada")
+cliente = ClientePeticiones(db)
+print("cargada la BBDD al ultimo estado de entregas de la web")
 
 """
 Ejecutamos nueva clase conect para generar matriz en local y probar su carga desde local, etc.
@@ -46,6 +56,7 @@ Pruebas servidor HTTP y realizador peticiones HTTP
 +
 Pruebas con XML
 """
+"""
 import requests 				#para peticiones HTTP
 import json
 # ultimoSubmitRecomender = db._lastSubmition
@@ -61,6 +72,6 @@ while j < iterMax:
     j = j + 1
 # ANOTACION, SOLO PUEDO OBTENER LOS 41MIL ULTIMAS ENTREGAS.
 
-
+"""
 
 

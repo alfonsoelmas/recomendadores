@@ -75,7 +75,7 @@ class ClientePeticiones:
         Actualiza la clase conect con las nuevas entregas que haya habido
         Posteriormente, crea el servidor HTTP para recibir solicitudes GET de clientes
         """
-	def __init__(self, db):
+        def __init__(self, db):
             #Creamos la clase que gestiona los datos de la recomendación
             self._db = db
             #Actualizamos los últimos envíos
@@ -86,8 +86,9 @@ class ClientePeticiones:
         Este método se encarga de esperar a que aceptaelreto le responda, si es asi, actualiza los ultimos envios
         A modo de canal de escucha que se queda esperando hasta que aceptaelreto quiera responder.
         """
-	def _esperarNuevaRespuesta(self):
+        def _esperarNuevaRespuesta(self):
             # TODO
+            return -1
             
         """
         Actualiza los ultimos envíos.
@@ -97,44 +98,68 @@ class ClientePeticiones:
         """
         def _actualizarUltimosEnvios(self):
             ultimoSubmitRecomender = self._db.lastSubmition
+            
+            resultados={}
             req = requests.get('https://www.aceptaelreto.com/ws/submission/')
+            while '"submission":[' not in req.text:
+                print("Error al conectarse con el juez en línea para obtener nuevas entregas: \n")
+                print(req.text)
+                print("\nREINTENTANDO...")
+                req = requests.get('https://www.aceptaelreto.com/ws/submission/')
+                
             resultados = json.loads(req.text)   #Lo transformamos a un objeto JSON
+            resultados["error_get"]=0
             # Ultimo submit que hemos obtenido, lo metemos al final de la funcion en la clase conect
-            actualizadorUltimoSubmit = resultados["submission"][0] #Luego actualizamos en db
+            actualizadorUltimoSubmit = resultados["submission"][0]["num"] #Luego actualizamos en db
+            print("actualizamos a ultimo submit\n")
             # Vamos a iterar hasta encontrar el que teniamos previo
             j = 0
             enc = False
             colaDeDatos = deque()
             while not enc:
-                for i in resultados["submission"]:
-                    if i["num"] == ultimoSubmitRecomender:
-                        enc = True
-                        break
-                    else:
-                        #Actualizamos
-                        userId = i["user"]["id"]
-                        problemId = i["problem"]["num"] #TODO: no se si se corresponde al ID original
-                        estadoString = i["result"]
-                        estado = 0
-                        if estadoString == "AC":
-                            estado = 1
+                if resultados["error_get"] == 0:
+                    for i in resultados["submission"]:
+                        if i["num"] == ultimoSubmitRecomender:
+                            enc = True
+                            break
+                        else:
+                            #Actualizamos
+                            userId = i["user"]["id"]
+                            problemId = i["problem"]["num"] #TODO: no se si se corresponde al ID original
+                            estadoString = i["result"]
+                            estado = 0
+                            if estadoString == "AC":
+                                estado = 1
 
-                        dictData = {}
-                        dictData["userID"]      = userId
-                        dictData["problemPos"]  = problemId-100 #TODO, creo que corresponde a la posicion del problema ya parseado, pero restandole 100 o algo así (El external ID)
-                        dictData["estado"]      = estado
-                        colaDeDatos.appendleft(dictData)
-                	j = j + 1
-                req = self._obtener20entregas(j)
-                resultados = json.loads(req.text)
+                            dictData = {}
+                            dictData["userID"]      = userId
+                            dictData["problemPos"]  = problemId-100 #TODO, creo que corresponde a la posicion del problema ya parseado, pero restandole 100 o algo así (El external ID)
+                            dictData["estado"]      = estado
+                            colaDeDatos.appendleft(dictData)
+
+                else:
+                    print("No se han cargado las entregas debido al siguiente error obtenido del servidor: ")
+                    print(data["msg_error"])
+                    print("\nREINTENTANDO SOLICITUD: "+str(j))
+                j = j + 1
+                resultados = self._obtener20entregas(j)
+                print("Cargar de web siguientes 20 entregas: "+str(j*20+1)+" de "+str(actualizadorUltimoSubmit-ultimoSubmitRecomender))
 
             l = list(colaDeDatos)
-            self._db.actualizarEntregas(arrayDatos,actualizadorUltimoSubmit)
+            self._db.actualizarEntregas(l,actualizadorUltimoSubmit)
 
-		
+                
 
-	#Obtiene las 20 entregas de la posicio "posicion"*20+1 (Desplazamiento) y devuelve un objeto XML tree como resultado
-	def _obtener20entregas(self, posicion):
-	 	req = requests.get('https://www.aceptaelreto.com/ws/submission/?start='+str(posicion*20+1)+'&size=20')
-		#Obtenemos un JSON en texto
-                return resultados = json.loads(req.text)   #Lo transformamos a un objeto
+        #Obtiene las 20 entregas de la posicio "posicion"*20+1 (Desplazamiento) y devuelve un objeto XML tree como resultado
+        def _obtener20entregas(self, posicion):
+                req = requests.get('https://www.aceptaelreto.com/ws/submission/?start='+str(posicion*20+1)+'&size=20')
+                resultados = {}
+                resultados["error_get"] = 0
+                #Obtenemos un JSON en texto
+                if '"submission":[' not in req.text: #Esto es ajustado a lo que leemos de aceptaelreto pero el json o xml de otro juez en línea será diferente por lo que habría que hacerlo adaptable en unas variables de config.
+                    resultados["error_get"] = 1      #En otras lineas de este archivo tambien nos ocurre lo mismo que en este if
+                    resultados["msg_error"] = req.text
+                else:
+                    resultados = json.loads(req.text)   #Lo transformamos a un objeto
+                    resultados["error_get"] = 0 
+                return resultados

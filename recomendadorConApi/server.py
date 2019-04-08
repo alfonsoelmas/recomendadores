@@ -50,6 +50,11 @@ class http_server:
 Clase que maneja las peticiones de nuestro servidor HTTP
 """
 class myHandler(BaseHTTPRequestHandler):
+    #Como json no puede serializar un tipo numpy, definimos esta funcion para que la use al transformar el diccionario.
+    def default(o):
+        if isinstance(o, numpy.int32): return int(o)
+        if isinstance(o, numpy.int64): return int(o)
+        raise TypeError
     #Resuelve las peticiones GET
     def do_GET(self):
         #Creamos respuesta de cabecera estandar (protocolo http)
@@ -84,7 +89,7 @@ class myHandler(BaseHTTPRequestHandler):
         idUsuarioParam = int(query_components["idUsuario"])
         #Comprobamos que existe topK y si es asi se lo asignamos. Si topk < 0 se cogeran los k peores problemas
         if "topk" in query_components:
-            topKparam = int(query_components["topK"])
+            topKparam = int(query_components["topk"])
         #Comprobamos que existe kvecinos y si es asi se lo asignamos.
         if "kvecinos" in query_components:
             kVecinosParam = int(query_components["kvecinos"])
@@ -96,7 +101,7 @@ class myHandler(BaseHTTPRequestHandler):
         #Aqui basicamente iteramos los k mejores o todos para guardarlos en un json que devolveremos
         arrayTopK = []
         reverse = False
-        if topkparam == 0:
+        if topKparam == 0:
             i = 1
         if topKparam < 0:
             topKparam = -topKparam
@@ -107,7 +112,7 @@ class myHandler(BaseHTTPRequestHandler):
                 if i == topKparam:
                     break
                 dictData = {}
-                dictData["problemaID"]=idproblema-100
+                dictData["problemaID"]=idproblema+100
                 dictData["valor"]=valor
                 arrayTopK.append(dictData)
                 i = i + 1
@@ -117,12 +122,14 @@ class myHandler(BaseHTTPRequestHandler):
                 if i == topKparam:
                     break
                 dictData = {}
-                dictData["problemaID"]=idproblema-100
-                dictData["valor"]=valor
+                dictData["problemaID"]=int(idproblema+100)
+                dictData["valor"]=float(valor)
                 arrayTopK.append(dictData)
                 i = i + 1
         jsonResponseDict["recomendacion"] = arrayTopK
-        self.wfile.write(json.dumps(jsonResponseDict))
+        # print(str(jsonResponseDict))
+        self.wfile.write(bytes(str(jsonResponseDict).replace("'",'"'),"utf-8"))
+        self.wfile.close()
         return
 """
 Class server recomendador

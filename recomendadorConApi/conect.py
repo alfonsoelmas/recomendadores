@@ -200,7 +200,7 @@ class JuezDB:
             self._obtenerUltimoSubmitServerDB()
             tamUsers = listaUsers.size
             #Creamos la matriz de tamUsers x tamProblemas y la inicializamos a cero
-            self.matrizDatos = np.zeros((tamUsers,tamProblemas), dtype=np.uint8)
+            self.matrizDatos = np.zeros((tamUsers,tamProblemas), dtype=np.int8)
             i=0
             for user in listaUsers:
                 entregas = self._obtenerEntregasValidasDeUser(user)
@@ -271,7 +271,7 @@ class JuezDB:
                 # añadir usuario nuevo al final de parseador de usuarios
                 np.append(self._users, userId)
                 # añadir fila nueva de usuarios en matriz de datos e inicializarla a 0
-                problemas = np.zeros(self._problems.size, dtype=np.uint8)
+                problemas = np.zeros(self._problems.size, dtype=np.int8)
                 #ver bien el insert TODO
                 np.insert(self.matrizDatos, self.matrizDatos[0], problemas, 0)
             
@@ -296,7 +296,7 @@ class JuezDB:
                     #Para el estado actual de aceptaelreto le sumamos 10mil para evitar duplicados con los originales, ¡pero no es una solucion A LARGO PLAZO!
                     np.append(self._problems, self._problems[self._problems.size+10000])
                     # creamos las columnas correspondientes a la matriz de datos y las inicializamos a 0
-                    userss = np.zeros(self._users.size,dtype=np.uint8)
+                    userss = np.zeros(self._users.size,dtype=np.int8)
                     #ver bien el insert TODO
                     np.insert(self.matrizDatos, self.matrizDatos[0], userss, 1)
                     increment = increment + 1 

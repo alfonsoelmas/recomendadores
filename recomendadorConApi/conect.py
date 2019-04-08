@@ -213,7 +213,7 @@ class JuezDB:
         else:
             self._cargarMatrizDesdeLocal()
 
-    # guardamos con 1 decimal ya que nuestros datos son UINT8
+    # guardamos con 1 decimal ya que nuestros datos son INT8
     # TODO: HAY QUE GUARDAR MI ULTIMO SUBMITION
     def _guardarMatrizEnLocal(self):
         np.savetxt(self.matrizLocal, self.matrizDatos, fmt='%.1e')
@@ -228,7 +228,7 @@ class JuezDB:
     # Cargamos matriz desde archivo .dat local
     def _cargarMatrizDesdeLocal(self):
         self.matrizDatos    = np.loadtxt(self.matrizLocal)
-        self.matrizDatos    = self.matrizDatos.astype(np.uint8)
+        self.matrizDatos    = self.matrizDatos.astype(np.int8)
         self._users         = np.loadtxt(self.userParserLocal)
         self._users         = self._users.astype(int)
         self._problems      = np.loadtxt(self.problemParserLocal)
@@ -347,7 +347,7 @@ class JuezDB:
 """
 Pruebas funcionamiento clase conect
 Tarda 30 segundos en crear la clase conect y cargar en memoria la matriz
-La matriz en memoria ocupa 3.5Mb siendo uint8, y 14Mb siendo int.
+La matriz en memoria ocupa 3.5Mb siendo int8, y 14Mb siendo int.
 
 """
 

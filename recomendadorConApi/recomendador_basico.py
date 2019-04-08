@@ -10,80 +10,64 @@ Realizado por Alfonso Soria Muñoz y Pedro Domenech.
 """
 class RecomendadorBasico:
 
-        """
-        Constructora del recomendador
-                - Crea el recomendador cargando la matriz de datos de DB.
-        Params:
-                - db: Objeto BBDD que contiene la matriz y el parseo de posiciones/IDs de problemas. Además de otros métodos útiles sobre la BBDD
-        Returns:
-                - Nothing
-        """
+        # Crea el recomendador con la matriz de datos el id del owner y su posicion de la matriz (Su fila es su correspondiente)
         def __init__(self, db):
                 self.conexionDB     = db		
                 self.matrizDatos    = self.conexionDB.obtenerMatriz()
                 self.grado          = 0 
                 # El grado sera el grado de similitud o el máximo de usuarios posibles. Servira para calcular el peso del problema. (En recomendar). Se remodifica tanto en metodo filtrarNsimilares como en recomendar
+                # self.listaProblemasOwner = self.obtenerProblemas(self.userIDowner)
 
-        """
-        Método correlación
-                - Calcula la correlación entre posUser1, y el usuario al que se está recomendando.
-                - Tiene en cuenta que existan problemas en User1 y Owner, en otro caso devuelve correlación = 0.
-        Params:
-                - posUser1: posición de usuario con quien Owner va a calcular su correlación, en la matriz de datos. (Fila=información de 1 usuario)
-        Returns:
-                - type-double: valor entre 0 y 1 que representa la correlación entre los dos usuarios.
-        """
+        #Devuelve la correlacion entre 2 usuarios
         def correlacion(self,posUser1):
-                # Obtenemos las posiciones de ambos usuarios
+                #Anotación: la siguiente busqueda puede darse como una consulta más compleja antes que de forma algoritmica. (comprobar mejora de rendimiento)
+                #AHORA ESTAMOS TRABAJANDO CON POSICIONES DE USUARIOS !!!
                 posOwner = self.userPosOwner
                 posUser  = posUser1
-                # Calculamos el tamaño de la cantidad de problemas comunes
+
                 tam_comunes     = self.tamProblemasComunes(posUser) #(pA)intersección(pB)
-                # Obtenemos la cantidad de problemas resueltos por Owner
                 self.ownerSizeCant =  self.calcularTamProblemasUser(posOwner)
                 tam_pA = self.ownerSizeCant
-                # Si los tamaños son mayores que 0, calculamos y devolvemos la correlación
+                #todo comprobar condiciones de tamaños 0, etc.
                 if tam_comunes!=0 and tam_pA!=0:
                         correl = tam_comunes/tam_pA
                         return correl
-                # En otro caso, la correlación siempre será 0
                 else:
                         return 0
 
-        """
-        Método calcularTamProblemasUser
-                - Calcula el tamaño de los problemas a 1(Resueltos) de un usuario.
-        Params:
-                - posUser: posición de usuario en la matriz de datos sobre la que hacer el cálculo
-        Returns:
-                - type-int: valor del conjunto de los Naturales que indica la cantidad de problemas resueltos por un usuario.
-        """
+        #Calcula el tamaño de los problemas de un usuario. TODO: Mejorar iteración para que sea más rápida.
         def calcularTamProblemasUser(self, posUser):
-                #Código previo a la optimización:
-                """ 
-                i = 0
-                j = 0
-                
+                # MODIFIED
+                # i = 0
+                # j = 0
+                """
                 while i < self.matrizDatos.shape[1]:
                         if self.matrizDatos[posUser][i] == 1:
                                 j = j + 1
                         i = i + 1
-                return j
                 """
-                #Código optimizado usando mejor NumPy:
                 booleanos = (self.matrizDatos[self.userPosOwner] == 1)
                 return np.where(booleanos)[0].size
+                # return j
 
 
+        # Obtencion de los problemas válidos de un usuario X
+        # Llamar a esta funcion periodicamente y dejarla en memoria cada T tiempo actualizarla. (para agilizar calculo obtener correlacion de cada usuario, etc)
         """
-        Método recomendar
-                - Recomienda un usuario userIDowner, con un grado de similitud, devolviendo un diccionario de problemas ordenado.
-        Params:
-                - userIDowner: ID del usuario a recomendar
-                - gradoSimilitud: con que grado de similitud calcular
-        Returns:
-                - diccionario: Diccionario ordenado de clave/valor = idProblema/pesoProblema.
+        def obtenerProblemas(self, user):
+                #Obener Array de problemas.
+                return self.conexionDB.obtenerEntregasValidasDeUser(user)
         """
+
+
+        # Obtiene el listado actual de usuarios
+        """
+        def obtenerUsuarios(self):
+                return self.conexionDB.obtenerUsuarios()
+        """
+
+        # Recomienda al usuario problemas en base al algoritmo de recomendación aplicado y un grado de similitud.
+        # Todo: testear
         def recomendar(self,userIDowner,gradoSimilitud):
                 #obtener N mas similares
                 self.userIDowner    = userIDowner
@@ -93,35 +77,35 @@ class RecomendadorBasico:
                 alterno = True #Si id = True, si correl = False
                 diccionario = {}
                 listaProblemas = None
-                # Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
-                # Esperemos no tarde tanto...
-                # cantidadProblemas = self.__obtenerCantidadProblemas(matrizSimilares)
+                #Iteramos la matriz de una forma curiosa (Como un array de posiciones dos a dos.)
+                #Esperemos no tarde tanto...
+                #cantidadProblemas = self.__obtenerCantidadProblemas(matrizSimilares)
                 for x in np.nditer(matrizSimilares, order='C'):
                         if alterno == True:
-                                # Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
+                                #Obtenemos lista de problemas que tiene el usuario de referencia respecto al propietario.
                                 listaProblemas = self.buscarProblemasUser2MinusOwner(int(x))
                                 alterno = False        
                         else:
-                                # Le sumamoss el peso correspondiente (Sumar correlación del usar de referencia partido de N) al problema
+                                #Le sumamoss el peso correspondiente (Sumar correlación del usar de referencia partido de N) al problema
                                 correlProblema = x
                                 for idProblema in listaProblemas:
-                                        # Añadimos a nuestro diccionario partiendo por N-similares
+                                        #Añadimos a nuestro diccionario: TODO, CALCULAMOS MAL LA DIVISION. DEBERIA SER PARTIDO DEL TOTAL DE PROBLEMAS QUE VAMOS A BUSCAR O ALGO ASÍ.
                                         if idProblema in diccionario:
-                                                #TODO: aquí debería parsear la posDelProblema en el Id del problema. Porque no la parseo...De momento trabajamos con posiciones en la matriz, no veo esencial lo otro.
+                                                #TODO: aquí debería parsear la posDelProblema en el Id del problema. Porque no la parseo...
                                                 diccionario.update({idProblema : correlProblema/gradoSimilitud + diccionario.get(idProblema)})                                                
                                         else:
                                                 diccionario.update({idProblema : correlProblema/gradoSimilitud})
                                 alterno = True
-                #Ordena de menor a mayor y se le da la vuelta.
+                
+                #todo: esto no ordena. BUSCAR FORMA DE ORDENARLO.
+                #diccionario.sort(key=lambda x: x[1])
                 diccionario = sorted(diccionario.items(), key=operator.itemgetter(1))
                 diccionario.reverse()
-                #Esta parte puede quizás ahora ser el mayor cuello de botella del algoritmo completo.
-                #Devuelve la posicion de la matriz, no su ID como tal. Habra que parsearlo con la clase conect para obtener el id correspondiente.
+                #Esperemos tampoco tarde...
                 return diccionario #Devolvemos una lista ordenada de recomendaciones de problemas que aún no ha resuelto. (Key=ID problema / Valor=Peso de recomendacion sobre 1)
+                #TODO: CREO QUE EN VEZ DE OBTENER EL ID DE PROBLEMAS OBTENEMOS LA POSICION DE LA MATRIZ, QUE NO TIENE POR QUÉ CORRESPONDERSE CON EL ID REAL, HABRIA QUE TRADUCIR EL ID.
 
-"""
-TODO VOY POR AQUI
-"""
+
         # Devuelve una lista de los usuarios más similares respecto al que se va a recomendar (De cantidad "cantidad")
         # Esta lista implicará la precisión a la hora de recomendar.
         # Todo: Testear
@@ -169,13 +153,11 @@ TODO VOY POR AQUI
                 i = 0
                 j = 0
                 arrayProvisionalPos = np.empty([self.matrizDatos.size],dtype=int)
-
                 while i < self.matrizDatos.shape[1]:
                         if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
                                 arrayProvisionalPos[j] = i
                                 j = j + 1
                         i = i + 1
-
                 arrayPosComun = np.empty([j],dtype=int)
                 i = 0
                 while i < j:
@@ -194,13 +176,11 @@ TODO VOY POR AQUI
                 """
                 i = 0
                 j = 0
-
         
                 while i < self.matrizDatos.shape[1]:
                         if(self.matrizDatos[posOwner][i] == 1 and self.matrizDatos[posUser][i] == 1):
                                 j = j + 1
                         i = i + 1
-
                 return j
                 """
                 booleanos = (self.matrizDatos[posOwner] == 1) & (self.matrizDatos[posUser] == 1)
@@ -264,29 +244,4 @@ TODO VOY POR AQUI
                         tamListaFinal = tamListaFinal + 1
                 """
                 # return listaFinal
-                
-        # Métodos de la V1
-        # Obtencion de los problemas válidos de un usuario X
-        # Llamar a esta funcion periodicamente y dejarla en memoria cada T tiempo actualizarla. (para agilizar calculo obtener correlacion de cada usuario, etc)
-        """
-        def obtenerProblemas(self, user):
-                #Obener Array de problemas.
-                return self.conexionDB.obtenerEntregasValidasDeUser(user)
-        """
-
-
-        # Obtiene el listado actual de usuarios
-        """
-        def obtenerUsuarios(self):
-                return self.conexionDB.obtenerUsuarios()
-        """
-
-
-"""
-Prueba funcionamiento y tiempo de funciones recomendador v2
-"""
-
-# np.count_nonzero(y == 1) >> ESTA FUNCION CUENTA CUANTAS VECES SE REPITE EL VALOR UNO EN EL ARRAY Y
-# np.any(a!=0)
-# np.all(a==a)
 

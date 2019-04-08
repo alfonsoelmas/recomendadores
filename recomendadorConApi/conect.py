@@ -269,11 +269,11 @@ class JuezDB:
                 # Este usuario no existía
                 compUser = False
                 # añadir usuario nuevo al final de parseador de usuarios
-                np.append(self._users, userId)
+                self._users = np.append(self._users, userId)
                 # añadir fila nueva de usuarios en matriz de datos e inicializarla a 0
                 problemas = np.zeros(self._problems.size, dtype=np.int8)
                 #ver bien el insert TODO
-                np.insert(self.matrizDatos, self.matrizDatos[0], problemas, 0)
+                self.matrizDatos = np.insert(self.matrizDatos, self.matrizDatos.shape[0], problemas, 0)
             
             #Creo esta variable por si mas adelante lo tenemos en cuenta, pero quizas ni se use despues
             compProblem = True
@@ -288,17 +288,17 @@ class JuezDB:
                 por lo que creamos todos los nuevos...
                 """
                 sizeP = self._problems.size-1
-                diferencia = obtenerPos - sizeP
+                diferencia = problemPos - sizeP
                 increment = 0
                 while increment != diferencia:
                     #Le añado a problems un nuevo elemento.
                     #El ID correspondera a su tamaño en ese momento.. problema: PUEDEN DUPLICARSE IDS!
                     #Para el estado actual de aceptaelreto le sumamos 10mil para evitar duplicados con los originales, ¡pero no es una solucion A LARGO PLAZO!
-                    np.append(self._problems, self._problems[self._problems.size+10000])
+                    self._problems = np.append(self._problems, self._problems.size+10000)
                     # creamos las columnas correspondientes a la matriz de datos y las inicializamos a 0
                     userss = np.zeros(self._users.size,dtype=np.int8)
                     #ver bien el insert TODO
-                    np.insert(self.matrizDatos, self.matrizDatos[0], userss, 1)
+                    self.matrizDatos = np.insert(self.matrizDatos, self.matrizDatos.shape[1], userss, 1)
                     increment = increment + 1 
 
             #compResuelto == true? (Está resuelto? -AC-)

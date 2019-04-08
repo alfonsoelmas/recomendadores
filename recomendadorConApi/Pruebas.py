@@ -5,12 +5,17 @@
 Pruebas de actualizacion de clase juezDB conect pidiendo desde server de clase clientePeticiones las nuevas
 entregas. pruebas de actualizaciones y de carga de BBDD en memoria desde local y desde MySQL
 """
+
 from conect import JuezDB
 from server import ClientePeticiones
+from server import http_server
+from server import myHandler
 db = JuezDB()
 print("Conectada la BBDD y cargada")
 cliente = ClientePeticiones(db)
-print("cargada la BBDD al ultimo estado de entregas de la web")
+print("cargada la BBDD al ultimo estado de entregas de la web - ¡fake, nos hemos saltado unas 40mil entregas!")
+print("Activamos servidor...")
+servidor = http_server(db)
 
 """
 Ejecutamos nueva clase conect para generar matriz en local y probar su carga desde local, etc.
@@ -30,24 +35,21 @@ cada resultado de recomendación de toda la BBDD los guarda en diferentes TXT.
 Realizado para el entrenamiento del recomendador.
 """
 """
-listaValores = ["3","10","20","50","100","250","500","1000","2000","4000","5000","6000","All"]
-for x in listaValores:
-	f = open("resultadosV3_entrenamiento"+x+".txt", "w")
-	s_t = time()
-	db = conect.JuezDB()
-	e_t = time() - s_t
-	recomendador  = RecomendadorBasico(db)
-	listaUsuarios = db._obtenerTodosUsuarios()
-	for usuario in np.nditer(listaUsuarios):
-	        s_t = time()
-	        a = recomendador.recomendar(usuario,1000)
-	        e_t = time() - s_t
-
-	        f.write('U: '+ str(usuario) +'\n')
-	        for idproblema, valor in a:
-	                #parseamos la pos del problema en su id con db.problems[pos]
-	                f.write(str(db._problems[idproblema]) +'='+ str(valor) +'\n')
-	        f.write("[time: "+ str(e_t) +"]\n")
+import recomendador_basico
+import conect
+from time import time
+s_t = time()
+db = conect.JuezDB()
+e_t = time() - s_t
+recomendador  = recomendador_basico.RecomendadorBasico(db)
+s_t = time()
+a = recomendador.recomendar(847,100)
+e_t = time() - s_t
+print('U: '+ str(847) +'\n')
+for idproblema, valor in a:
+    #parseamos la pos del problema en su id con db.problems[pos]
+    print(str(idproblema+100) +'='+ str(valor) +'\n')
+    print("[time: "+ str(e_t) +"]\n")
 """
 
 

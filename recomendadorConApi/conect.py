@@ -178,7 +178,8 @@ class JuezDB:
         primero = 0
         ultimo = lista.size-1
 
-        while primero <= ultimo:
+        # Emular una lista con 4 usuarios que se repiten 100 veces cada uno, ver q ha insertado. 4 usuarios q ya existen repetidos 100 veces y 4 usuarios que no existen repetidos 100 veces.
+        while primero <= ultimo: #TODO TESTEAR ESTE ALGORITMO.
             puntoMedio = (primero + ultimo)//2
             if lista[puntoMedio] == id:
                 return puntoMedio
@@ -265,7 +266,7 @@ class JuezDB:
             """
             #Creo esta variable por si mas adelante lo tenemos en cuenta, pero quizas ni se use despues
             compUser = True
-            if self.obtenerPosUser(userId) == -1:
+            if self.obtenerPosUser(userId) == -1: #TODO: testear nuevamente esto. Quizás esta insertando de más
                 # Este usuario no existía
                 compUser = False
                 # añadir usuario nuevo al final de parseador de usuarios

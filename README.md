@@ -1,10 +1,10 @@
-# recomendadores
+# recomendadores :memo:
 
 Código fuente del recomendador de pesos por K-Vecinos más similares realizado con el fin de ser aplicado para Jueces en línea como _¡Aceptaelreto!_.
 
 El proyecto contiene varias versiones del recomendador K-Vecinos según procesos de mejora que ha ido obteniendo, así como sus fases para el entrenamiento y evaluación.
 
-## Estructura y arquitectura de este repositorio
+## Estructura y arquitectura de este repositorio :triangular_ruler:
 
 El repositorio está dividido en diferentes directorios, según las versiones y mejoras que ha ido sufriendo el recomendador. A continuación se lista el contenido de cada directorio.
 
@@ -17,7 +17,7 @@ El repositorio está dividido en diferentes directorios, según las versiones y 
 + _recomendadorConApiInsertaMal_: Una versión con fallos de inserción al actualizar en la matriz de datos, del directorio _recomendadorConApiFinal_.
 
 
-## Dependencias de ejecución
+## Dependencias de ejecución :information_source:
 
 Este recomendador funciona correctamente bajo la versión *3.7* de Python. Se ha probado en SO Windows 10 pro, sin MV. No nos hacemos responsables del correcto funcionamiento en otras versiones de Python u otras versiones de Linux. Se ha comprobado que para Python *3.6* no funcionaba correctamente.
 

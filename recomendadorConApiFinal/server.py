@@ -18,7 +18,7 @@ from urllib.parse import urlparse                   #para parsear los componente
 # VARIABLES GLOBALES DE CONFIGURACIÓN #
 #######################################
 HOST_NAME           = "localhost"
-SERVER_PORT         = 80
+SERVER_PORT         = 82
 CANT_KVECINOS_SR    = 100
 
 #Obtencion JSON para actualizar recomendadorDB

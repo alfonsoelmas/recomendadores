@@ -19,7 +19,7 @@ El repositorio está dividido en diferentes directorios, según las versiones y 
 
 ## Dependencias de ejecución :information_source:
 
-Este recomendador funciona correctamente bajo la versión *3.7* de Python. Se ha probado en SO Windows 10 pro, sin MV. No nos hacemos responsables del correcto funcionamiento en otras versiones de Python u otras versiones de Linux. Se ha comprobado que para Python *3.6* no funcionaba correctamente.
+Este recomendador funciona correctamente bajo la versión *3.7* de Python. Se ha probado en SO Windows 10 pro, sin MV. No nos hacemos responsables del correcto funcionamiento en otras versiones de Python u otros SO. Se ha comprobado que para Python *3.6* no funcionaba correctamente.
 
 Este recomendador hace uso de las librerías externas "_pymysql_" y "_numpy_".
 
